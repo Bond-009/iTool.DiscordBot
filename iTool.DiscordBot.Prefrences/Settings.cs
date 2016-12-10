@@ -10,15 +10,15 @@ namespace iTool.DiscordBot.Prefrences
 
 		public static class General
 		{
-			public static string Game;
-			public static bool AntiSwear;
+			public static string Game { get; set; }
+			public static bool AntiSwear { get; set; }
 		}
 
 		public static class ApiKeys
 		{
-			public static string SteamKey;
-			public static string OpenWeatherMapKey;
-			public static string DiscordToken;
+			public static string SteamKey { get; set; }
+			public static string OpenWeatherMapKey { get; set; }
+			public static string DiscordToken { get; set; }
 		}
 
 			public static class Static
@@ -62,6 +62,10 @@ namespace iTool.DiscordBot.Prefrences
 				//General
 				xmlDoc["iTool"]["General"]["Game"].InnerText = General.Game;
 				xmlDoc["iTool"]["General"]["AntiSwear"].InnerText = General.AntiSwear.ToString();
+
+				xmlDoc["iTool"]["ApiKeys"]["SteamKey"].InnerText = ApiKeys.SteamKey;
+				xmlDoc["iTool"]["ApiKeys"]["OpenWeatherMapKey"].InnerText = ApiKeys.OpenWeatherMapKey;
+				xmlDoc["iTool"]["ApiKeys"]["DiscordToken"].InnerText = ApiKeys.DiscordToken;
 
 				xmlDoc.Save(File.Open(Static.SettingsFile, FileMode.OpenOrCreate));
 			}

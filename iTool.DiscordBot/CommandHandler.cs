@@ -41,10 +41,12 @@ namespace iTool.DiscordBot
 
 			// If the command failed, notify the user
 			if (!result.IsSuccess)
-				if (result.ErrorReason.ToLower() == "Unknown command.")
+			{
+				if (result.ErrorReason.ToLower() != "unknown command.")
 				{
 					await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
 				}
+			}
 		}
 	}
 }

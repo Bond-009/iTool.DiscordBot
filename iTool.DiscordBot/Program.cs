@@ -18,16 +18,16 @@ namespace iTool.DiscordBot
 		{
 			Settings.Load();
 
-			discordClient = new DiscordSocketClient();
-
-			//TODO: check if Settings.ApiKeys.DiscordToken is empty or null
 			if (string.IsNullOrEmpty(Settings.ApiKeys.DiscordToken))
 			{
+				Console.WriteLine("No token");
 				Console.ReadKey();
 				await Quit();
 			}
 			else
 			{
+				discordClient = new DiscordSocketClient();
+
 				await discordClient.LoginAsync(TokenType.Bot, Settings.ApiKeys.DiscordToken);
 				await discordClient.ConnectAsync();
 				Console.WriteLine("Succesfully connected.");
@@ -42,10 +42,10 @@ namespace iTool.DiscordBot
 
 				commandHandler = new CommandHandler();
 				await commandHandler.Install(map);
-			}
 
-			discordClient.Log += Log;
-			discordClient.MessageReceived += DiscordClient_MessageReceived1;
+				discordClient.Log += Log;
+				discordClient.MessageReceived += DiscordClient_MessageReceived1;
+			}
 
 			while (true)
 			{
@@ -59,7 +59,9 @@ namespace iTool.DiscordBot
 
 		private static Task DiscordClient_MessageReceived1(SocketMessage arg)
 		{
+#if DEBUG
 			Console.WriteLine("[" + arg.Timestamp.UtcDateTime + "]" + arg.Author.Username + ": " + arg.Content);
+#endif        
 			/*
 			foreach (string badword in badwords)
 			{

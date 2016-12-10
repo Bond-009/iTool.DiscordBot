@@ -28,7 +28,7 @@ namespace iTool.DiscordBot.Prefrences
 							)
 						)
 					);
-				XDoc.Save(File.Open(Settings.Static.SettingsFile, FileMode.OpenOrCreate));
+				XDoc.Save(File.OpenWrite(Settings.Static.SettingsFile));
 			}
 		}
 	}

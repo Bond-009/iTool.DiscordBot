@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using iTool.DiscordBot.Prefrences;
 
 namespace iTool.DiscordBot.Modules
 {
@@ -22,20 +23,25 @@ namespace iTool.DiscordBot.Modules
 		public async Task Info()
 		{
 			IApplication application = await Context.Client.GetApplicationInfoAsync();
-
-			await ReplyAsync(
-				Format.Code(Format.Bold("Info") + Environment.NewLine +
-				$"- Author: {application.Owner.Username} (ID {application.Owner.Id})" + Environment.NewLine +
-				$"- Library: Discord.Net ({DiscordConfig.Version})\n" +
-				$"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
-				$"- Uptime: {GetUptime()}" + Environment.NewLine +
-				Environment.NewLine +
-				$"{Format.Bold("Stats")}" + Environment.NewLine +
-				$"- Heap Size: {GetHeapSize()} MB" + Environment.NewLine +
-				$"- Guilds: {(Context.Client as DiscordSocketClient).Guilds.Count}" + Environment.NewLine +
-				$"- Channels: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
-				$"- Users: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Users.Count)}", "md")
-			);
+			EmbedBuilder b = new EmbedBuilder();
+			b.Color = new Color(3, 144, 255);
+			b.AddField(delegate (EmbedFieldBuilder f)
+			{
+				f.Name = "Info";
+				f.Value = $"- Author: {application.Owner.Username} (ID {application.Owner.Id})" + Environment.NewLine +
+							$"- Library: Discord.Net ({DiscordConfig.Version})\n" +
+							$"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
+							$"- Uptime: {GetUptime()}";
+			});
+			b.AddField(delegate (EmbedFieldBuilder f)
+			{
+				f.Name = "Stats";
+				f.Value = $"- Heap Size: {GetHeapSize()} MB" + Environment.NewLine +
+							$"- Guilds: {(Context.Client as DiscordSocketClient).Guilds.Count}" + Environment.NewLine +
+							$"- Channels: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
+							$"- Users: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Users.Count)}";
+			});
+			await ReplyAsync("", false, b);
 		}
 
 		[Command("invite")]
@@ -70,6 +76,7 @@ namespace iTool.DiscordBot.Modules
 		{
 			if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.Message.Author.Id)
 			{
+				Settings.General.Game = input;
 				await (Context.Client as DiscordSocketClient).SetGame(input);
 			}
 		}
