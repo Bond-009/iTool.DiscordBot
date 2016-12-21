@@ -11,10 +11,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands">
-      <Version>1.0.0-beta2-00501</Version>
+      <Version>1.0.0-beta2-00515</Version>
     </PackageReference>
     <PackageReference Include="Discord.Net.WebSocket">
-      <Version>1.0.0-beta2-00501</Version>
+      <Version>1.0.0-beta2-00515</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.App">
       <Version>1.1.0</Version>
@@ -23,11 +23,12 @@
       <Version>1.0.0-alpha-20161104-2</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="OpenWeather.Net">
-      <HintPath>..\..\..\OpenWeatherNet\OpenWeatherNet\bin\Release\netstandard1.4\OpenWeather.Net.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>9.0.2-beta1</Version>
+    </PackageReference>
+    <PackageReference Include="OpenWeather.Net">
+      <Version>0.1.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iTool.DiscordBot.Prefrences\iTool.DiscordBot.Prefrences.csproj" />
