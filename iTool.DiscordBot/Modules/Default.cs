@@ -81,6 +81,42 @@ namespace iTool.DiscordBot.Modules
 			}
 		}
 
+		[Command("userinfo")]
+		public async Task UserInfo(IGuildUser user)
+		{
+			EmbedBuilder b = new EmbedBuilder()
+			{
+				Color = new Color(3, 144, 255),
+				ThumbnailUrl = user.AvatarUrl
+			};
+			b.AddField(delegate (EmbedFieldBuilder f)
+			{
+				f.Name = "Username";
+				f.Value = user.Username;
+			});
+			b.AddField(delegate (EmbedFieldBuilder f)
+			{
+				f.Name = "Id";
+				f.Value = user.Id.ToString();
+			});
+			b.AddField(delegate (EmbedFieldBuilder f)
+			{
+				f.Name = "Bot";
+				f.Value = user.IsBot.ToString();
+			});
+			b.AddField(delegate (EmbedFieldBuilder f)
+			{
+				f.Name = "Created at";
+				f.Value = user.CreatedAt.UtcDateTime.ToString();
+			});
+			b.AddField(delegate (EmbedFieldBuilder f)
+			{
+				f.Name = "Joined at";
+				f.Value = user.JoinedAt.ToString();
+			});
+			await ReplyAsync("", false, b);
+		}
+
 		[Command("quit")]
 		[Alias("exit", "stop")]
 		[Summary("Sets the bot's game")]
