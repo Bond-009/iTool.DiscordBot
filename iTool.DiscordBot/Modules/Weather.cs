@@ -27,9 +27,9 @@ namespace iTool.DiscordBot.Modules
             b.AddField(delegate (EmbedFieldBuilder f)
             {
                 f.Name = "Temperature";
-                f.Value = $"Max: {weather.Temperature.Max} {weather.Temperature.unit}" + Environment.NewLine +
-                            $"Gem: {weather.Temperature.Value} {weather.Temperature.unit}" + Environment.NewLine +
-                            $"Min: {weather.Temperature.Min} {weather.Temperature.unit}";
+                f.Value = $"Max: {weather.Temperature.Max} {weather.Temperature.Unit}" + Environment.NewLine +
+                            $"Gem: {weather.Temperature.Value} {weather.Temperature.Unit}" + Environment.NewLine +
+                            $"Min: {weather.Temperature.Min} {weather.Temperature.Unit}";
             });
             await ReplyAsync("", embed: b);
         }

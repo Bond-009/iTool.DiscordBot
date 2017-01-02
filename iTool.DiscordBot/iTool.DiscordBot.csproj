@@ -27,7 +27,7 @@
       <Version>9.0.2-beta1</Version>
     </PackageReference>
     <PackageReference Include="OpenWeather.Net">
-      <Version>0.2.0</Version>
+      <Version>0.2.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
