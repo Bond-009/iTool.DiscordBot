@@ -16,7 +16,7 @@ namespace iTool.DiscordBot.Modules
             //TODO: Add weather
             OpenWeatherClient client = new OpenWeatherClient(Settings.ApiKeys.OpenWeatherMapKey);
             WeatherInfo weather = await client.GetCurrentAsync(input);
-            weather.Temperature.ToCelsius(); //TODO: Add temperaturescale setting
+            weather.Temperature = weather.Temperature.ToCelsius(); //TODO: Add temperaturescale setting
 
             EmbedBuilder b = new EmbedBuilder()
             {
