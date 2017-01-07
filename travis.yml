@@ -1,0 +1,8 @@
+anguage: csharp
+dist: trusty
+sudo: required
+solution: iTool.DiscordBot.sln
+mono: none
+dotnet: 1.0.0-preview3-004056
+script:
+  - ./build.sh --quiet verify
