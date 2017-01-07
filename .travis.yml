@@ -1,4 +1,4 @@
-anguage: csharp
+language: csharp
 dist: trusty
 sudo: required
 solution: iTool.DiscordBot.sln
