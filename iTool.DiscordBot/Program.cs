@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
-using iTool.DiscordBot.Prefrences;
 
 namespace iTool.DiscordBot
 {
@@ -19,31 +19,33 @@ namespace iTool.DiscordBot
         private static CommandHandler commandHandler;
         private static List<string> badWords;
 
+        public static Settings settings { get; set; }
+
         public static async Task Start()
         {
-            Settings.Load();
+            LoadSettings();
             if (File.Exists(Settings.Static.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt"))
             {
                 badWords = File.ReadAllText(Settings.Static.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt").Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
             }
 
-            if (string.IsNullOrEmpty(Settings.ApiKeys.DiscordToken))
+            if (string.IsNullOrEmpty(settings.DiscordToken))
             {
                 Console.WriteLine("No token");
                 Console.ReadKey();
-                await Quit();
+                Environment.Exit(0);
             }
             else
             {
                 discordClient = new DiscordSocketClient();
 
-                await discordClient.LoginAsync(TokenType.Bot, Settings.ApiKeys.DiscordToken);
+                await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
                 await discordClient.ConnectAsync();
                 Console.WriteLine("Succesfully connected.");
 
-                if (!string.IsNullOrEmpty(Settings.General.Game))
+                if (!string.IsNullOrEmpty(settings.Game))
                 {
-                    await discordClient.SetGameAsync(Settings.General.Game);
+                    await discordClient.SetGameAsync(settings.Game);
                 }
 
                 DependencyMap map = new DependencyMap();
@@ -71,7 +73,7 @@ namespace iTool.DiscordBot
 #if DEBUG
 			Console.WriteLine("[" + arg.Timestamp.UtcDateTime + "]" + arg.Author.Username + ": " + arg.Content);
 #endif
-            if (Settings.General.AntiSwear)
+            if (settings.AntiSwear)
             {
                 foreach (string badWord in badWords)
                 {
@@ -95,8 +97,54 @@ namespace iTool.DiscordBot
             await discordClient.DisconnectAsync();
             await discordClient.LogoutAsync();
             discordClient.Dispose();
-            Settings.Save();
+            SaveSettings();
             Environment.Exit(0);
+        }
+
+        public static void LoadSettings()
+        {
+            if (File.Exists(Settings.Static.SettingsFile))
+            {
+                using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.Open))
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(Settings));
+                    settings = (Settings)ser.Deserialize(fs);
+                    fs.Flush();
+                }
+            }
+            else
+            {
+                ResetSettings();
+            }
+        }
+
+        public static void SaveSettings()
+        {
+            using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.OpenOrCreate))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(Settings));
+                ser.Serialize(fs, settings);
+            }
+        }
+
+        public static void ResetSettings()
+        {
+            if (!Directory.Exists(Settings.Static.SettingsDir))
+            {
+                Directory.CreateDirectory(Settings.Static.SettingsDir);
+            }
+            if (File.Exists(Settings.Static.SettingsFile))
+            {
+                File.Delete(Settings.Static.SettingsFile);
+                Console.WriteLine("Settings reset.");
+            }
+            using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.OpenOrCreate))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(Settings));
+                ser.Serialize(fs, new Settings());
+                fs.Flush();
+            }
+            LoadSettings();
         }
     }
 }
