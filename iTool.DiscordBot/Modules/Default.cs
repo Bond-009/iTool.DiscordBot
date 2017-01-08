@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using iTool.DiscordBot.Prefrences;
 
 namespace iTool.DiscordBot.Modules
 {
@@ -76,7 +75,7 @@ namespace iTool.DiscordBot.Modules
         {
             if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.Message.Author.Id)
             {
-                Settings.General.Game = input;
+                Program.settings.Game = input;
                 await (Context.Client as DiscordSocketClient).SetGameAsync(input);
             }
         }

@@ -7,10 +7,7 @@ namespace iTool.DiscordBot.Prefrences
     {
         internal static void Create()
         {
-            if (!Directory.Exists(Settings.Static.SettingsDir))
-            {
-                Directory.CreateDirectory(Settings.Static.SettingsDir);
-            }
+
 
             if (!File.Exists(Settings.Static.SettingsFile))
             {
