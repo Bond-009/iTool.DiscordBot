@@ -120,7 +120,7 @@ namespace iTool.DiscordBot.Modules
 
         [Command("quit")]
         [Alias("exit", "stop")]
-        [Summary("Sets the bot's game")]
+        [Summary("Quits the bot")]
         public async Task Quit()
         {
             if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.User.Id)
