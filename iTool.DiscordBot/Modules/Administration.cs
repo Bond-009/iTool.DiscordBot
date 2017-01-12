@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
@@ -27,7 +27,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("kick")]
-        [Summary("Kick the user")]
+        [Summary("Kicks the user")]
         [RequireUserPermission(GuildPermission.KickMembers)]
         public async Task Kick(params IUser[] users)
         {

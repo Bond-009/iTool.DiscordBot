@@ -1,16 +1,16 @@
-﻿using System.Threading.Tasks;
-using System.Net.Http;
-using System.Xml.Linq;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Xml.Linq;
 
 namespace iTool.DiscordBot.Modules
 {
     public class Random : ModuleBase
     {
         [Command("cat")]
-        [Summary("Gets a random cat image")]
+        [Summary("Returns a random cat image")]
         public async Task Cat()
         {
             XDocument xDoc = JsonConvert.DeserializeXNode(await (new HttpClient().GetStringAsync("http://random.cat/meow")), "root");

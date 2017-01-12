@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
 
 namespace iTool.DiscordBot.Modules
 {
@@ -19,6 +19,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("info")]
+        [Summary("Returns info about the bot")]
         public async Task Info()
         {
             IApplication application = await Context.Client.GetApplicationInfoAsync();
@@ -52,7 +53,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("leave")]
-        [Summary("Instructs the bot to leave this Guild.")]
+        [Summary("Instructs the bot to leave this Guild")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Leave()
         {
@@ -81,6 +82,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("userinfo")]
+        [Summary("Returns info about the user")]
         public async Task UserInfo(IGuildUser user)
         {
             EmbedBuilder b = new EmbedBuilder()
