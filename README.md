@@ -8,13 +8,13 @@ Just a Discord bot
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | help | | | Returns all the enabled commands |
-| info | | | Returns all the enabled commands |
+| info | | | Returns info about the bot |
 | invite | | | Returns the OAuth2 Invite URL of the bot |
 | leave | | GuildPermission.ManageGuild | Instructs the bot to leave this Guild |
 | say | echo | GuildPermission.ManageGuild | Echos the provided input |
 | setgame | | **Bot owner** | Sets the bot's game |
 | userinfo | | | Returns info about the user |
-| quit | exit, stop | **Bot owner** | Sets the bot's game |
+| quit | exit, stop | **Bot owner** | Quits the bot |
 
 ##Administration commands
 | Command | Aliases | Permission | Description |
