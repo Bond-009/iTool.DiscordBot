@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
-using System.Reflection;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.WebSocket;
+using System;
+using System.Threading.Tasks;
+using System.Reflection;
 
 namespace iTool.DiscordBot
 {
@@ -34,7 +35,7 @@ namespace iTool.DiscordBot
             int argPos = 0;
 
             // Determine if the message has a valid prefix, adjust argPos 
-            if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasCharPrefix('!', ref argPos))) return;
+            if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasStringPrefix(Program.settings.Prefix, ref argPos))) return;
 
             // Execute the Command, store the result
             IResult result = await commands.ExecuteAsync(new CommandContext(client, message), argPos, map);
@@ -44,6 +45,7 @@ namespace iTool.DiscordBot
             {
                 if (result.ErrorReason.ToLower() != "unknown command.")
                 {
+                    Console.WriteLine(result.ErrorReason);
                     await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
                 }
             }

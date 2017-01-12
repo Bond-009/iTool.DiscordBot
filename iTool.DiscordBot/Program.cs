@@ -71,7 +71,7 @@ namespace iTool.DiscordBot
         private async static Task DiscordClient_MessageReceived(SocketMessage arg)
         {
 #if DEBUG
-			Console.WriteLine("[" + arg.Timestamp.UtcDateTime + "]" + arg.Author.Username + ": " + arg.Content);
+            Console.WriteLine("[" + arg.Timestamp.UtcDateTime + "]" + arg.Author.Username + ": " + arg.Content);
 #endif
             if (settings.AntiSwear)
             {
@@ -109,7 +109,6 @@ namespace iTool.DiscordBot
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(Settings));
                     settings = (Settings)ser.Deserialize(fs);
-                    fs.Flush();
                 }
             }
             else
@@ -142,7 +141,6 @@ namespace iTool.DiscordBot
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Settings));
                 ser.Serialize(fs, new Settings());
-                fs.Flush();
             }
             LoadSettings();
         }

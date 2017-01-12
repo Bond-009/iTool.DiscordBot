@@ -73,7 +73,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Sets the bot's game")]
         public async Task SetGame([Remainder] string input)
         {
-            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.Message.Author.Id)
+            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.User.Id)
             {
                 Program.settings.Game = input;
                 await (Context.Client as DiscordSocketClient).SetGameAsync(input);
@@ -121,7 +121,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Sets the bot's game")]
         public async Task Quit()
         {
-            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.Message.Author.Id)
+            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.User.Id)
             {
                 await Program.Quit();
             }
