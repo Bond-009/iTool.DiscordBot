@@ -1,6 +1,6 @@
 language: csharp
 dist: trusty
-sudo: required
+sudo: false
 solution: iTool.DiscordBot.sln
 mono: none
 dotnet: 1.0.0-preview3-004056
