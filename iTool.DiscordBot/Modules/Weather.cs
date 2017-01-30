@@ -32,6 +32,27 @@ namespace iTool.DiscordBot.Modules
                                 $"Gem: {weather.Temperature.Value} {weather.Temperature.Unit}" + Environment.NewLine +
                                 $"Min: {weather.Temperature.Min} {weather.Temperature.Unit}";
                 });
+                
+                if (weather.Precipitation.Value != 0)
+                {
+                    b.AddField(delegate (EmbedFieldBuilder f)
+                    {
+                        f.Name = "Precipation";
+                        f.Value = weather.Precipitation.Value + weather.Precipitation.Unit;
+                    });
+                }
+                
+                b.AddField(delegate (EmbedFieldBuilder f)
+                {
+                    f.Name = "Humidity";
+                    f.Value = weather.Humidity.Value + weather.Humidity.Unit;
+                });
+                b.AddField(delegate (EmbedFieldBuilder f)
+                {
+                    f.Name = "Wind";
+                    f.Value = weather.Wind.Speed.Name + Environment.NewLine +
+                                weather.Wind.Speed.Value + "m/s";
+                });
                 await ReplyAsync("", embed: b);
             }
         }

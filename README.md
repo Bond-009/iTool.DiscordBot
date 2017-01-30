@@ -4,7 +4,6 @@
 Just a Discord bot
 
 ##Commands
-
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | help | | | Returns all the enabled commands |
