@@ -12,10 +12,10 @@ namespace iTool.DiscordBot.Modules
         [Summary("Gets the weather info")]
         public async Task GetWeather(string input)
         {
-            if (!string.IsNullOrEmpty(Program.settings.OpenWeatherMapKey))
+            if (!string.IsNullOrEmpty(Program.Settings.OpenWeatherMapKey))
             {
                 //TODO: Add weather
-                OpenWeatherClient client = new OpenWeatherClient(Program.settings.OpenWeatherMapKey);
+                OpenWeatherClient client = new OpenWeatherClient(Program.Settings.OpenWeatherMapKey);
                 WeatherInfo weather = await client.GetCurrentAsync(input);
                 weather.Temperature = weather.Temperature.ToCelsius(); //TODO: Add temperaturescale setting
 
@@ -32,7 +32,7 @@ namespace iTool.DiscordBot.Modules
                                 $"Gem: {weather.Temperature.Value} {weather.Temperature.Unit}" + Environment.NewLine +
                                 $"Min: {weather.Temperature.Min} {weather.Temperature.Unit}";
                 });
-                
+
                 if (weather.Precipitation.Value != 0)
                 {
                     b.AddField(delegate (EmbedFieldBuilder f)

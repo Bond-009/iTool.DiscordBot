@@ -19,7 +19,7 @@ namespace iTool.DiscordBot
         private static CommandHandler commandHandler;
         private static List<string> badWords;
 
-        public static Settings settings { get; set; }
+        public static Settings Settings { get; set; }
 
         public static async Task Start()
         {
@@ -29,7 +29,7 @@ namespace iTool.DiscordBot
                 badWords = File.ReadAllText(Settings.Static.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt").Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
             }
 
-            if (string.IsNullOrEmpty(settings.DiscordToken))
+            if (string.IsNullOrEmpty(Settings.DiscordToken))
             {
                 Console.WriteLine("No token");
                 Console.ReadKey();
@@ -39,13 +39,13 @@ namespace iTool.DiscordBot
             {
                 discordClient = new DiscordSocketClient();
 
-                await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
+                await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
                 await discordClient.ConnectAsync();
                 Console.WriteLine("Succesfully connected.");
 
-                if (!string.IsNullOrEmpty(settings.Game))
+                if (!string.IsNullOrEmpty(Settings.Game))
                 {
-                    await discordClient.SetGameAsync(settings.Game);
+                    await discordClient.SetGameAsync(Settings.Game);
                 }
 
                 DependencyMap map = new DependencyMap();
@@ -73,7 +73,7 @@ namespace iTool.DiscordBot
 #if DEBUG
             Console.WriteLine("[" + arg.Timestamp.UtcDateTime + "]" + arg.Author.Username + ": " + arg.Content);
 #endif
-            if (settings.AntiSwear)
+            if (Settings.AntiSwear)
             {
                 foreach (string badWord in badWords)
                 {
@@ -108,7 +108,7 @@ namespace iTool.DiscordBot
                 using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.Open))
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                    settings = (Settings)ser.Deserialize(fs);
+                    Settings = (Settings)ser.Deserialize(fs);
                 }
             }
             else
@@ -122,7 +122,7 @@ namespace iTool.DiscordBot
             using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.OpenOrCreate))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                ser.Serialize(fs, settings);
+                ser.Serialize(fs, Settings);
             }
         }
 

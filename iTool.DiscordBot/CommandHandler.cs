@@ -35,7 +35,7 @@ namespace iTool.DiscordBot
             int argPos = 0;
 
             // Determine if the message has a valid prefix, adjust argPos 
-            if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasStringPrefix(Program.settings.Prefix, ref argPos))) return;
+            if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasStringPrefix(Program.Settings.Prefix, ref argPos))) return;
 
             // Execute the Command, store the result
             IResult result = await commands.ExecuteAsync(new CommandContext(client, message), argPos, map);

@@ -76,7 +76,7 @@ namespace iTool.DiscordBot.Modules
         {
             if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.User.Id)
             {
-                Program.settings.Game = input;
+                Program.Settings.Game = input;
                 await (Context.Client as DiscordSocketClient).SetGameAsync(input);
             }
         }
