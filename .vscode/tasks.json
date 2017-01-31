@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/iTool.DiscordBot/iTool.DiscordBot.csproj"
+                "${workspaceRoot}/iTool.DiscordBot.sln"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
