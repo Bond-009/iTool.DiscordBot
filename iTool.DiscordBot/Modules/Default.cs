@@ -15,6 +15,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns all the enabled commands")]
         public async Task Help()
         {
+            // TODO: replace
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Commands",

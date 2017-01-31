@@ -86,7 +86,7 @@ namespace iTool.DiscordBot
             }
         }
 
-        private static Task Log(LogMessage msg)
+        public static Task Log(LogMessage msg)
         {
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;

@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace iTool.DiscordBot
             {
                 if (result.ErrorReason.ToLower() != "unknown command.")
                 {
-                    Console.WriteLine(result.ErrorReason);
+                    await Program.Log(new LogMessage(LogSeverity.Error, "", result.ErrorReason));
                     await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
                 }
             }
