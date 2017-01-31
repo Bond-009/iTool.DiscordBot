@@ -53,7 +53,7 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.BanMembers)]
         public async Task Ban(params IGuildUser[] users)
         {
-            foreach (IUser user in users)
+            foreach (IGuildUser user in users)
             {
                 await Context.Guild.AddBanAsync(user);
             }
