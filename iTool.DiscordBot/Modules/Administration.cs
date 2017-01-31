@@ -10,6 +10,17 @@ namespace iTool.DiscordBot.Modules
         [Command("delmsgs")]
         [Summary("Deletes the messages")]
         [RequireUserPermission(GuildPermission.ManageMessages)]
+        public async Task DelMsgs(int number = 100, params IUser[] users)
+        {
+            foreach (IUser user in users)
+            {
+                await Context.Channel.DeleteMessagesAsync((await Context.Channel.GetMessagesAsync(number).Flatten()).Where(Dmsg => Dmsg.Author.Id == user.Id));
+            }
+        }
+
+        [Command("delmsgs")]
+        [Summary("Deletes the messages")]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task DelMsgs(params IUser[] users)
         {
             foreach (IUser user in users)
@@ -29,28 +40,22 @@ namespace iTool.DiscordBot.Modules
         [Command("kick")]
         [Summary("Kicks the user")]
         [RequireUserPermission(GuildPermission.KickMembers)]
-        public async Task Kick(params IUser[] users)
+        public async Task Kick(params IGuildUser[] users)
         {
-            foreach (IUser user in users)
+            foreach (IGuildUser user in users)
             {
-                foreach (IGuildUser guildUser in (await Context.Guild.GetUsersAsync()).Where(t => t.Id == user.Id))
-                {
-                    await guildUser.KickAsync();
-                }
+                await user.KickAsync();
             }
         }
 
         [Command("ban")]
         [Summary("Bans the user")]
         [RequireUserPermission(GuildPermission.BanMembers)]
-        public async Task Ban(params IUser[] users)
+        public async Task Ban(params IGuildUser[] users)
         {
             foreach (IUser user in users)
             {
-                foreach (IGuildUser guildUser in (await Context.Guild.GetUsersAsync()).Where(t => t.Id == user.Id))
-                {
-                    await Context.Guild.AddBanAsync(guildUser);
-                }
+                await Context.Guild.AddBanAsync(user);
             }
         }
     }
