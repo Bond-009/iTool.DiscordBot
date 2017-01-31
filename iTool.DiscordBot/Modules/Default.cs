@@ -15,7 +15,21 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns all the enabled commands")]
         public async Task Help()
         {
-            //TODO: Add help
+            EmbedBuilder b = new EmbedBuilder()
+            {
+                Title = "Commands",
+                Color = new Color(3, 144, 255),
+            };
+ 
+            foreach (CommandInfo cmd in Program.CommandHandler.Commands.Commands)
+            {
+               b.AddField(delegate (EmbedFieldBuilder f)
+                {
+                    f.Name = cmd.Name;
+                    f.Value = cmd.Summary;
+                });
+            }
+            await ReplyAsync("", embed: b);
         }
 
         [Command("info")]

@@ -15,11 +15,11 @@ namespace iTool.DiscordBot
     {
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
-        private static DiscordSocketClient discordClient;
-        private static CommandHandler commandHandler;
-        private static List<string> badWords;
-
+        public static CommandHandler CommandHandler { get; private set;}
         public static Settings Settings { get; set; }
+
+        private static DiscordSocketClient discordClient;
+        private static List<string> badWords;
 
         public static async Task Start()
         {
@@ -51,8 +51,8 @@ namespace iTool.DiscordBot
                 DependencyMap map = new DependencyMap();
                 map.Add(discordClient);
 
-                commandHandler = new CommandHandler();
-                await commandHandler.Install(map);
+                CommandHandler = new CommandHandler();
+                await CommandHandler.Install(map);
 
                 discordClient.Log += Log;
                 discordClient.MessageReceived += DiscordClient_MessageReceived;

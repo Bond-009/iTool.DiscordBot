@@ -8,7 +8,7 @@ namespace iTool.DiscordBot
 {
     public class CommandHandler
     {
-        private CommandService commands;
+        public CommandService Commands { get; private set; }
         private DiscordSocketClient client;
         private IDependencyMap map;
 
@@ -16,11 +16,11 @@ namespace iTool.DiscordBot
         {
             // Create Command Service, inject it into Dependency Map
             client = _map.Get<DiscordSocketClient>();
-            commands = new CommandService();
-            _map.Add(commands);
+            Commands = new CommandService();
+            _map.Add(Commands);
             map = _map;
 
-            await commands.AddModulesAsync(Assembly.GetEntryAssembly());
+            await Commands.AddModulesAsync(Assembly.GetEntryAssembly());
 
             client.MessageReceived += HandleCommand;
         }
@@ -38,7 +38,7 @@ namespace iTool.DiscordBot
             if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasStringPrefix(Program.Settings.Prefix, ref argPos))) return;
 
             // Execute the Command, store the result
-            IResult result = await commands.ExecuteAsync(new CommandContext(client, message), argPos, map);
+            IResult result = await Commands.ExecuteAsync(new CommandContext(client, message), argPos, map);
 
             // If the command failed, notify the user
             if (!result.IsSuccess)
