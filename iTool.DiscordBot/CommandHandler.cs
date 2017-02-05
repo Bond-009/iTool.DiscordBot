@@ -9,6 +9,7 @@ namespace iTool.DiscordBot
     public class CommandHandler
     {
         public CommandService Commands { get; private set; }
+        
         private DiscordSocketClient client;
         private IDependencyMap map;
 

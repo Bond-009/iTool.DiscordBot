@@ -27,6 +27,7 @@ namespace iTool.DiscordBot.Modules
                 };
                 b.AddField(delegate (EmbedFieldBuilder f)
                 {
+                    f.IsInline = true;
                     f.Name = "Temperature";
                     f.Value = $"Max: {weather.Temperature.Max} {weather.Temperature.Unit}" + Environment.NewLine +
                                 $"Gem: {weather.Temperature.Value} {weather.Temperature.Unit}" + Environment.NewLine +
@@ -37,6 +38,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     b.AddField(delegate (EmbedFieldBuilder f)
                     {
+                        f.IsInline = true;
                         f.Name = "Precipation";
                         f.Value = weather.Precipitation.Value + weather.Precipitation.Unit;
                     });
@@ -44,11 +46,13 @@ namespace iTool.DiscordBot.Modules
                 
                 b.AddField(delegate (EmbedFieldBuilder f)
                 {
+                    f.IsInline = true;
                     f.Name = "Humidity";
                     f.Value = weather.Humidity.Value + weather.Humidity.Unit;
                 });
                 b.AddField(delegate (EmbedFieldBuilder f)
                 {
+                    f.IsInline = true;
                     f.Name = "Wind";
                     f.Value = weather.Wind.Speed.Name + Environment.NewLine +
                                 weather.Wind.Speed.Value + "m/s";

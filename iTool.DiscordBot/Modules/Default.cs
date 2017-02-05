@@ -73,7 +73,7 @@ namespace iTool.DiscordBot.Modules
         public async Task Leave()
         {
             if (Context.Guild == null) { await ReplyAsync("This command can only be ran in a server."); return; }
-            await ReplyAsync("Leaving~");
+            await ReplyAsync("Leaving...");
             await Context.Guild.LeaveAsync();
         }
 
@@ -98,7 +98,7 @@ namespace iTool.DiscordBot.Modules
 
         [Command("userinfo")]
         [Summary("Returns info about the user")]
-        public async Task UserInfo(IGuildUser user)
+        public async Task UserInfo(IGuildUser user = null)
         {
             EmbedBuilder b = new EmbedBuilder()
             {
@@ -107,30 +107,44 @@ namespace iTool.DiscordBot.Modules
             };
             b.AddField(delegate (EmbedFieldBuilder f)
             {
+                f.IsInline = true;
                 f.Name = "Username";
                 f.Value = user.Username;
             });
             b.AddField(delegate (EmbedFieldBuilder f)
             {
+                f.IsInline = true;
+                f.Name = "Discriminator";
+                f.Value = user.Discriminator;
+            });
+            b.AddField(delegate (EmbedFieldBuilder f)
+            {
+                f.IsInline = true;
                 f.Name = "Id";
                 f.Value = user.Id.ToString();
             });
             b.AddField(delegate (EmbedFieldBuilder f)
             {
+                f.IsInline = true;
                 f.Name = "Bot";
                 f.Value = user.IsBot.ToString();
             });
             b.AddField(delegate (EmbedFieldBuilder f)
             {
+                f.IsInline = true;
                 f.Name = "Created at";
-                f.Value = user.CreatedAt.UtcDateTime.ToString();
+                f.Value = user.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            if (user.JoinedAt == null)
             {
-                f.Name = "Joined at";
-                f.Value = user.JoinedAt.ToString();
-            });
-            await ReplyAsync("", false, b);
+                b.AddField(delegate (EmbedFieldBuilder f)
+                {
+                    f.IsInline = true;
+                    f.Name = "Joined at";
+                    f.Value = user.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
+                });
+            }
+            await ReplyAsync("", embed: b);
         }
 
         [Command("quit")]

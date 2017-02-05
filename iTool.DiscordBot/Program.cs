@@ -71,7 +71,7 @@ namespace iTool.DiscordBot
         private async static Task DiscordClient_MessageReceived(SocketMessage arg)
         {
 #if DEBUG
-            Console.WriteLine("[" + arg.Timestamp.UtcDateTime + "]" + arg.Author.Username + ": " + arg.Content);
+            Console.WriteLine("[" + arg.Timestamp.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") + "]" + arg.Author.Username + ": " + arg.Content);
 #endif
             if (Settings.AntiSwear)
             {
