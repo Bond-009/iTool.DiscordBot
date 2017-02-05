@@ -21,8 +21,8 @@ namespace iTool.DiscordBot.Modules
                 Title = "Commands",
                 Color = new Color(3, 144, 255),
             };
- 
-            foreach (CommandInfo cmd in Program.CommandHandler.Commands.Commands)
+
+            foreach (CommandInfo cmd in Program.CommandHandler.CommandService.Commands)
             {
                b.AddField(delegate (EmbedFieldBuilder f)
                 {
@@ -96,9 +96,10 @@ namespace iTool.DiscordBot.Modules
             }
         }
 
+        // TODO: Allow without parm
         [Command("userinfo")]
         [Summary("Returns info about the user")]
-        public async Task UserInfo(IGuildUser user = null)
+        public async Task UserInfo(IGuildUser user)
         {
             EmbedBuilder b = new EmbedBuilder()
             {
