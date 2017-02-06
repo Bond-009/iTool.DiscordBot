@@ -26,3 +26,8 @@ Just a Discord bot
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | cat | | | Returns a random cat image |
+
+##Weather commands
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| weather | | | Returns info about the weather |
