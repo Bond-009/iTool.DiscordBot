@@ -1,9 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Xml.Linq;
 
 namespace iTool.DiscordBot.Modules
 {
@@ -15,12 +14,12 @@ namespace iTool.DiscordBot.Modules
         {
             using (HttpClient httpclient = new HttpClient())
             {
-                XDocument xDoc = JsonConvert.DeserializeXNode(await httpclient.GetStringAsync("http://random.cat/meow"), "root");
+                JObject o = JObject.Parse(await httpclient.GetStringAsync("http://random.cat/meow"));
 
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Color = new Color(3, 144, 255),
-                    ImageUrl = xDoc.Element("root").Element("file").Value
+                    ImageUrl = (string)o["file"]
                 });
             }
         }
