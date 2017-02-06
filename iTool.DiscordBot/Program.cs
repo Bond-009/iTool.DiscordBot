@@ -15,7 +15,7 @@ namespace iTool.DiscordBot
     {
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
-        public static CommandHandler CommandHandler { get; private set;}
+        public static CommandHandler CommandHandler { get; private set; }
         public static Settings Settings { get; set; }
 
         private static DiscordSocketClient discordClient;
@@ -35,28 +35,26 @@ namespace iTool.DiscordBot
                 Console.ReadKey();
                 Environment.Exit(0);
             }
-            else
+
+            discordClient = new DiscordSocketClient();
+
+            await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
+            await discordClient.ConnectAsync();
+            Console.WriteLine("Succesfully connected.");
+
+            if (!string.IsNullOrEmpty(Settings.Game))
             {
-                discordClient = new DiscordSocketClient();
-
-                await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
-                await discordClient.ConnectAsync();
-                Console.WriteLine("Succesfully connected.");
-
-                if (!string.IsNullOrEmpty(Settings.Game))
-                {
-                    await discordClient.SetGameAsync(Settings.Game);
-                }
-
-                DependencyMap map = new DependencyMap();
-                map.Add(discordClient);
-
-                CommandHandler = new CommandHandler();
-                await CommandHandler.Install(map);
-
-                discordClient.Log += Log;
-                discordClient.MessageReceived += DiscordClient_MessageReceived;
+                await discordClient.SetGameAsync(Settings.Game);
             }
+
+            DependencyMap map = new DependencyMap();
+            map.Add(discordClient);
+
+            CommandHandler = new CommandHandler();
+            await CommandHandler.Install(map);
+
+            discordClient.Log += Log;
+            discordClient.MessageReceived += DiscordClient_MessageReceived;
 
             while (true)
             {
@@ -89,6 +87,7 @@ namespace iTool.DiscordBot
         public static Task Log(LogMessage msg)
         {
             Console.WriteLine(msg.ToString());
+            if (msg.Exception != null) { Console.WriteLine(msg.Exception.ToString()); }
             return Task.CompletedTask;
         }
 
