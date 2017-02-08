@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {

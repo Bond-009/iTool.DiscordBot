@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
-using OpenWeatherNet;
+using OpenWeather;
 using System;
 using System.Threading.Tasks;
 
