@@ -24,9 +24,9 @@ namespace iTool.DiscordBot
         public static async Task Start()
         {
             LoadSettings();
-            if (File.Exists(Settings.Static.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt"))
+            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt"))
             {
-                badWords = File.ReadAllText(Settings.Static.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt").Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
+                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt").Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
             }
 
             if (string.IsNullOrEmpty(Settings.DiscordToken))
@@ -102,9 +102,9 @@ namespace iTool.DiscordBot
 
         public static void LoadSettings()
         {
-            if (File.Exists(Settings.Static.SettingsFile))
+            if (File.Exists(Common.SettingsFile))
             {
-                using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.Open))
+                using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.Open))
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(Settings));
                     Settings = (Settings)ser.Deserialize(fs);
@@ -118,7 +118,7 @@ namespace iTool.DiscordBot
 
         public static void SaveSettings()
         {
-            using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.OpenOrCreate))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Settings));
                 ser.Serialize(fs, Settings);
@@ -127,16 +127,16 @@ namespace iTool.DiscordBot
 
         public static void ResetSettings()
         {
-            if (!Directory.Exists(Settings.Static.SettingsDir))
+            if (!Directory.Exists(Common.SettingsDir))
             {
-                Directory.CreateDirectory(Settings.Static.SettingsDir);
+                Directory.CreateDirectory(Common.SettingsDir);
             }
-            if (File.Exists(Settings.Static.SettingsFile))
+            if (File.Exists(Common.SettingsFile))
             {
-                File.Delete(Settings.Static.SettingsFile);
+                File.Delete(Common.SettingsFile);
                 Console.WriteLine("Settings reset.");
             }
-            using (FileStream fs = new FileStream(Settings.Static.SettingsFile, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.OpenOrCreate))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Settings));
                 ser.Serialize(fs, new Settings());
