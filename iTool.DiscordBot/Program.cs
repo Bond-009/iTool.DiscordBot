@@ -82,7 +82,6 @@ namespace iTool.DiscordBot
             {
                 foreach (string badWord in badWords)
                 {
-                    Console.WriteLine(badWord);
                     if (Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains(badWord))
                     {
                         await arg.DeleteAsync();

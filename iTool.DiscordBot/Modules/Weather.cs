@@ -24,7 +24,7 @@ namespace iTool.DiscordBot.Modules
 
             EmbedBuilder b = new EmbedBuilder()
             {
-                Title = $"{weather.City.Name} {weather.City.Country}",
+                Title = weather.City.Name + " " + weather.City.Country,
                 Color = new Color(3, 144, 255),
                 ThumbnailUrl = weather.IconURL
             };
