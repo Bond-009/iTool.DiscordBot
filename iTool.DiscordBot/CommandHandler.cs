@@ -47,7 +47,13 @@ namespace iTool.DiscordBot
                 if (result.ErrorReason.ToLower() != "unknown command.")
                 {
                     await Program.Log(new LogMessage(LogSeverity.Error, "", result.ErrorReason));
-                    await message.Channel.SendMessageAsync($"**Error:** {result.ErrorReason}");
+
+                    await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
+                    {
+                        Title = "Error",
+                        Color = new Color(204, 0, 0),
+                        Description = result.ErrorReason
+                    });
                 }
             }
         }

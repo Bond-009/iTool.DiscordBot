@@ -26,7 +26,9 @@ namespace iTool.DiscordBot
             LoadSettings();
             if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt"))
             {
-                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt").Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
+                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt")
+                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
+                    .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
             }
 
             if (string.IsNullOrEmpty(Settings.DiscordToken))
@@ -68,15 +70,20 @@ namespace iTool.DiscordBot
                 {
                     await Quit();
                 }
+                else
+                {
+                    Console.WriteLine("Command not found.");
+                }
             }
         }
 
         private async static Task DiscordClient_MessageReceived(SocketMessage arg)
         {
 #if DEBUG
-            Console.WriteLine("[" + arg.Timestamp.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") + "]" + arg.Author.Username + ": " + arg.Content);
+            Console.WriteLine("[" + arg.Timestamp.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") + "]" 
+                + arg.Author.Username + ": " + arg.Content);
 #endif
-            if (Settings.AntiSwear)
+            if (badWords != null && badWords.Any() && Settings.AntiSwear)
             {
                 foreach (string badWord in badWords)
                 {
@@ -84,6 +91,7 @@ namespace iTool.DiscordBot
                     {
                         await arg.DeleteAsync();
                         await arg.Channel.SendMessageAsync(arg.Author.Mention + ", please don't put such things in chat");
+                        break;
                     }
                 }
             }
