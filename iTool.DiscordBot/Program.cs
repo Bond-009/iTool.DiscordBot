@@ -35,9 +35,14 @@ namespace iTool.DiscordBot
                 Console.ReadKey();
                 Environment.Exit(0);
             }
+            
+            DiscordSocketConfig config = new DiscordSocketConfig();
+            config.AlwaysDownloadUsers = Settings.AlwaysDownloadUsers;
+            config.LogLevel = Settings.LogLevel;
+            config.MessageCacheSize = Settings.MessageCacheSize;
 
-            discordClient = new DiscordSocketClient();
-
+            discordClient = new DiscordSocketClient(config);
+            
             await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
             await discordClient.ConnectAsync();
             Console.WriteLine("Succesfully connected.");
