@@ -15,7 +15,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await DiscordBot.Steam.GetStats(730, name)).Stats
+            Dictionary<string, int> dict = (await DiscordBot.Steam.GetUserStatsForGame(730, name)).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             EmbedBuilder b = new EmbedBuilder()
@@ -69,12 +69,12 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("csgolastmatch")]
-        [Summary("Returns the CS:GO stats of the player's last match")]
+        [Summary("Returns stats of the player's last CS:GO match")]
         public async Task CSGOLastMatch(string name = null)
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await DiscordBot.Steam.GetStats(730, name)).Stats
+            Dictionary<string, int> dict = (await DiscordBot.Steam.GetUserStatsForGame(730, name)).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             EmbedBuilder b = new EmbedBuilder()

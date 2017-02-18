@@ -22,10 +22,21 @@ Just a Discord bot
 | kick | | GuildPermission.KickMembers | Kicks the user |
 | ban | | GuildPermission.BanMembers | Bans the user |
 
+##CS:GO commands
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| csgostats | | | Returns the CS:GO stats of the player |
+| csgolastmatch | | | Returns stats of the player's last CS:GO match |
+
 ##Random commands
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | cat | | | Returns a random cat image |
+
+##Steam commands
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| resolvevanityurl | | | Returns the steamID64 of the player |
 
 ##Weather commands
 | Command | Aliases | Permission | Description |

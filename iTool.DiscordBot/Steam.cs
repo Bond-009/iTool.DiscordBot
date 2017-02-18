@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace iTool.DiscordBot
@@ -11,10 +9,8 @@ namespace iTool.DiscordBot
     // HACK: 
     static class Steam
     {
-        public async static Task<UserStatsForGame> GetStats(int gameID, string playername)
+        public async static Task<UserStatsForGame> GetUserStatsForGame(int gameID, string playername)
         {
-            if (string.IsNullOrEmpty(playername)) { throw new ArgumentNullException(); }
-
             if (Program.Settings.SteamKey == null)
             {
                 throw new Exception("No SteamKey");
@@ -25,8 +21,7 @@ namespace iTool.DiscordBot
                 using (Stream stream = await httpclient.GetStreamAsync(
                     $"https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={gameID}&key={Program.Settings.SteamKey}&steamid={await ResolveVanityURL(playername)}&format=xml"))
                 {
-                    XmlSerializer ser = new XmlSerializer(typeof(UserStatsForGame));
-                    return (UserStatsForGame)ser.Deserialize(stream);
+                    return (UserStatsForGame)new XmlSerializer(typeof(UserStatsForGame)).Deserialize(stream);
                 }
             }
         }
@@ -43,8 +38,7 @@ namespace iTool.DiscordBot
                 using (Stream stream = await httpclient.GetStreamAsync(
                     $"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={Program.Settings.SteamKey}&vanityurl={playername}&format=xml"))
                 {
-                    XmlSerializer ser = new XmlSerializer(typeof(VanityURL));
-                    VanityURL vanityurl = (VanityURL)ser.Deserialize(stream);
+                    VanityURL vanityurl = (VanityURL)new XmlSerializer(typeof(VanityURL)).Deserialize(stream);
 
                     switch (vanityurl.Succes)
                     {
