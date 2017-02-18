@@ -9,7 +9,7 @@ namespace iTool.DiscordBot.Modules
     public class Weather : ModuleBase
     {
         [Command("weather")]
-        [Summary("Gets the weather info")]
+        [Summary("Returns info about the weather")]
         public async Task GetWeather(string input)
         {
             if (string.IsNullOrEmpty(Program.Settings.OpenWeatherMapKey))
