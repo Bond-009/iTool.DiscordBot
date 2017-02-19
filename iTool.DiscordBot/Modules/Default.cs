@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -11,17 +12,26 @@ namespace iTool.DiscordBot.Modules
     public class Default : ModuleBase
     {
         [Command("help")]
-        [Summary("Returns all the enabled commands")]
-        public async Task Help()
+        [Summary("Returns the enabled commands in lists of 25.")]
+        public async Task Help(int help = 1)
         {
-            // TODO: replace
+            help -= 1;
+            if (help < 0) { return; }
+
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Commands",
                 Color = new Color(3, 144, 255),
+                Description = "Returns the enabled commands in lists of 25.",
+                Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
 
-            foreach (CommandInfo cmd in Program.CommandHandler.CommandService.Commands)
+            foreach (CommandInfo cmd in Program.CommandHandler.CommandService.Commands
+                                        .GroupBy(x => x.Name)
+                                        .Select(y => y.First())
+                                        .OrderBy(x => x.Name)
+                                        .Skip(help * 25)
+                                        .Take(25))
             {
                b.AddField(delegate (EmbedFieldBuilder f)
                 {
@@ -29,6 +39,63 @@ namespace iTool.DiscordBot.Modules
                     f.Value = cmd.Summary;
                 });
             }
+            await (await Context.User.CreateDMChannelAsync()).SendMessageAsync("", embed: b);
+        }
+
+        [Command("help")]
+        [AliasAttribute("cmdinfo", "commandinfo")]
+        [Summary("Returns info about the command.")]
+        public async Task Help(string input)
+        {
+            IEnumerable<CommandInfo> icmd = Program.CommandHandler.CommandService.Commands
+                                .Where(x => x.Name == input.ToLower()
+                                || x.Aliases.Contains(input));
+
+            if (icmd.IsNullOrEmpty())
+            {
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Command info",
+                    Color = new Color(3, 144, 255),
+                    Description = "No command found",
+                    Url = "https://github.com/Bond-009/iTool.DiscordBot"
+                });
+                return;
+            }
+            CommandInfo cmd = icmd.First();
+
+            EmbedBuilder b = new EmbedBuilder()
+            {
+                Title = "Command info",
+                Color = new Color(3, 144, 255),
+                Url = "https://github.com/Bond-009/iTool.DiscordBot"
+            };
+            b.AddField(delegate (EmbedFieldBuilder f)
+            {
+                f.Name = "Name";
+                f.Value = cmd.Name;
+            });
+
+            List<string> aliases = cmd.Aliases.Where(x => x != cmd.Name).ToList();
+
+            if (!aliases.IsNullOrEmpty())
+            {
+                b.AddField(delegate (EmbedFieldBuilder f)
+                {
+                    f.Name = "Aliases";
+                    f.Value = string.Join(", ", aliases);
+                });
+            }
+
+            if (!cmd.Parameters.IsNullOrEmpty())
+            {
+                b.AddField(delegate (EmbedFieldBuilder f)
+                {
+                    f.Name = "Parameters";
+                    f.Value = string.Join(", ", cmd.Parameters);
+                });
+            }
+
             await ReplyAsync("", embed: b);
         }
 
@@ -88,11 +155,12 @@ namespace iTool.DiscordBot.Modules
         [Summary("Sets the bot's game")]
         public async Task SetGame([Remainder] string input)
         {
-            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.User.Id)
-            {
-                Program.Settings.Game = input;
-                await (Context.Client as DiscordSocketClient).SetGameAsync(input);
-            }
+            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id != Context.User.Id)
+            { return; }
+            
+            Program.Settings.Game = input;
+            await (Context.Client as DiscordSocketClient).SetGameAsync(input);
+            
         }
 
         // TODO: Allow without parm
@@ -152,10 +220,10 @@ namespace iTool.DiscordBot.Modules
         [Summary("Quits the bot")]
         public async Task Quit()
         {
-            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id == Context.User.Id)
-            {
-                await Program.Quit();
-            }
+            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id != Context.User.Id)
+            { return; }
+
+            await Program.Quit();
         }
     }
 }

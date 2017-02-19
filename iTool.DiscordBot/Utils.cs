@@ -8,6 +8,8 @@ namespace iTool.DiscordBot
     public static class Utils
     {
         public static bool IsNullOrEmpty<T>(this List<T> list) { return list == null || !list.Any(); }
+        public static bool IsNullOrEmpty<T>(this IReadOnlyList<T> list) { return list == null || !list.Any(); }
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable) { return enumerable == null || !enumerable.Any(); }
         public static TimeSpan GetUptime() => DateTime.Now - Process.GetCurrentProcess().StartTime;
         public static double GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2);
     }
