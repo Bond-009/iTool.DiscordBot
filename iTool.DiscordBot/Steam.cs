@@ -11,11 +11,6 @@ namespace iTool.DiscordBot
     {
         public async static Task<UserStatsForGame> GetUserStatsForGame(int gameID, string playername)
         {
-            if (Program.Settings.SteamKey == null)
-            {
-                throw new Exception("No SteamKey");
-            }
-
             using (HttpClient httpclient = new HttpClient())
             {
                 using (Stream stream = await httpclient.GetStreamAsync(
@@ -28,11 +23,6 @@ namespace iTool.DiscordBot
 
         public async static Task<long> ResolveVanityURL(string playername)
         {
-            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
-            {
-                throw new Exception("No SteamKey");
-            }
-
             using (HttpClient httpclient = new HttpClient())
             {
                 using (Stream stream = await httpclient.GetStreamAsync(
