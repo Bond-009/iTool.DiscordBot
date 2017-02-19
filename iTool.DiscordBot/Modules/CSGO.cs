@@ -13,6 +13,12 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the CS:GO stats of the player")]
         public async Task CSGOStats(string name = null)
         {
+            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            {
+                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No SteamKey found."));
+                return;
+            }
+
             if (name == null) { name = Context.User.Username; }
 
             Dictionary<string, int> dict = (await DiscordBot.Steam.GetUserStatsForGame(730, name)).Stats
@@ -72,6 +78,12 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns stats of the player's last CS:GO match")]
         public async Task CSGOLastMatch(string name = null)
         {
+            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            {
+                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No SteamKey found."));
+                return;
+            }
+
             if (name == null) { name = Context.User.Username; }
 
             Dictionary<string, int> dict = (await DiscordBot.Steam.GetUserStatsForGame(730, name)).Stats

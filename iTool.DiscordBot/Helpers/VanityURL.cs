@@ -1,11 +1,14 @@
 using System.Xml.Serialization;
 
-[XmlRootAttribute("response")]
-public class VanityURL
+namespace iTool.DiscordBot
 {
-    [XmlElementAttribute("steamid", IsNullable=true)]
-    public long? SteamID64 { get; set; }
+    [XmlRootAttribute("response")]
+    public class VanityURL
+    {
+        [XmlElementAttribute("steamid", IsNullable = true)]
+        public long? SteamID64 { get; set; }
 
-    [XmlElementAttribute("success")]
-    public int Succes { get; set; }
+        [XmlElementAttribute("success")]
+        public int Succes { get; set; }
+    }
 }

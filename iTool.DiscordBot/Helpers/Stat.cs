@@ -1,11 +1,14 @@
 using System.Xml.Serialization;
 
-[XmlRootAttribute("stat")]
-public class Stat
+namespace iTool.DiscordBot
 {
-    [XmlElementAttribute("name")]
-    public string Name { get; set; }
+    [XmlRootAttribute("stat")]
+    public class Stat
+    {
+        [XmlElementAttribute("name")]
+        public string Name { get; set; }
 
-    [XmlElementAttribute("value")]
-    public int Value { get; set; }
+        [XmlElementAttribute("value")]
+        public int Value { get; set; }
+    }
 }

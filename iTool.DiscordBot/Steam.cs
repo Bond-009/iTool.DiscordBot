@@ -28,7 +28,7 @@ namespace iTool.DiscordBot
 
         public async static Task<long> ResolveVanityURL(string playername)
         {
-            if (Program.Settings.SteamKey == null)
+            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
             {
                 throw new Exception("No SteamKey");
             }

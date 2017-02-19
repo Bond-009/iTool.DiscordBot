@@ -11,12 +11,12 @@ using System.Xml.Serialization;
 
 namespace iTool.DiscordBot
 {
-    static class Program
+    public static class Program
     {
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
         public static CommandHandler CommandHandler { get; private set; }
-        public static Settings Settings { get; set; }
+        public static Settings Settings { get; private set; }
 
         private static DiscordSocketClient discordClient;
         private static List<string> badWords;
@@ -66,13 +66,20 @@ namespace iTool.DiscordBot
             while (true)
             {
                 string input = Console.ReadLine().ToLower();
-                if (input == "quit" || input == "exit" || input == "stop")
+                switch (input)
                 {
-                    await Quit();
-                }
-                else
-                {
-                    Console.WriteLine("Command not found.");
+                    case "quit":
+                    case "exit":
+                    case "stop":
+                        await Quit();
+                        break;
+                    case "clear":
+                    case "cls":
+                        Console.Clear();
+                        break;
+                    default:
+                        Console.WriteLine(input + ": command not found");
+                        break;
                 }
             }
         }
@@ -83,7 +90,7 @@ namespace iTool.DiscordBot
             Console.WriteLine("[" + arg.Timestamp.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") + "]" 
                 + arg.Author.Username + ": " + arg.Content);
 #endif
-            if (badWords != null && badWords.Any() && Settings.AntiSwear)
+            if (!badWords.IsNullOrEmpty() && Settings.AntiSwear)
             {
                 foreach (string badWord in badWords)
                 {

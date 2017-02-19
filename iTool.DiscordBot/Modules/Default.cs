@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -46,12 +45,12 @@ namespace iTool.DiscordBot.Modules
                 f.Value = $"- Author: {application.Owner.Username} (ID {application.Owner.Id})" + Environment.NewLine +
                             $"- Library: Discord.Net ({DiscordConfig.Version})\n" +
                             $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
-                            $"- Uptime: {GetUptime()}";
+                            $"- Uptime: {Utils.GetUptime().ToString(@"dd\.hh\:mm\:ss")}";
             });
             b.AddField(delegate (EmbedFieldBuilder f)
             {
                 f.Name = "Stats";
-                f.Value = $"- Heap Size: {GetHeapSize()} MB" + Environment.NewLine +
+                f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB" + Environment.NewLine +
                             $"- Guilds: {(Context.Client as DiscordSocketClient).Guilds.Count}" + Environment.NewLine +
                             $"- Channels: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
                             $"- Users: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Users.Count)}";
@@ -158,8 +157,5 @@ namespace iTool.DiscordBot.Modules
                 await Program.Quit();
             }
         }
-
-        private static string GetUptime() => (DateTime.Now - Process.GetCurrentProcess().StartTime).ToString(@"dd\.hh\:mm\:ss");
-        private static string GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2).ToString();
     }
 }
