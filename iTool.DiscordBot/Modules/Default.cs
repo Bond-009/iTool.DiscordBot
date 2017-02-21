@@ -33,7 +33,7 @@ namespace iTool.DiscordBot.Modules
                                         .Skip(help * 25)
                                         .Take(25))
             {
-               b.AddField(delegate (EmbedFieldBuilder f)
+               b.AddField(f =>
                 {
                     f.Name = cmd.Name;
                     f.Value = cmd.Summary;
@@ -43,7 +43,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("help")]
-        [AliasAttribute("cmdinfo", "commandinfo")]
+        [Alias("cmdinfo", "commandinfo")]
         [Summary("Returns info about the command.")]
         public async Task Help(string input)
         {
@@ -70,7 +70,7 @@ namespace iTool.DiscordBot.Modules
                 Color = new Color(3, 144, 255),
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.Name = "Name";
                 f.Value = cmd.Name;
@@ -80,7 +80,7 @@ namespace iTool.DiscordBot.Modules
 
             if (!aliases.IsNullOrEmpty())
             {
-                b.AddField(delegate (EmbedFieldBuilder f)
+                b.AddField(f =>
                 {
                     f.Name = "Aliases";
                     f.Value = string.Join(", ", aliases);
@@ -89,7 +89,7 @@ namespace iTool.DiscordBot.Modules
 
             if (!cmd.Parameters.IsNullOrEmpty())
             {
-                b.AddField(delegate (EmbedFieldBuilder f)
+                b.AddField(f =>
                 {
                     f.Name = "Parameters";
                     f.Value = string.Join(", ", cmd.Parameters);
@@ -106,7 +106,7 @@ namespace iTool.DiscordBot.Modules
             IApplication application = await Context.Client.GetApplicationInfoAsync();
             EmbedBuilder b = new EmbedBuilder();
             b.Color = new Color(3, 144, 255);
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.Name = "Info";
                 f.Value = $"- Author: {application.Owner.Username} (ID {application.Owner.Id})" + Environment.NewLine +
@@ -114,7 +114,7 @@ namespace iTool.DiscordBot.Modules
                             $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
                             $"- Uptime: {Utils.GetUptime().ToString(@"dd\.hh\:mm\:ss")}";
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.Name = "Stats";
                 f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB" + Environment.NewLine +
@@ -173,31 +173,31 @@ namespace iTool.DiscordBot.Modules
                 Color = new Color(3, 144, 255),
                 ThumbnailUrl = user.AvatarUrl
             };
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Username";
                 f.Value = user.Username;
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Discriminator";
                 f.Value = user.Discriminator;
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Id";
                 f.Value = user.Id.ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Bot";
                 f.Value = user.IsBot.ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Created at";
@@ -205,7 +205,7 @@ namespace iTool.DiscordBot.Modules
             });
             if (user.JoinedAt == null)
             {
-                b.AddField(delegate (EmbedFieldBuilder f)
+                b.AddField(f =>
                 {
                     f.IsInline = true;
                     f.Name = "Joined at";

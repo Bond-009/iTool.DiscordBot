@@ -29,47 +29,41 @@ namespace iTool.DiscordBot.Modules
                 Title = $"CS:GO stats for {name}",
                 Color = new Color(3, 144, 255),
             };
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Kills";
                 f.Value = dict["total_kills"].ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Deaths";
                 f.Value = dict["total_deaths"].ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "K/D";
                 f.Value = Math.Round((double)dict["total_kills"] / (double)dict["total_deaths"], 2).ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Headshots";
                 f.Value = Math.Round(100 / (double)dict["total_kills"] * (double)dict["total_kills_headshot"], 2).ToString() + "%";
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Accuracy";
                 f.Value = Math.Round(100 / (double)dict["total_shots_fired"] * (double)dict["total_shots_hit"], 2).ToString() + "%";
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Playtime";
                 f.Value = (dict["total_time_played"] / 60 / 60).ToString() + "hours";
-            });
-            b.AddField(delegate (EmbedFieldBuilder f)
-            {
-                f.IsInline = true;
-                f.Name = "Total windows broken";
-                f.Value = dict["total_broken_windows"].ToString();
             });
             await ReplyAsync("", embed: b);
         }
@@ -94,25 +88,25 @@ namespace iTool.DiscordBot.Modules
                 Title = $"Last match CS:GO stats for {name}",
                 Color = new Color(3, 144, 255),
             };
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Kills";
                 f.Value = dict["last_match_kills"].ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Deaths";
                 f.Value = dict["last_match_deaths"].ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "K/D";
                 f.Value = Math.Round((double)dict["last_match_kills"] / (double)dict["last_match_deaths"], 2).ToString();
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "MVP";

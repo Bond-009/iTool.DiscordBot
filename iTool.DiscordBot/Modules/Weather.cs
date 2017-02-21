@@ -28,7 +28,7 @@ namespace iTool.DiscordBot.Modules
                 Color = new Color(3, 144, 255),
                 ThumbnailUrl = weather.IconURL
             };
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Temperature";
@@ -39,7 +39,7 @@ namespace iTool.DiscordBot.Modules
 
             if (weather.Precipitation.Value != 0)
             {
-                b.AddField(delegate (EmbedFieldBuilder f)
+                b.AddField(f =>
                 {
                     f.IsInline = true;
                     f.Name = "Precipation";
@@ -47,13 +47,13 @@ namespace iTool.DiscordBot.Modules
                 });
             }
 
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Humidity";
                 f.Value = weather.Humidity.Value + weather.Humidity.Unit;
             });
-            b.AddField(delegate (EmbedFieldBuilder f)
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Wind";

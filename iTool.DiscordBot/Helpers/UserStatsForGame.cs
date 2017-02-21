@@ -3,14 +3,13 @@ using System.Xml.Serialization;
 
 namespace iTool.DiscordBot
 {
-    [XmlRootAttribute("playerstats")]
+    [XmlRoot("playerstats")]
     public class UserStatsForGame
     {
-
-        [XmlElementAttribute("steamID")]
+        [XmlElement("steamID")]
         public long SteamID { get; set; }
 
-        [XmlElementAttribute("gameName")]
+        [XmlElement("gameName")]
         public string GameName { get; set; }
 
         [XmlArray("stats")]

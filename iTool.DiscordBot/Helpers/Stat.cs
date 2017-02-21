@@ -2,13 +2,12 @@ using System.Xml.Serialization;
 
 namespace iTool.DiscordBot
 {
-    [XmlRootAttribute("stat")]
     public class Stat
     {
-        [XmlElementAttribute("name")]
+        [XmlElement("name")]
         public string Name { get; set; }
 
-        [XmlElementAttribute("value")]
+        [XmlElement("value")]
         public int Value { get; set; }
     }
 }
