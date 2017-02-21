@@ -26,7 +26,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = weather.City.Name + " " + weather.City.Country,
                 Color = new Color(3, 144, 255),
-                ThumbnailUrl = weather.IconURL
+                ThumbnailUrl = client.GetIconURL(weather.Weather.Icon)
             };
             b.AddField(f =>
             {
