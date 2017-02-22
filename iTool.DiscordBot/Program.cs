@@ -38,12 +38,12 @@ namespace iTool.DiscordBot
                 Environment.Exit(0);
             }
             
-            DiscordSocketConfig config = new DiscordSocketConfig();
-            config.AlwaysDownloadUsers = Settings.AlwaysDownloadUsers;
-            config.LogLevel = Settings.LogLevel;
-            config.MessageCacheSize = Settings.MessageCacheSize;
-
-            discordClient = new DiscordSocketClient(config);
+            discordClient = new DiscordSocketClient(new DiscordSocketConfig()
+            {
+                AlwaysDownloadUsers = Settings.AlwaysDownloadUsers,
+                LogLevel = Settings.LogLevel,
+                MessageCacheSize = Settings.MessageCacheSize
+            });
             
             await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
             await discordClient.ConnectAsync();
@@ -90,17 +90,11 @@ namespace iTool.DiscordBot
             Console.WriteLine("[" + arg.Timestamp.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") + "]" 
                 + arg.Author.Username + ": " + arg.Content);
 #endif
-            if (!badWords.IsNullOrEmpty() && Settings.AntiSwear)
+            if (Settings.AntiSwear && !badWords.IsNullOrEmpty()
+                && badWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
             {
-                foreach (string badWord in badWords)
-                {
-                    if (Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains(badWord))
-                    {
-                        await arg.DeleteAsync();
-                        await arg.Channel.SendMessageAsync(arg.Author.Mention + ", please don't put such things in chat");
-                        break;
-                    }
-                }
+                await arg.DeleteAsync();
+                await arg.Channel.SendMessageAsync(arg.Author.Mention + ", please don't put such things in chat");
             }
         }
 

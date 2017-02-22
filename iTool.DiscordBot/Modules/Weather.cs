@@ -20,7 +20,19 @@ namespace iTool.DiscordBot.Modules
 
             OpenWeatherClient client = new OpenWeatherClient(Program.Settings.OpenWeatherMapKey);
             WeatherInfo weather = await client.GetCurrentAsync(input);
-            weather.Temperature = weather.Temperature.ToCelsius(); //TODO: Add temperaturescale setting
+            switch (Program.Settings.TemperatureScale)
+            {
+                case TemperatureScale.Kelvin:
+                    weather.Temperature = weather.Temperature.ToKelvin();
+                    break;
+                case TemperatureScale.Fahrenheit:
+                    weather.Temperature = weather.Temperature.ToFahrenheit();
+                    break;
+                case TemperatureScale.Celsius:
+                default:
+                    weather.Temperature = weather.Temperature.ToCelsius();
+                    break;
+            }
 
             EmbedBuilder b = new EmbedBuilder()
             {

@@ -1,4 +1,5 @@
 ﻿using Discord;
+using OpenWeather;
 
 namespace iTool.DiscordBot
 {
@@ -13,5 +14,6 @@ namespace iTool.DiscordBot
         public string SteamKey { get; set; } = string.Empty;
         public string OpenWeatherMapKey { get; set; } = string.Empty;
         public string DiscordToken { get; set; } = string.Empty;
+        public TemperatureScale TemperatureScale { get; set; }
     }
 }
