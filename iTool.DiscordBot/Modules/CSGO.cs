@@ -27,7 +27,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"CS:GO stats for {name}",
-                Color = new Color(3, 144, 255),
+                Color = new Color(3, 144, 255)
             };
             b.AddField(f =>
             {
