@@ -44,9 +44,9 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Temperature";
-                f.Value = $"Max: {weather.Temperature.Max} {weather.Temperature.Unit}" + Environment.NewLine +
-                            $"Gem: {weather.Temperature.Value} {weather.Temperature.Unit}" + Environment.NewLine +
-                            $"Min: {weather.Temperature.Min} {weather.Temperature.Unit}";
+                f.Value = $"- Max: {weather.Temperature.Max} {weather.Temperature.Unit}" + Environment.NewLine +
+                            $"- Gem: {weather.Temperature.Value} {weather.Temperature.Unit}" + Environment.NewLine +
+                            $"- Min: {weather.Temperature.Min} {weather.Temperature.Unit}";
             });
 
             if (weather.Precipitation.Value != 0)

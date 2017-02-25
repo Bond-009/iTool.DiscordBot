@@ -9,15 +9,17 @@ namespace iTool.DiscordBot.Modules
     public class HOTS : ModuleBase
     {
         [Command("hotsstats")]
+        [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(int region, string battleTag)
         {
             Player player = await HOTSLogs.GetPlayerSummary(region, battleTag);
 
             EmbedBuilder b = new EmbedBuilder()
             {
-                Title = $"HOTS player summary for {battleTag}",
+                Title = $"HOTS player summary for {player.Name}",
                 Color = new Color(3, 144, 255),
-                Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}"
+                Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
+                ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             };
             b.AddField(f =>
             {
@@ -36,25 +38,28 @@ namespace iTool.DiscordBot.Modules
             {
                 b.AddField(f =>
                 {
+                    f.IsInline = true;
                     f.Name = ranking.GameMode;
-                    f.Value = $"LeagueID: {ranking.LeagueID}" + Environment.NewLine +
-                        $"LeagueRank: {ranking.LeagueRank}" + Environment.NewLine +
-                        $"CurrentMMR: {ranking.CurrentMMR}";
+                    f.Value = $"- LeagueID: {ranking.LeagueID}" + Environment.NewLine +
+                        $"- LeagueRank: {ranking.LeagueRank}" + Environment.NewLine +
+                        $"- CurrentMMR: {ranking.CurrentMMR}";
                 });
             }
             await ReplyAsync("", embed: b);
         }
 
-                [Command("hotsstats")]
+        [Command("hotsstats")]
+        [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(int playerID)
         {
             Player player = await HOTSLogs.GetPlayerSummary(playerID);
 
             EmbedBuilder b = new EmbedBuilder()
             {
-                Title = $"HOTS player summary",
+                Title = $"HOTS player summary for {player.Name}",
                 Color = new Color(3, 144, 255),
-                Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}"
+                Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
+                ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             };
             b.AddField(f =>
             {
@@ -73,10 +78,11 @@ namespace iTool.DiscordBot.Modules
             {
                 b.AddField(f =>
                 {
+                    f.IsInline = true;
                     f.Name = ranking.GameMode;
-                    f.Value = $"LeagueID: {ranking.LeagueID}" + Environment.NewLine +
-                        $"LeagueRank: {ranking.LeagueRank}" + Environment.NewLine +
-                        $"CurrentMMR: {ranking.CurrentMMR}";
+                    f.Value = $"- LeagueID: {ranking.LeagueID}" + Environment.NewLine +
+                        $"- LeagueRank: {ranking.LeagueRank}" + Environment.NewLine +
+                        $"- CurrentMMR: {ranking.CurrentMMR}";
                 });
             }
             await ReplyAsync("", embed: b);

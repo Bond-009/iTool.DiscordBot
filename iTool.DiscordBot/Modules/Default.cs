@@ -12,7 +12,7 @@ namespace iTool.DiscordBot.Modules
     public class Default : ModuleBase
     {
         [Command("help")]
-        [Summary("Returns the enabled commands in lists of 25.")]
+        [Summary("Returns the enabled commands in lists of 25")]
         public async Task Help(int help = 1)
         {
             help -= 1;
@@ -44,7 +44,7 @@ namespace iTool.DiscordBot.Modules
 
         [Command("help")]
         [Alias("cmdinfo", "commandinfo")]
-        [Summary("Returns info about the command.")]
+        [Summary("Returns info about the command")]
         public async Task Help(string input)
         {
             IEnumerable<CommandInfo> icmd = Program.CommandHandler.CommandService.Commands
