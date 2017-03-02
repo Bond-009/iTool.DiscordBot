@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot
 {
-    // HACK: 
     static class HOTSLogs
     {
         public static async Task<Player> GetPlayerSummary(int region, string battletag)
@@ -14,7 +13,8 @@ namespace iTool.DiscordBot
             {
                 return await await Task.Factory.StartNew(async () =>
                     JsonConvert.DeserializeObject<Player>(
-                        await httpclient.GetStringAsync($"https://api.hotslogs.com/Public/Players/{region}/{battletag}")));
+                        await httpclient.GetStringAsync(
+                            $"https://api.hotslogs.com/Public/Players/{region}/{battletag}")));
             }
         }
 
@@ -24,7 +24,8 @@ namespace iTool.DiscordBot
             {
                 return await await Task.Factory.StartNew(async () =>
                     JsonConvert.DeserializeObject<Player>(
-                        await httpclient.GetStringAsync($"https://api.hotslogs.com/Public/Players/{playerID}")));
+                        await httpclient.GetStringAsync(
+                            $"https://api.hotslogs.com/Public/Players/{playerID}")));
             }
         }
     }

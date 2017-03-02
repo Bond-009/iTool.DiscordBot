@@ -63,7 +63,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Playtime";
-                f.Value = (dict["total_time_played"] / 60 / 60).ToString() + "hours";
+                f.Value = (dict["total_time_played"] / 60 / 60).ToString() + " hours";
             });
             await ReplyAsync("", embed: b);
         }

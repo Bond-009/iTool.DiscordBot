@@ -42,8 +42,8 @@ namespace iTool.DiscordBot.Modules
             await (await Context.User.CreateDMChannelAsync()).SendMessageAsync("", embed: b);
         }
 
-        [Command("help")]
-        [Alias("cmdinfo", "commandinfo")]
+        [Command("cmdinfo")]
+        [Alias("commandinfo")]
         [Summary("Returns info about the command")]
         public async Task Help(string input)
         {
@@ -216,7 +216,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("quit")]
-        [Alias("exit", "stop")]
+        [Alias("exit")]
         [Summary("Quits the bot")]
         public async Task Quit()
         {

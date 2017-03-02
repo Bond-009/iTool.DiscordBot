@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Audio;
 using OpenWeather;
 
 namespace iTool.DiscordBot
@@ -6,8 +7,9 @@ namespace iTool.DiscordBot
     public class Settings
     {
         public string Prefix { get; set; } = "!";
+        public AudioMode AudioMode { get; set; }
         public bool AlwaysDownloadUsers { get; set; }
-        public LogSeverity LogLevel { get; set; } = LogSeverity.Critical;
+        public LogSeverity LogLevel { get; set; }
         public int MessageCacheSize { get; set; }
         public string Game { get; set; } = string.Empty;
         public bool AntiSwear { get; set; }

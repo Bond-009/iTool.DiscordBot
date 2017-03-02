@@ -1,6 +1,8 @@
 ﻿using Discord;
-using Discord.WebSocket;
+using Discord.Audio;
 using Discord.Commands;
+using Discord.WebSocket;
+using iTool.DiscordBot.Audio;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +17,7 @@ namespace iTool.DiscordBot
     {
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
+        public static AudioService AudioService { get; set; } = new AudioService();
         public static CommandHandler CommandHandler { get; private set; }
         public static Settings Settings { get; private set; }
 
@@ -41,13 +44,15 @@ namespace iTool.DiscordBot
             discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
                 AlwaysDownloadUsers = Settings.AlwaysDownloadUsers,
+                AudioMode = Settings.AudioMode,
                 LogLevel = Settings.LogLevel,
                 MessageCacheSize = Settings.MessageCacheSize
             });
-            
+
             await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
-            await discordClient.ConnectAsync();
-            Console.WriteLine("Succesfully connected.");
+            await discordClient.StartAsync();
+            await Task.Delay(1000);
+            Console.WriteLine("Succesfully connected as " + discordClient.CurrentUser.ToString());
 
             if (!string.IsNullOrEmpty(Settings.Game))
             {
@@ -86,10 +91,8 @@ namespace iTool.DiscordBot
 
         private async static Task DiscordClient_MessageReceived(SocketMessage arg)
         {
-#if DEBUG
-            Console.WriteLine("[" + arg.Timestamp.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss") + "]" 
-                + arg.Author.Username + ": " + arg.Content);
-#endif
+            await Log(new LogMessage(LogSeverity.Verbose, "", arg.Author.Username + ": " + arg.Content));
+
             if (Settings.AntiSwear && !badWords.IsNullOrEmpty()
                 && badWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
             {
@@ -100,6 +103,9 @@ namespace iTool.DiscordBot
 
         public static Task Log(LogMessage msg)
         {
+            if (msg.Severity > Settings.LogLevel)
+            { return Task.CompletedTask; }
+
             Console.WriteLine(msg.ToString());
             if (msg.Exception != null) { Console.WriteLine(msg.Exception.ToString()); }
             return Task.CompletedTask;
@@ -107,7 +113,7 @@ namespace iTool.DiscordBot
 
         public static async Task Quit()
         {
-            await discordClient.DisconnectAsync();
+            await discordClient.StopAsync();
             await discordClient.LogoutAsync();
             discordClient.Dispose();
             SaveSettings();
