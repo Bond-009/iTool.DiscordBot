@@ -9,7 +9,7 @@ namespace iTool.DiscordBot.Modules
     public class BfH : ModuleBase
     {
         [Command("bfhonlineplayers")]
-        [Summary("Returns the steamID64 of the player")]
+        [Summary("Returns the amount of online players for Battlefield Hardline")]
         public async Task GetOnlinePlayers(string name = null)
         {
             BfHStatsClient client = new BfHStatsClient();

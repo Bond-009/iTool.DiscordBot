@@ -4,10 +4,10 @@ using System.Xml.Serialization;
 namespace iTool.DiscordBot.Steam
 {
     [XmlRoot("response")]
-    public class PlayerSummaries
+    public class PlayerBans
     {
         [XmlArray("players")]
         [XmlArrayItem("player")]
-        public List<PlayerSummary> Players { get; set; } = new List<PlayerSummary>();
+        public List<PlayerBan> Players { get; set; } = new List<PlayerBan>();
     }
 }

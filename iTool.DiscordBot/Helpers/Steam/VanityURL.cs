@@ -6,7 +6,7 @@ namespace iTool.DiscordBot.Steam
     public class VanityURL
     {
         [XmlElement("steamid", IsNullable = true)]
-        public long? SteamID64 { get; set; }
+        public ulong? SteamID64 { get; set; }
 
         [XmlElement("success")]
         public int Succes { get; set; }

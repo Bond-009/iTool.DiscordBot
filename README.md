@@ -44,8 +44,9 @@ Just a Discord bot
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | vanityurl | resolvevanityurl | | Returns the steamID64 of the player |
-| steam | getplayersummaries, playersummaries | | Returns info about the steam user |
-| steamprofile | | | Returns the steamprofile of the user |
+| steam | getplayersummaries, playersummaries | | Returns basic steam profile information |
+| playerbans | getplayerbans | | Returns Community, VAC, and Economy ban statuses for given players |
+| steamprofile | | | Returns the URL to the steam profile of the user |
 
 ##Weather commands
 | Command | Aliases | Permission | Description |

@@ -26,7 +26,7 @@ namespace iTool.DiscordBot.Modules
 
         [Command("steam")]
         [Alias("getplayersummaries", "playersummaries")]
-        [Summary("Returns info about the steam user")]
+        [Summary("Returns basic steam profile information")]
         public async Task PlayerSummaries(string name = null)
         {
             if (string.IsNullOrEmpty(Program.Settings.SteamKey))
@@ -36,7 +36,7 @@ namespace iTool.DiscordBot.Modules
             }
 
             if (name == null) { name = Context.User.Username; }
-            PlayerSummaries player = await DiscordBot.Steam.Steam.GetPlayerSummaries(new [] {(await DiscordBot.Steam.Steam.ResolveVanityURL(name)).ToString()});
+            PlayerSummaries player = await DiscordBot.Steam.Steam.GetPlayerSummaries(new [] {(await DiscordBot.Steam.Steam.ResolveVanityURL(name))});
 
             EmbedBuilder b = new EmbedBuilder()
             {
@@ -67,8 +67,74 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: b);
         }
 
+        [Command("playerbans")]
+        [Alias("getplayerbans")]
+        [Summary("Returns Community, VAC, and Economy ban statuses for given players")]
+        public async Task PlayerBans(string name = null)
+        {
+            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            {
+                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No SteamKey found."));
+                return;
+            }
+
+            if (name == null) { name = Context.User.Username; }
+
+            PlayerBans player = await DiscordBot.Steam.Steam.GetPlayerBans(new [] {(await DiscordBot.Steam.Steam.ResolveVanityURL(name))});
+
+            EmbedBuilder b = new EmbedBuilder()
+            {
+                Title = $"Community, VAC, and Economy ban statuses",
+                Color = new Color(3, 144, 255),
+            };
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "SteamID";
+                f.Value = player.Players.First().SteamID;
+            });
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "CommunityBanned";
+                f.Value = player.Players.First().CommunityBanned;
+            });
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "VACBanned";
+                f.Value = player.Players.First().VACBanned;
+            });
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Number of VAC bans";
+                f.Value = player.Players.First().NumberOfVACBans;
+            });
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Days since last ban";
+                f.Value = player.Players.First().DaysSinceLastBan;
+            });
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Number of game bans";
+                f.Value = player.Players.First().NumberOfGameBans;
+            });
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Economy ban";
+                f.Value = player.Players.First().EconomyBan;
+            });
+
+            await ReplyAsync("", embed: b);
+        }
+
         [Command("steamprofile")]
-        [Summary("Returns the steamprofile of the user")]
+        [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
         {
             if (string.IsNullOrEmpty(Program.Settings.SteamKey))

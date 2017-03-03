@@ -7,7 +7,7 @@ namespace iTool.DiscordBot.Steam
     public class UserStatsForGame
     {
         [XmlElement("steamID")]
-        public long SteamID { get; set; }
+        public ulong SteamID { get; set; }
 
         [XmlElement("gameName")]
         public string GameName { get; set; }

@@ -9,31 +9,43 @@ namespace iTool.DiscordBot.Steam
     // HACK: 
     static class Steam
     {
-        public async static Task<PlayerSummaries> GetPlayerSummaries(string[] playernames)
+        public async static Task<PlayerBans> GetPlayerBans(ulong[] steamIDs)
         {
             using (HttpClient httpclient = new HttpClient())
             {
                 using (Stream stream = await httpclient.GetStreamAsync(
-                    $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={Program.Settings.SteamKey}&steamids={string.Join(",", playernames)}&format=xml"))
+                    $"https://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key={Program.Settings.SteamKey}&steamids={string.Join(",", steamIDs)}&format=xml"))
+                {
+                    return (PlayerBans)new XmlSerializer(typeof(PlayerBans)).Deserialize(stream);
+                }
+            }
+        }
+
+        public async static Task<PlayerSummaries> GetPlayerSummaries(ulong[] steamIDs)
+        {
+            using (HttpClient httpclient = new HttpClient())
+            {
+                using (Stream stream = await httpclient.GetStreamAsync(
+                    $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={Program.Settings.SteamKey}&steamids={string.Join(",", steamIDs)}&format=xml"))
                 {
                     return (PlayerSummaries)new XmlSerializer(typeof(PlayerSummaries)).Deserialize(stream);
                 }
             }
         }
 
-        public async static Task<UserStatsForGame> GetUserStatsForGame(int gameID, string playername)
+        public async static Task<UserStatsForGame> GetUserStatsForGame(int gameID, ulong steamID)
         {
             using (HttpClient httpclient = new HttpClient())
             {
                 using (Stream stream = await httpclient.GetStreamAsync(
-                    $"https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?key={Program.Settings.SteamKey}&appid={gameID}&steamid={await ResolveVanityURL(playername)}&format=xml"))
+                    $"https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?key={Program.Settings.SteamKey}&appid={gameID}&steamid={steamID}&format=xml"))
                 {
                     return (UserStatsForGame)new XmlSerializer(typeof(UserStatsForGame)).Deserialize(stream);
                 }
             }
         }
 
-        public async static Task<long> ResolveVanityURL(string playername)
+        public async static Task<ulong> ResolveVanityURL(string playername)
         {
             using (HttpClient httpclient = new HttpClient())
             {

@@ -2,10 +2,10 @@ using System.Xml.Serialization;
 
 namespace iTool.DiscordBot.Steam
 {
-    public class Player
+    public class PlayerSummary
     {
         [XmlElement("steamid")]
-        public long SteamID { get; set; }
+        public ulong SteamID { get; set; }
         [XmlElementAttribute("communityvisibilitystate")]
         public CommunityVisibilityState CommunityVisibilityState { get; set; }
         [XmlElement("profilestate")]
@@ -25,7 +25,7 @@ namespace iTool.DiscordBot.Steam
         [XmlElement("personastate")]
         public PersonaState PersonaState { get; set; }
         [XmlElement("primaryclanid")]
-        public long PrimaryClanID { get; set; }
+        public ulong PrimaryClanID { get; set; }
         //[XmlElement("timecreated")]
         //public DateTime TimeCreated { get; set; }
         [XmlElement("personastateflags")]
