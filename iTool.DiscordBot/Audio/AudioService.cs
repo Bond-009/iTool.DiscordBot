@@ -52,13 +52,10 @@ namespace iTool.DiscordBot.Audio
             IAudioClient client;
             if (ConnectedChannels.TryGetValue(guild.Id, out client))
             {
-                await Program.Log(new LogMessage(LogSeverity.Debug, "", $"Starting playback of {path} in {guild.Name}"));
+                await Program.Log(new LogMessage(LogSeverity.Debug, "AudioService", $"Starting playback of {path} in {guild.Name}"));
                 Stream output = CreateStream(path).StandardOutput.BaseStream;
-                await Program.Log(new LogMessage(LogSeverity.Debug, "", "test"));
                 AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music, 1920);
-                await Program.Log(new LogMessage(LogSeverity.Debug, "", "test2"));
                 await output.CopyToAsync(stream);
-                await Program.Log(new LogMessage(LogSeverity.Debug, "", "test3"));
                 await stream.FlushAsync().ConfigureAwait(false);
             }
         }

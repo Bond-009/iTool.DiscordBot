@@ -21,8 +21,11 @@ namespace iTool.DiscordBot.Modules
         [Command("play", RunMode = RunMode.Async)]
         public async Task Play([Remainder] string song)
         {
+            string path = AudioManager.GetSong(song);
+            if (path == null) { return; }
             await Program.AudioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
-            await Program.AudioService.SendAudioAsync(Context.Guild, Context.Channel, song);
+            await Program.AudioService.SendAudioAsync(Context.Guild, Context.Channel, path);
+            await Program.AudioService.LeaveAudio(Context.Guild);
         }
     }
 }

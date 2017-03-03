@@ -39,9 +39,9 @@ namespace iTool.DiscordBot
 
             OpenWeatherClient = new OpenWeatherClient(Settings.OpenWeatherMapKey);
 
-            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt"))
+            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "bannedwords.txt"))
             {
-                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt")
+                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "bannedwords.txt")
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
                     .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
             }
