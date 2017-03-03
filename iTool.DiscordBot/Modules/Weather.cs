@@ -18,8 +18,7 @@ namespace iTool.DiscordBot.Modules
                 return;
             }
 
-            OpenWeatherClient client = new OpenWeatherClient(Program.Settings.OpenWeatherMapKey);
-            WeatherInfo weather = await client.GetCurrentAsync(input);
+            WeatherInfo weather = await Program.OpenWeatherClient.GetCurrentAsync(input);
             switch (Program.Settings.TemperatureScale)
             {
                 case TemperatureScale.Kelvin:
@@ -38,7 +37,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = weather.City.Name + " " + weather.City.Country,
                 Color = new Color(3, 144, 255),
-                ThumbnailUrl = client.GetIconURL(weather.Weather.Icon)
+                ThumbnailUrl = Program.OpenWeatherClient.GetIconURL(weather.Weather.Icon)
             };
             b.AddField(f =>
             {

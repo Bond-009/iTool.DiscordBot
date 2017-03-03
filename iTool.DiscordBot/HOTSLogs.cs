@@ -1,9 +1,8 @@
-using iTool.DiscordBot.HOTS;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace iTool.DiscordBot
+namespace iTool.DiscordBot.HOTS
 {
     static class HOTSLogs
     {

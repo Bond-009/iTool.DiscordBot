@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace iTool.DiscordBot
+namespace iTool.DiscordBot.Steam
 {
     [XmlRoot("playerstats")]
     public class UserStatsForGame

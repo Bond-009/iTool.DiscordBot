@@ -1,15 +1,14 @@
 ﻿using Discord;
-using Discord.Audio;
 using Discord.Commands;
 using Discord.WebSocket;
 using iTool.DiscordBot.Audio;
+using OpenWeather;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace iTool.DiscordBot
 {
@@ -19,6 +18,7 @@ namespace iTool.DiscordBot
 
         public static AudioService AudioService { get; set; } = new AudioService();
         public static CommandHandler CommandHandler { get; private set; }
+        public static OpenWeatherClient OpenWeatherClient { get; set; }
         public static Settings Settings { get; private set; }
 
         private static DiscordSocketClient discordClient;
@@ -26,7 +26,19 @@ namespace iTool.DiscordBot
 
         public static async Task Start()
         {
-            LoadSettings();
+            try
+            {
+                Settings = SettingsManager.LoadSettings();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
+
+            OpenWeatherClient = new OpenWeatherClient(Settings.OpenWeatherMapKey);
+
             if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt"))
             {
                 badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "badwordlist.txt")
@@ -116,52 +128,8 @@ namespace iTool.DiscordBot
             await discordClient.StopAsync();
             await discordClient.LogoutAsync();
             discordClient.Dispose();
-            SaveSettings();
+            SettingsManager.SaveSettings(Settings);
             Environment.Exit(0);
-        }
-
-        public static void LoadSettings()
-        {
-            if (File.Exists(Common.SettingsFile))
-            {
-                using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.Open))
-                {
-                    XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                    Settings = (Settings)ser.Deserialize(fs);
-                }
-            }
-            else
-            {
-                ResetSettings();
-            }
-        }
-
-        public static void SaveSettings()
-        {
-            using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.OpenOrCreate))
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                ser.Serialize(fs, Settings);
-            }
-        }
-
-        public static void ResetSettings()
-        {
-            if (!Directory.Exists(Common.SettingsDir))
-            {
-                Directory.CreateDirectory(Common.SettingsDir);
-            }
-            if (File.Exists(Common.SettingsFile))
-            {
-                File.Delete(Common.SettingsFile);
-                Console.WriteLine("Settings reset.");
-            }
-            using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.OpenOrCreate))
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                ser.Serialize(fs, new Settings());
-            }
-            LoadSettings();
         }
     }
 }

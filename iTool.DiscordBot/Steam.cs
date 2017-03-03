@@ -4,17 +4,29 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace iTool.DiscordBot
+namespace iTool.DiscordBot.Steam
 {
     // HACK: 
     static class Steam
     {
+        public async static Task<PlayerSummaries> GetPlayerSummaries(string[] playernames)
+        {
+            using (HttpClient httpclient = new HttpClient())
+            {
+                using (Stream stream = await httpclient.GetStreamAsync(
+                    $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={Program.Settings.SteamKey}&steamids={string.Join(",", playernames)}&format=xml"))
+                {
+                    return (PlayerSummaries)new XmlSerializer(typeof(PlayerSummaries)).Deserialize(stream);
+                }
+            }
+        }
+
         public async static Task<UserStatsForGame> GetUserStatsForGame(int gameID, string playername)
         {
             using (HttpClient httpclient = new HttpClient())
             {
                 using (Stream stream = await httpclient.GetStreamAsync(
-                    $"https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid={gameID}&key={Program.Settings.SteamKey}&steamid={await ResolveVanityURL(playername)}&format=xml"))
+                    $"https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?key={Program.Settings.SteamKey}&appid={gameID}&steamid={await ResolveVanityURL(playername)}&format=xml"))
                 {
                     return (UserStatsForGame)new XmlSerializer(typeof(UserStatsForGame)).Deserialize(stream);
                 }

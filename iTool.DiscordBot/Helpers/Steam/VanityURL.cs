@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace iTool.DiscordBot
+namespace iTool.DiscordBot.Steam
 {
     [XmlRoot("response")]
     public class VanityURL
