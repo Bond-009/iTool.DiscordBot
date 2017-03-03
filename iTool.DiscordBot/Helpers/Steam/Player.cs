@@ -8,6 +8,8 @@ namespace iTool.DiscordBot.Steam
         public long SteamID { get; set; }
         [XmlElementAttribute("communityvisibilitystate")]
         public CommunityVisibilityState CommunityVisibilityState { get; set; }
+        [XmlElement("profilestate")]
+        public int ProfileState { get; set; }
         [XmlElement("personaname")]
         public string PersonaName { get; set; }
         //[XmlElement("lastlogoff")]
@@ -20,8 +22,8 @@ namespace iTool.DiscordBot.Steam
         public string AvatarMedium { get; set; }
         [XmlElement("avatarfull")]
         public string AvatarFull { get; set; }
-        [XmlElement("profilestate")]
-        public ProfileState ProfileState { get; set; }
+        [XmlElement("personastate")]
+        public PersonaState PersonaState { get; set; }
         [XmlElement("primaryclanid")]
         public long PrimaryClanID { get; set; }
         //[XmlElement("timecreated")]

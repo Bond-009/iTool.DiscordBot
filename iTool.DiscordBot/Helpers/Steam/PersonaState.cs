@@ -2,7 +2,7 @@ using System.Xml.Serialization;
 
 namespace iTool.DiscordBot.Steam
 {
-    public enum ProfileState
+    public enum PersonaState
     {
         [XmlEnum("0")]
         Offline,

@@ -59,8 +59,8 @@ namespace iTool.DiscordBot.Modules
             b.AddField(f =>
             {
                 f.IsInline = true;
-                f.Name = "Profile state";
-                f.Value = player.Players.First().ProfileState.ToString();
+                f.Name = "Persona state";
+                f.Value = player.Players.First().PersonaState.ToString();
             });
             
             await ReplyAsync("", embed: b);

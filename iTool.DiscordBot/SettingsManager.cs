@@ -14,15 +14,8 @@ namespace iTool.DiscordBot
             }
             using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.Open))
             {
-                try
-                {
-                    XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                    return (Settings)ser.Deserialize(fs);
-                }
-                catch
-                {
-                    throw new Exception("Can't deserialize settings.xml");
-                }
+                XmlSerializer ser = new XmlSerializer(typeof(Settings));
+                return (Settings)ser.Deserialize(fs);
             }
         }
 
