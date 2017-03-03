@@ -80,7 +80,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await DiscordBot.Steam.Steam.GetUserStatsForGame(730, name)).Stats
+            Dictionary<string, int> dict = (await DiscordBot.Steam.Steam.GetUserStatsForGame(730, await DiscordBot.Steam.Steam.ResolveVanityURL(name))).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             EmbedBuilder b = new EmbedBuilder()
