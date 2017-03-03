@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
 {
@@ -13,13 +14,19 @@ namespace iTool.DiscordBot
             {
                 ResetAudioIndex();
             }
-            using (FileStream fs = new FileStream(Common.AudioIndexFile, FileMode.Open))
+            try
             {
-                XmlSerializer ser = new XmlSerializer(typeof(AudioIndex));
-                return Common.AudioDir + Path.DirectorySeparatorChar + ((AudioIndex)ser.Deserialize(fs))
-                                                                            .AudioFiles
-                                                                            .Where(x => x.Names.Contains(name))
-                                                                            .First().FileName;
+                Deserializer des = new Deserializer();
+                return Common.AudioDir + Path.DirectorySeparatorChar +
+                            ((AudioIndex)des.Deserialize(File.ReadAllText(Common.AudioIndexFile), typeof(AudioIndex)))
+                                .AudioFiles
+                                .Where(x => x.Names.Contains(name))
+                                .First().FileName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
             }
         }
 
@@ -34,13 +41,12 @@ namespace iTool.DiscordBot
                 File.Delete(Common.AudioIndexFile);
                 Console.WriteLine("Audio files reset.");
             }
-            using (FileStream fs = new FileStream(Common.AudioIndexFile, FileMode.OpenOrCreate))
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(AudioIndex));
-                AudioIndex index = new AudioIndex();
-                index.AudioFiles.Add(new AudioFile());
-                ser.Serialize(fs, index);
-            }
+
+            AudioIndex index = new AudioIndex();
+            AudioFile audio = new AudioFile();
+            audio.Names.Add("");
+            index.AudioFiles.Add(audio);
+            File.WriteAllText(Common.AudioIndexFile, new Serializer().Serialize(index));
         }
     }
 }
