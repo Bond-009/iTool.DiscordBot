@@ -12,7 +12,7 @@ namespace iTool.DiscordBot.Modules
         {
             if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id != Context.User.Id)
             { return; }
-            
+
             System.GC.Collect();
         }
     }

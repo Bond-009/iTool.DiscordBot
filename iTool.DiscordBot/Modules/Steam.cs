@@ -8,7 +8,8 @@ namespace iTool.DiscordBot.Modules
 {
     public class Steam : ModuleBase
     {
-        [Command("resolvevanityurl")]
+        [Command("vanityurl")]
+        [Alias("resolvevanityurl")]
         [Summary("Returns the steamID64 of the user")]
         public async Task ResolveVanityURL(string name = null)
         {
@@ -24,8 +25,8 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("steam")]
-        [Alias("GetPlayerSummaries", "PlayerSummaries")]
-        [Summary("Returns the steamID64 of the user")]
+        [Alias("getplayersummaries", "playersummaries")]
+        [Summary("Returns info about the steam user")]
         public async Task PlayerSummaries(string name = null)
         {
             if (string.IsNullOrEmpty(Program.Settings.SteamKey))
@@ -36,7 +37,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
             PlayerSummaries player = await DiscordBot.Steam.Steam.GetPlayerSummaries(new [] {(await DiscordBot.Steam.Steam.ResolveVanityURL(name)).ToString()});
-            
+
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"Player summary fot {player.Players.First().PersonaName}",
@@ -62,7 +63,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Persona state";
                 f.Value = player.Players.First().PersonaState.ToString();
             });
-            
+
             await ReplyAsync("", embed: b);
         }
 

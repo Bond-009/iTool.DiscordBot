@@ -7,7 +7,7 @@ Just a Discord bot
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | help | | | Returns the enabled commands in lists of 25 |
-| cmdinfo | commandinfo, help | | Returns info about the command |
+| cmdinfo | commandinfo | | Returns info about the command |
 | info | | | Returns info about the bot |
 | invite | | | Returns the OAuth2 Invite URL of the bot |
 | leave | | GuildPermission.ManageGuild | Instructs the bot to leave this Guild |
@@ -43,7 +43,8 @@ Just a Discord bot
 ##Steam commands
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
-| resolvevanityurl | | | Returns the steamID64 of the player |
+| vanityurl | resolvevanityurl | | Returns the steamID64 of the player |
+| steam | getplayersummaries, playersummaries | | Returns info about the steam user |
 | steamprofile | | | Returns the steamprofile of the user |
 
 ##Weather commands

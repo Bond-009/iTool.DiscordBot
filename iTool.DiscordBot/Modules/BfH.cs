@@ -14,7 +14,7 @@ namespace iTool.DiscordBot.Modules
         {
             BfHStatsClient client = new BfHStatsClient();
             OnlinePlayers players = await client.GetOnlinePlayers();
-            
+
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"Online players for BfH",

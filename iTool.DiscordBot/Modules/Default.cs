@@ -26,17 +26,31 @@ namespace iTool.DiscordBot.Modules
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
 
-            foreach (CommandInfo cmd in Program.CommandHandler.CommandService.Commands
+            IEnumerable<CommandInfo> cmds = Program.CommandHandler.CommandService.Commands
                                         .GroupBy(x => x.Name)
                                         .Select(y => y.First())
                                         .OrderBy(x => x.Name)
                                         .Skip(help * 25)
-                                        .Take(25))
+                                        .Take(25);
+
+            if (cmds.IsNullOrEmpty())
+            { 
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Help",
+                    Color = new Color(3, 144, 255),
+                    Description = "No commands found",
+                    Url = "https://github.com/Bond-009/iTool.DiscordBot"
+                });
+                return;
+                }
+
+            foreach (CommandInfo cmd in cmds)
             {
                b.AddField(f =>
                 {
                     f.Name = cmd.Name;
-                    f.Value = cmd.Summary;
+                    f.Value = cmd.Summary ?? "No summary";
                 });
             }
             await (await Context.User.CreateDMChannelAsync()).SendMessageAsync("", embed: b);
@@ -76,7 +90,16 @@ namespace iTool.DiscordBot.Modules
                 f.Value = cmd.Name;
             });
 
-            List<string> aliases = cmd.Aliases.Where(x => x != cmd.Name).ToList();
+            if (!cmd.Summary.IsNullOrEmpty())
+            {
+                b.AddField(f =>
+                {
+                    f.Name = "Summary";
+                    f.Value = cmd.Summary ?? "No summary";
+                });
+            }
+
+            IEnumerable<string> aliases = cmd.Aliases.Where(x => x != cmd.Name);
 
             if (!aliases.IsNullOrEmpty())
             {
@@ -157,7 +180,7 @@ namespace iTool.DiscordBot.Modules
         {
             if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id != Context.User.Id)
             { return; }
-            
+
             Program.Settings.Game = input;
             await (Context.Client as DiscordSocketClient).SetGameAsync(input);
             
