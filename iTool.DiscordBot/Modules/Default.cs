@@ -127,25 +127,27 @@ namespace iTool.DiscordBot.Modules
         public async Task Info()
         {
             IApplication application = await Context.Client.GetApplicationInfoAsync();
-            EmbedBuilder b = new EmbedBuilder();
-            b.Color = new Color(3, 144, 255);
-            b.AddField(f =>
+
+            await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Color = new Color(3, 144, 255)
+            }
+            .AddField(f =>
             {
                 f.Name = "Info";
                 f.Value = $"- Owner: {application.Owner.Username} (ID {application.Owner.Id})" + Environment.NewLine +
                             $"- Library: Discord.Net ({DiscordConfig.Version})\n" +
                             $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
                             $"- Uptime: {Utils.GetUptime().ToString(@"dd\.hh\:mm\:ss")}";
-            });
-            b.AddField(f =>
+            })
+            .AddField(f =>
             {
                 f.Name = "Stats";
                 f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB" + Environment.NewLine +
                             $"- Guilds: {(Context.Client as DiscordSocketClient).Guilds.Count}" + Environment.NewLine +
                             $"- Channels: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
                             $"- Users: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Users.Count)}";
-            });
-            await ReplyAsync("", embed: b);
+            }));
         }
 
         [Command("invite")]

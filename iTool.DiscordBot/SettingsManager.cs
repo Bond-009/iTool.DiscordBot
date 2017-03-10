@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.Xml.Serialization;
+using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
 {
@@ -12,21 +12,12 @@ namespace iTool.DiscordBot
             {
                 ResetSettings();
             }
-            using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.Open))
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                return (Settings)ser.Deserialize(fs);
-            }
+
+            return new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile));
         }
 
-        public static void SaveSettings(Settings settings)
-        {
-            using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.OpenOrCreate))
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                ser.Serialize(fs, settings);
-            }
-        }
+        public static void SaveSettings(Settings settings) =>
+            File.WriteAllText(Common.SettingsFile, new Serializer().Serialize(settings));
 
         public static void ResetSettings()
         {
@@ -39,11 +30,9 @@ namespace iTool.DiscordBot
                 File.Delete(Common.SettingsFile);
                 Console.WriteLine("Settings reset.");
             }
-            using (FileStream fs = new FileStream(Common.SettingsFile, FileMode.OpenOrCreate))
-            {
-                XmlSerializer ser = new XmlSerializer(typeof(Settings));
-                ser.Serialize(fs, new Settings());
-            }
+            File.WriteAllText(Common.SettingsFile, 
+                new SerializerBuilder().EmitDefaults().Build()
+                    .Serialize(new Settings()));
         }
     }
 }

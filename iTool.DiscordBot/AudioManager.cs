@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
@@ -16,10 +16,8 @@ namespace iTool.DiscordBot
             }
             try
             {
-                Deserializer des = new Deserializer();
                 return Common.AudioDir + Path.DirectorySeparatorChar +
-                            ((AudioIndex)des.Deserialize(File.ReadAllText(Common.AudioIndexFile), typeof(AudioIndex)))
-                                .AudioFiles
+                            new Deserializer().Deserialize<List<AudioFile>>(File.ReadAllText(Common.AudioIndexFile))
                                 .Where(x => x.Names.Contains(name))
                                 .First().FileName;
             }
@@ -42,11 +40,15 @@ namespace iTool.DiscordBot
                 Console.WriteLine("Audio files reset.");
             }
 
-            AudioIndex index = new AudioIndex();
-            AudioFile audio = new AudioFile();
-            audio.Names.Add("");
-            index.AudioFiles.Add(audio);
-            File.WriteAllText(Common.AudioIndexFile, new Serializer().Serialize(index));
+            List<AudioFile> audioindex = new List<AudioFile>();
+            audioindex.Add(new AudioFile() {
+                Names = {string.Empty},
+                FileName = string.Empty
+            });
+
+            File.WriteAllText(Common.AudioIndexFile,
+                new SerializerBuilder().EmitDefaults().Build()
+                    .Serialize(audioindex));
         }
     }
 }

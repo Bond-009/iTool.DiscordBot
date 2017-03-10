@@ -38,8 +38,8 @@ namespace iTool.DiscordBot.Modules
                 Title = weather.City.Name + " " + weather.City.Country,
                 Color = new Color(3, 144, 255),
                 ThumbnailUrl = Program.OpenWeatherClient.GetIconURL(weather.Weather.Icon)
-            };
-            b.AddField(f =>
+            }
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Temperature";

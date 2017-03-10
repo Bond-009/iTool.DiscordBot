@@ -20,14 +20,14 @@ namespace iTool.DiscordBot.Modules
                 Color = new Color(3, 144, 255),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
-            };
-            b.AddField(f =>
+            }
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "PlayerID";
                 f.Value = player.PlayerID.ToString();
-            });
-            b.AddField(f =>
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Name";
@@ -60,14 +60,14 @@ namespace iTool.DiscordBot.Modules
                 Color = new Color(3, 144, 255),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
-            };
-            b.AddField(f =>
+            }
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "PlayerID";
                 f.Value = player.PlayerID.ToString();
-            });
-            b.AddField(f =>
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Name";
