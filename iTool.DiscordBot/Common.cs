@@ -9,5 +9,6 @@ namespace iTool.DiscordBot
         public static readonly string SettingsFile = SettingsDir + Path.DirectorySeparatorChar + "settings.yaml";
         public static readonly string AudioDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "audio";
         public static readonly string AudioIndexFile = AudioDir + Path.DirectorySeparatorChar + "audioindex.yaml";
+        public static readonly string GuildsDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "guilds";
     }
 }
