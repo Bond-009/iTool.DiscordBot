@@ -17,14 +17,12 @@ namespace iTool.DiscordBot
         }
 
         public static void SaveSettings(Settings settings) =>
-            File.WriteAllText(Common.SettingsFile, new Serializer().Serialize(settings));
+            File.WriteAllText(Common.SettingsFile, new SerializerBuilder().EmitDefaults().Build().Serialize(settings));
 
         public static void ResetSettings()
         {
-            if (!Directory.Exists(Common.SettingsDir))
-            {
-                Directory.CreateDirectory(Common.SettingsDir);
-            }
+            Directory.CreateDirectory(Common.SettingsDir);
+
             if (File.Exists(Common.SettingsFile))
             {
                 File.Delete(Common.SettingsFile);

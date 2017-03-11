@@ -30,18 +30,17 @@ namespace iTool.DiscordBot
 
         public static void ResetAudioIndex()
         {
-            if (!Directory.Exists(Common.AudioDir))
-            {
-                Directory.CreateDirectory(Common.AudioDir);
-            }
+            Directory.CreateDirectory(Common.AudioDir);
+
             if (File.Exists(Common.AudioIndexFile))
             {
                 File.Delete(Common.AudioIndexFile);
-                Console.WriteLine("Audio files reset.");
+                Console.WriteLine("AudioIndexFile reset.");
             }
 
             List<AudioFile> audioindex = new List<AudioFile>();
-            audioindex.Add(new AudioFile() {
+            audioindex.Add(new AudioFile()
+            {
                 Names = {string.Empty},
                 FileName = string.Empty
             });

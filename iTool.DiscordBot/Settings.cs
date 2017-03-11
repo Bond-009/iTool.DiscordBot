@@ -9,7 +9,9 @@ namespace iTool.DiscordBot
         public string Prefix { get; set; } = "!";
         public AudioMode AudioMode { get; set; }
         public bool AlwaysDownloadUsers { get; set; }
-        public LogSeverity LogLevel { get; set; }
+        public int ConnectionTimeout { get; set; } = 30000;
+        public RetryMode DefaultRetryMode { get; set; } = RetryMode.AlwaysRetry;
+        public LogSeverity LogLevel { get; set; } = LogSeverity.Info;
         public int MessageCacheSize { get; set; }
         public string Game { get; set; } = string.Empty;
         public bool AntiSwear { get; set; }

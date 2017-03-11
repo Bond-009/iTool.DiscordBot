@@ -46,25 +46,32 @@ namespace iTool.DiscordBot
                     .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
             }
 
+            if (!File.Exists(Common.AudioIndexFile)) { AudioManager.ResetAudioIndex(); }
+
             if (string.IsNullOrEmpty(Settings.DiscordToken))
             {
                 Console.WriteLine("No token");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
-            
+
             discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
                 AlwaysDownloadUsers = Settings.AlwaysDownloadUsers,
                 AudioMode = Settings.AudioMode,
+                ConnectionTimeout = Settings.ConnectionTimeout,
+                DefaultRetryMode = Settings.DefaultRetryMode,
                 LogLevel = Settings.LogLevel,
                 MessageCacheSize = Settings.MessageCacheSize
             });
 
+            discordClient.Log += Log;
+            discordClient.MessageReceived += DiscordClient_MessageReceived;
+
             await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
             await discordClient.StartAsync();
             await Task.Delay(1000);
-            Console.WriteLine("Succesfully connected as " + discordClient.CurrentUser.ToString());
+            await Log(new LogMessage(LogSeverity.Critical, "Program", "Succesfully connected as " + discordClient.CurrentUser.ToString()));
 
             if (!string.IsNullOrEmpty(Settings.Game))
             {
@@ -76,9 +83,6 @@ namespace iTool.DiscordBot
 
             CommandHandler = new CommandHandler();
             await CommandHandler.Install(map);
-
-            discordClient.Log += Log;
-            discordClient.MessageReceived += DiscordClient_MessageReceived;
 
             while (true)
             {
