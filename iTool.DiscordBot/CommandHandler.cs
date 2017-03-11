@@ -1,6 +1,10 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.Collections.Generic;
+using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
 
@@ -13,15 +17,28 @@ namespace iTool.DiscordBot
         private DiscordSocketClient client;
         private IDependencyMap map;
 
-        public async Task Install(IDependencyMap _map)
+        public async Task Install(IDependencyMap _map, CommandServiceConfig config)
         {
             // Create Command Service, inject it into Dependency Map
             client = _map.Get<DiscordSocketClient>();
-            CommandService = new CommandService();
+            CommandService = new CommandService(config);
             _map.Add(CommandService);
             map = _map;
 
             await CommandService.AddModulesAsync(Assembly.GetEntryAssembly());
+
+            // HACK: Loads all commands and than unloads the disabled modules
+            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt"))
+            {
+                IEnumerable<string> disabledModules = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt")
+                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
+                    .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct();
+
+                foreach (ModuleInfo moduleInfo in CommandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
+                {
+                    await CommandService.RemoveModuleAsync(moduleInfo);
+                }
+            }
 
             client.MessageReceived += HandleCommand;
         }
@@ -48,7 +65,7 @@ namespace iTool.DiscordBot
             {
                 if (result.ErrorReason.ToLower() != "unknown command.")
                 {
-                    await Program.Log(new LogMessage(LogSeverity.Error, "", result.ErrorReason));
+                    await Program.Log(new LogMessage(LogSeverity.Error, "CommandHandler", result.ErrorReason));
 
                     await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                     {

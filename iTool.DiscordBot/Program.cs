@@ -17,7 +17,7 @@ namespace iTool.DiscordBot
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
         public static AudioService AudioService { get; set; } = new AudioService();
-        public static CommandHandler CommandHandler { get; private set; }
+        public static CommandHandler CommandHandler { get; private set; } = new CommandHandler();
         public static OpenWeatherClient OpenWeatherClient { get; set; }
         public static Settings Settings { get; private set; }
 
@@ -39,9 +39,9 @@ namespace iTool.DiscordBot
 
             OpenWeatherClient = new OpenWeatherClient(Settings.OpenWeatherMapKey);
 
-            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "bannedwords.txt"))
+            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt"))
             {
-                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "bannedwords.txt")
+                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt")
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
                     .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
             }
@@ -81,8 +81,11 @@ namespace iTool.DiscordBot
             DependencyMap map = new DependencyMap();
             map.Add(discordClient);
 
-            CommandHandler = new CommandHandler();
-            await CommandHandler.Install(map);
+            await CommandHandler.Install(map, new CommandServiceConfig()
+            {
+                CaseSensitiveCommands = Settings.CaseSensitiveCommands,
+                DefaultRunMode = Settings.DefaultRunMode
+            });
 
             while (true)
             {
