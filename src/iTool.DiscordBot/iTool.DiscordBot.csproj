@@ -17,8 +17,4 @@
     <!--<PackageReference Include="BfStats.Net.BfH" Version="0.0.2" />-->
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\iTool.DiscordBot.Core\iTool.DiscordBot.Core.csproj" />
-  </ItemGroup>
-
 </Project>
