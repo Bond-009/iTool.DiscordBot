@@ -41,7 +41,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Player summary fot {player.Players.First().PersonaName}",
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
                 ThumbnailUrl = player.Players.First().AvatarMedium,
                 Url = player.Players.First().ProfileURL
             }
@@ -83,7 +83,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Community, VAC, and Economy ban statuses",
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
             }
             .AddField(f =>
             {

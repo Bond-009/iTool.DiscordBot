@@ -18,7 +18,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Online players for BfH",
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
             }
             .AddField(f =>

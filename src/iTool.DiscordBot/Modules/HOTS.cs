@@ -17,7 +17,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }
@@ -57,7 +57,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }

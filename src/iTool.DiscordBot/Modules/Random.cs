@@ -19,7 +19,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Cat",
-                    Color = new Color(3, 144, 255),
+                    Color = new Color((uint)Program.Settings.Color),
                     ImageUrl = (string)o["file"]
                 });
             }
@@ -40,7 +40,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Dog",
-                    Color = new Color(3, 144, 255),
+                    Color = new Color((uint)Program.Settings.Color),
                     ImageUrl =  link
                 });
             }

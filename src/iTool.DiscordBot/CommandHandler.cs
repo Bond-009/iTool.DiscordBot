@@ -77,7 +77,7 @@ namespace iTool.DiscordBot
                 await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Error",
-                    Color = new Color(204, 0, 0),
+                    Color = new Color((uint)Program.Settings.ErrorColor),
                     Description = result.ErrorReason
                 });
             }

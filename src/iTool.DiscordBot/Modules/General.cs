@@ -21,7 +21,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Commands",
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
                 Description = "Returns the enabled commands in lists of 25.",
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
@@ -38,7 +38,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Help",
-                    Color = new Color(3, 144, 255),
+                    Color = new Color((uint)Program.Settings.Color),
                     Description = "No commands found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -70,7 +70,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Command info",
-                    Color = new Color(3, 144, 255),
+                    Color = new Color((uint)Program.Settings.Color),
                     Description = "No command found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -81,7 +81,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Command info",
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
             b.AddField(f =>
@@ -130,7 +130,7 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Color = new Color(3, 144, 255)
+                Color = new Color((uint)Program.Settings.Color)
             }
             .AddField(f =>
             {
@@ -195,7 +195,7 @@ namespace iTool.DiscordBot.Modules
         {
             EmbedBuilder b = new EmbedBuilder()
             {
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Program.Settings.Color),
                 ThumbnailUrl = user.GetAvatarUrl(AvatarFormat.Png)
             };
             b.AddField(f =>

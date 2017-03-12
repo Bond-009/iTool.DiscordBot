@@ -36,7 +36,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = weather.City.Name + " " + weather.City.Country,
-                Color = new Color(3, 144, 255),
+                Color = new Color((uint)Colors.DodgerBlue),
                 ThumbnailUrl = Program.OpenWeatherClient.GetIconURL(weather.Weather.Icon)
             }
             .AddField(f =>

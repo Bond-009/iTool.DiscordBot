@@ -27,7 +27,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Blacklist",
-                Color = new Color(3, 144, 255),
+                Color = new Color(),
                 Description = $"Succesfully blacklisted {string.Join(", ", blacklistedUsers)}"
             });
         }

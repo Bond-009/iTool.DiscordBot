@@ -41,8 +41,8 @@ namespace iTool.DiscordBot
             List<AudioFile> audioindex = new List<AudioFile>();
             audioindex.Add(new AudioFile()
             {
-                Names = {string.Empty},
-                FileName = string.Empty
+                FileName = string.Empty,
+                Names = new List<string>()
             });
 
             File.WriteAllText(Common.AudioIndexFile,

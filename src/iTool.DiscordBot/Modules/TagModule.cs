@@ -49,7 +49,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = tag.Title,
-                    Color = new Color(3, 144, 255),
+                    Color = new Color((uint)Program.Settings.Color),
                     Description = tag.Text,
                     ImageUrl = tag.Attachment
                 });

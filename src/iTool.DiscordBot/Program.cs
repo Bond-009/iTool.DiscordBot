@@ -129,7 +129,6 @@ namespace iTool.DiscordBot
             { return Task.CompletedTask; }
 
             Console.WriteLine(msg.ToString());
-            if (msg.Exception != null) { Console.WriteLine(msg.Exception.ToString()); }
             return Task.CompletedTask;
         }
 
