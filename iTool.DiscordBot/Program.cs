@@ -16,11 +16,13 @@ namespace iTool.DiscordBot
     {
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
-        public static AudioService AudioService { get; private set; } = new AudioService();
+        public static AudioService AudioService { get; } = new AudioService();
         public static List<ulong> BlacklistedUsers { get; set; }
-        public static CommandHandler CommandHandler { get; private set; } = new CommandHandler();
+        public static CommandHandler CommandHandler { get; } = new CommandHandler();
         public static OpenWeatherClient OpenWeatherClient { get; private set; }
+        public static IUser Owner { get; private set; }
         public static Settings Settings { get; set; }
+        public static List<ulong> TrustedUsers { get; private set; }
 
         private static DiscordSocketClient discordClient;
         private static List<string> bannedWords;
@@ -38,23 +40,15 @@ namespace iTool.DiscordBot
                 Environment.Exit(1);
             }
 
-            OpenWeatherClient = new OpenWeatherClient(Settings.OpenWeatherMapKey);
+            BlacklistedUsers = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt").Select(ulong.Parse).ToList();
 
-            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "backlisted_users.txt"))
-            {
-                bannedWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "backlisted_users.txt")
-                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
-                    .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
-            }
+            TrustedUsers = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt").Select(ulong.Parse).ToList();
 
-            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt"))
-            {
-                bannedWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt")
-                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
-                    .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
-            }
+            bannedWords = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt").ToList();
 
             if (!File.Exists(Common.AudioIndexFile)) { AudioManager.ResetAudioIndex(); }
+
+            OpenWeatherClient = new OpenWeatherClient(Settings.OpenWeatherMapKey);
 
             if (string.IsNullOrEmpty(Settings.DiscordToken))
             {
@@ -79,7 +73,8 @@ namespace iTool.DiscordBot
             await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
             await discordClient.StartAsync();
             await Task.Delay(1000);
-            await Log(new LogMessage(LogSeverity.Critical, "Program", "Succesfully connected as " + discordClient.CurrentUser.ToString()));
+            Owner = (await discordClient.GetApplicationInfoAsync()).Owner;
+            await Log(new LogMessage(LogSeverity.Critical, "Program", $"Succesfully connected as {discordClient.CurrentUser.ToString()}, with {Owner.ToString()} as owner"));
 
             if (!string.IsNullOrEmpty(Settings.Game))
             {
@@ -145,6 +140,15 @@ namespace iTool.DiscordBot
             discordClient.Dispose();
 
             OpenWeatherClient.Dispose();
+
+            if (!BlacklistedUsers.IsNullOrEmpty())
+            { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt", BlacklistedUsers.Select(x => x.ToString())); }
+
+            if (!TrustedUsers.IsNullOrEmpty())
+            { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt", TrustedUsers.Select(x => x.ToString())); }
+
+            if (!bannedWords.IsNullOrEmpty())
+            { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt", bannedWords); }
 
             SettingsManager.SaveSettings(Settings);
             Environment.Exit(0);

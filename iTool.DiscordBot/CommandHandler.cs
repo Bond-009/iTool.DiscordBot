@@ -30,9 +30,7 @@ namespace iTool.DiscordBot
             // HACK: Loads all commands and than unloads the disabled modules
             if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt"))
             {
-                IEnumerable<string> disabledModules = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt")
-                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
-                    .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct();
+                IEnumerable<string> disabledModules = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt");
 
                 foreach (ModuleInfo moduleInfo in CommandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
                 {

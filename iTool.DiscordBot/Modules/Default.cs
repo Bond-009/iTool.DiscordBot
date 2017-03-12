@@ -180,7 +180,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Sets the bot's game")]
         public async Task SetGame([Remainder] string input)
         {
-            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id != Context.User.Id)
+            if (!Utils.IsTrustedUser(Context.User))
             { return; }
 
             Program.Settings.Game = input;
@@ -240,12 +240,12 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: b);
         }
 
-        [Command("quit")]
+        [Command("quit", RunMode = RunMode.Async)]
         [Alias("exit")]
         [Summary("Quits the bot")]
         public async Task Quit()
         {
-            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id != Context.User.Id)
+            if (!Utils.IsTrustedUser(Context.User))
             { return; }
 
             await Program.Quit();
