@@ -36,12 +36,18 @@ namespace iTool.DiscordBot
             {
                 tags = new Deserializer().Deserialize<List<Tag>>(File.ReadAllText(Common.GuildsDir + Path.DirectorySeparatorChar + guildID + Path.DirectorySeparatorChar + "tags.yaml"));
             }
+
+            if (tags.Where(x => x.Title == tag.Title).First().Author == tag.Author)
+            {
+                tags.RemoveAll(x => x.Title == tag.Title);
+            }
+
             if (!tags.Any(x => x.Title == tag.Title))
             {
                 tags.Add(tag);
                 File.WriteAllText(Common.GuildsDir + Path.DirectorySeparatorChar + guildID + Path.DirectorySeparatorChar + "tags.yaml",
-                new SerializerBuilder().EmitDefaults().Build()
-                    .Serialize(tags));
+                    new SerializerBuilder().EmitDefaults().Build()
+                        .Serialize(tags));
                 return true;
             }
             return false;

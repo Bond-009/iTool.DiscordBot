@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Default : ModuleBase
+    public class General : ModuleBase
     {
         [Command("help")]
         [Summary("Returns the enabled commands in lists of 25")]
@@ -43,7 +43,7 @@ namespace iTool.DiscordBot.Modules
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
                 return;
-                }
+            }
 
             foreach (CommandInfo cmd in cmds)
             {

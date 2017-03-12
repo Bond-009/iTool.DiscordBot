@@ -8,6 +8,7 @@ namespace iTool.DiscordBot.Modules
     public class TagModule : ModuleBase
     {
         [Command("createtag")]
+        [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task CreateTag(string name, [Remainder]string text = "")
         {
             if (Context.Guild == null) { await ReplyAsync("This command can only be ran in a server."); return; }
