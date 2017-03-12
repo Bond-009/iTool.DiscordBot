@@ -1,22 +1,54 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26020.0
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTool.DiscordBot", "iTool.DiscordBot\iTool.DiscordBot.csproj", "{DC862FC1-7FD3-4154-91B1-D9E2A6F00863}"
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B78E872D-D115-4B52-BC2B-746D5E38C40D}"
+EndProject
+Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "iTool.DiscordBot", "src\iTool.DiscordBot\iTool.DiscordBot.csproj", "{366204C1-C307-4979-B0D7-7B143F2BACA6}"
+EndProject
+Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "iTool.DiscordBot.API", "src\iTool.DiscordBot.API\iTool.DiscordBot.API.csproj", "{E047EC19-0E0F-43F6-90BC-61678E3CFF14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DC862FC1-7FD3-4154-91B1-D9E2A6F00863}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC862FC1-7FD3-4154-91B1-D9E2A6F00863}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC862FC1-7FD3-4154-91B1-D9E2A6F00863}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC862FC1-7FD3-4154-91B1-D9E2A6F00863}.Release|Any CPU.Build.0 = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Debug|x64.ActiveCfg = Debug|x64
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Debug|x64.Build.0 = Debug|x64
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Debug|x86.ActiveCfg = Debug|x86
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Debug|x86.Build.0 = Debug|x86
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Release|x64.ActiveCfg = Release|x64
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Release|x64.Build.0 = Release|x64
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Release|x86.ActiveCfg = Release|x86
+		{366204C1-C307-4979-B0D7-7B143F2BACA6}.Release|x86.Build.0 = Release|x86
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Debug|x64.ActiveCfg = Debug|x64
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Debug|x64.Build.0 = Debug|x64
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Debug|x86.ActiveCfg = Debug|x86
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Debug|x86.Build.0 = Debug|x86
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Release|x64.ActiveCfg = Release|x64
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Release|x64.Build.0 = Release|x64
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Release|x86.ActiveCfg = Release|x86
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{366204C1-C307-4979-B0D7-7B143F2BACA6} = {B78E872D-D115-4B52-BC2B-746D5E38C40D}
+		{E047EC19-0E0F-43F6-90BC-61678E3CFF14} = {B78E872D-D115-4B52-BC2B-746D5E38C40D}
 	EndGlobalSection
 EndGlobal
