@@ -22,7 +22,7 @@ namespace iTool.DiscordBot
         public static OpenWeatherClient OpenWeatherClient { get; private set; }
         public static IUser Owner { get; private set; }
         public static Settings Settings { get; set; }
-        public static List<ulong> TrustedUsers { get; private set; }
+        public static List<ulong> TrustedUsers { get; set; }
 
         private static DiscordSocketClient discordClient;
         private static List<string> bannedWords;
@@ -145,9 +145,6 @@ namespace iTool.DiscordBot
 
             if (!TrustedUsers.IsNullOrEmpty())
             { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt", TrustedUsers.Select(x => x.ToString())); }
-
-            if (!bannedWords.IsNullOrEmpty())
-            { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt", bannedWords); }
 
             SettingsManager.SaveSettings(Settings);
             Environment.Exit(0);
