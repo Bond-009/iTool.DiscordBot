@@ -1,3 +1,4 @@
+using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
 
@@ -10,10 +11,17 @@ namespace iTool.DiscordBot.Modules
         [Summary("Forces the GC to clean up resources")]
         public async Task GC()
         {
-            if ((await Context.Client.GetApplicationInfoAsync()).Owner.Id != Context.User.Id)
+            if (!Utils.IsTrustedUser(Context.User))
             { return; }
 
             System.GC.Collect();
+
+            await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Title = "Blacklist",
+                Color = new Color(3, 144, 255),
+                Description = ":thumbsup:"
+            });
         }
     }
 }
