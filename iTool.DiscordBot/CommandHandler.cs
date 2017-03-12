@@ -36,6 +36,7 @@ namespace iTool.DiscordBot
 
                 foreach (ModuleInfo moduleInfo in CommandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
                 {
+                    await Program.Log(new LogMessage(LogSeverity.Info, "CommandHandler", $"Disabled {moduleInfo.Name} module"));
                     await CommandService.RemoveModuleAsync(moduleInfo);
                 }
             }
@@ -48,6 +49,13 @@ namespace iTool.DiscordBot
             // Don't handle the command if it is a system message
             SocketUserMessage message = parameterMessage as SocketUserMessage;
             if (message == null) { return; }
+
+            // Check if the user is blacklisted. If so return
+            if (!Utils.IsNullOrEmpty(Program.BlacklistedUsers))
+            {
+                if (Program.BlacklistedUsers.Contains(message.Author.Id))
+                { return; }
+            }
 
             // Mark where the prefix ends and the command begins
             int argPos = 0;
@@ -63,17 +71,17 @@ namespace iTool.DiscordBot
             // If the command failed, notify the user
             if (!result.IsSuccess)
             {
-                if (result.ErrorReason.ToLower() != "unknown command.")
-                {
-                    await Program.Log(new LogMessage(LogSeverity.Error, "CommandHandler", result.ErrorReason));
+                if (result.ErrorReason.ToLower() == "unknown command.")
+                { return; }
 
-                    await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
-                    {
-                        Title = "Error",
-                        Color = new Color(204, 0, 0),
-                        Description = result.ErrorReason
-                    });
-                }
+                await Program.Log(new LogMessage(LogSeverity.Error, "CommandHandler", result.ErrorReason));
+
+                await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Error",
+                    Color = new Color(204, 0, 0),
+                    Description = result.ErrorReason
+                });
             }
         }
     }

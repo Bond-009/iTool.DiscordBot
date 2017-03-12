@@ -16,13 +16,14 @@ namespace iTool.DiscordBot
     {
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
-        public static AudioService AudioService { get; set; } = new AudioService();
+        public static AudioService AudioService { get; private set; } = new AudioService();
+        public static List<ulong> BlacklistedUsers { get; set; }
         public static CommandHandler CommandHandler { get; private set; } = new CommandHandler();
-        public static OpenWeatherClient OpenWeatherClient { get; set; }
-        public static Settings Settings { get; private set; }
+        public static OpenWeatherClient OpenWeatherClient { get; private set; }
+        public static Settings Settings { get; set; }
 
         private static DiscordSocketClient discordClient;
-        private static List<string> badWords;
+        private static List<string> bannedWords;
 
         public static async Task Start()
         {
@@ -39,9 +40,16 @@ namespace iTool.DiscordBot
 
             OpenWeatherClient = new OpenWeatherClient(Settings.OpenWeatherMapKey);
 
+            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "backlisted_users.txt"))
+            {
+                bannedWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "backlisted_users.txt")
+                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
+                    .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+            }
+
             if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt"))
             {
-                badWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt")
+                bannedWords = File.ReadAllText(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt")
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
                     .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
             }
@@ -111,9 +119,9 @@ namespace iTool.DiscordBot
         private async static Task DiscordClient_MessageReceived(SocketMessage arg)
         {
             await Log(new LogMessage(LogSeverity.Verbose, "", arg.Author.Username + ": " + arg.Content));
-
-            if (Settings.AntiSwear && !badWords.IsNullOrEmpty()
-                && badWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
+            
+            if (Settings.AntiSwear && !bannedWords.IsNullOrEmpty()
+                && bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
             {
                 await arg.DeleteAsync();
                 await arg.Channel.SendMessageAsync(arg.Author.Mention + ", please don't put such things in chat");
@@ -135,6 +143,9 @@ namespace iTool.DiscordBot
             await discordClient.StopAsync();
             await discordClient.LogoutAsync();
             discordClient.Dispose();
+
+            OpenWeatherClient.Dispose();
+
             SettingsManager.SaveSettings(Settings);
             Environment.Exit(0);
         }
