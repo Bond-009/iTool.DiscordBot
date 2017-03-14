@@ -42,11 +42,11 @@ namespace iTool.DiscordBot.Audio
             }
         }
 
-        public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string path)
+        public async Task SendAudioAsync(IGuild guild, string path)
         {
             if (!File.Exists(path))
             {
-                await channel.SendMessageAsync("File does not exist.");
+                await Program.Log(new LogMessage(LogSeverity.Error, "AudioService", $"File not found {path}"));
                 return;
             }
             IAudioClient client;

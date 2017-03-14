@@ -160,10 +160,10 @@ namespace iTool.DiscordBot.Modules
 
         [Command("leave")]
         [Summary("Instructs the bot to leave this Guild")]
+        [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Leave()
         {
-            if (Context.Guild == null) { await ReplyAsync("This command can only be ran in a server."); return; }
             await ReplyAsync("Leaving...");
             await Context.Guild.LeaveAsync();
         }

@@ -69,17 +69,10 @@ namespace iTool.DiscordBot
 
             discordClient.Log += Log;
             discordClient.MessageReceived += DiscordClient_MessageReceived;
+            discordClient.Ready += DiscordClient_Ready;
 
             await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
             await discordClient.StartAsync();
-            await Task.Delay(1000);
-            Owner = (await discordClient.GetApplicationInfoAsync()).Owner;
-            await Log(new LogMessage(LogSeverity.Critical, "Program", $"Succesfully connected as {discordClient.CurrentUser.ToString()}, with {Owner.ToString()} as owner"));
-
-            if (!string.IsNullOrEmpty(Settings.Game))
-            {
-                await discordClient.SetGameAsync(Settings.Game);
-            }
 
             DependencyMap map = new DependencyMap();
             map.Add(discordClient);
@@ -108,6 +101,17 @@ namespace iTool.DiscordBot
                         Console.WriteLine(input + ": command not found");
                         break;
                 }
+            }
+        }
+
+        private async static Task DiscordClient_Ready()
+        {
+            Owner = (await discordClient.GetApplicationInfoAsync()).Owner;
+            await Log(new LogMessage(LogSeverity.Critical, nameof(Program), $"Succesfully connected as {discordClient.CurrentUser.ToString()}, with {Owner.ToString()} as owner"));
+
+            if (!string.IsNullOrEmpty(Settings.Game))
+            {
+                await discordClient.SetGameAsync(Settings.Game);
             }
         }
 

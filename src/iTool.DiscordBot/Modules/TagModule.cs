@@ -9,11 +9,10 @@ namespace iTool.DiscordBot.Modules
     {
         [Command("createtag")]
         [Summary("Creates a new tag")]
+        [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task CreateTag(string name, [Remainder]string text = "")
         {
-            if (Context.Guild == null) { await ReplyAsync("This command can only be ran in a server."); return; }
-
             string attachment = string.Empty;
             if (Context.Message.Attachments.FirstOrDefault() != null)
             {
@@ -39,10 +38,9 @@ namespace iTool.DiscordBot.Modules
 
         [Command("tag")]
         [Summary("Searches for a tag")]
+        [RequireContext(ContextType.Guild)]
         public async Task Tag(string name)
         {
-            if (Context.Guild == null) { await ReplyAsync("This command can only be ran in a server."); return; }
-
             Tag tag = TagManager.GetTag(name, Context.Guild.Id);
             if (tag != null)
             {

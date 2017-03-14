@@ -34,6 +34,14 @@ Just a Discord bot
 | stop | | | Stops the audio blayback and leaves the voice channel |
 | play | | | Plays an audio files |
 
+## Core commands
+
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| blacklist | | | Adds the user to the blacklist |
+| rmblacklist | | | Removes the user from the blacklist |
+| trust | | | Adds the user to the list of trusted users |
+
 ## CS:GO commands
 
 | Command | Aliases | Permission | Description |
