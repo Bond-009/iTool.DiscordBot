@@ -28,7 +28,7 @@ namespace iTool.DiscordBot.Audio
 
             if (ConnectedChannels.TryAdd(guild.Id, audioClient))
             {
-                await Program.Log(new LogMessage(LogSeverity.Info, "AudioService", $"Connected to voice on {guild.Name}."));
+                await Program.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Connected to voice on {guild.Name}."));
             }
         }
 
@@ -38,7 +38,7 @@ namespace iTool.DiscordBot.Audio
             if (ConnectedChannels.TryRemove(guild.Id, out client))
             {
                 await client.StopAsync();
-                await Program.Log(new LogMessage(LogSeverity.Info, "AudioService", $"Disconnected from voice on {guild.Name}."));
+                await Program.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Disconnected from voice on {guild.Name}."));
             }
         }
 
@@ -46,13 +46,13 @@ namespace iTool.DiscordBot.Audio
         {
             if (!File.Exists(path))
             {
-                await Program.Log(new LogMessage(LogSeverity.Error, "AudioService", $"File not found {path}"));
+                await Program.Log(new LogMessage(LogSeverity.Error, nameof(AudioService), $"File not found {path}"));
                 return;
             }
             IAudioClient client;
             if (ConnectedChannels.TryGetValue(guild.Id, out client))
             {
-                await Program.Log(new LogMessage(LogSeverity.Debug, "AudioService", $"Starting playback of {path} in {guild.Name}"));
+                await Program.Log(new LogMessage(LogSeverity.Debug, nameof(AudioService), $"Starting playback of {path} in {guild.Name}"));
                 Stream output = CreateStream(path).StandardOutput.BaseStream;
                 AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music, 1920);
                 await output.CopyToAsync(stream);

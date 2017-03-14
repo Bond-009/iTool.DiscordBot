@@ -33,7 +33,7 @@ namespace iTool.DiscordBot
 
                 foreach (ModuleInfo moduleInfo in CommandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
                 {
-                    await Program.Log(new LogMessage(LogSeverity.Info, "CommandHandler", $"Disabled {moduleInfo.Name} module"));
+                    await Program.Log(new LogMessage(LogSeverity.Info, nameof(CommandHandler), $"Disabled {moduleInfo.Name} module"));
                     await CommandService.RemoveModuleAsync(moduleInfo);
                 }
             }
@@ -71,7 +71,7 @@ namespace iTool.DiscordBot
                 if (result.ErrorReason.ToLower() == "unknown command.")
                 { return; }
 
-                await Program.Log(new LogMessage(LogSeverity.Error, "CommandHandler", result.ErrorReason));
+                await Program.Log(new LogMessage(LogSeverity.Error, nameof(CommandHandler), result.ErrorReason));
 
                 await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                 {

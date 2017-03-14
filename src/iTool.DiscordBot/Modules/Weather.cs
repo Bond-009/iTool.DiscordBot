@@ -14,7 +14,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (string.IsNullOrEmpty(Program.Settings.OpenWeatherMapKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No OpenWeatherMapKey found."));
+                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Weather), "No OpenWeatherMapKey found."));
                 return;
             }
 

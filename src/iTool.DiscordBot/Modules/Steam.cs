@@ -15,7 +15,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (string.IsNullOrEmpty(Program.Settings.SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No SteamKey found."));
+                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
                 return;
             }
 
@@ -31,7 +31,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (string.IsNullOrEmpty(Program.Settings.SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No SteamKey found."));
+                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
                 return;
             }
 
@@ -72,7 +72,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (string.IsNullOrEmpty(Program.Settings.SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No SteamKey found."));
+                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
                 return;
             }
 
@@ -135,7 +135,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (string.IsNullOrEmpty(Program.Settings.SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, "", "No SteamKey found."));
+                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
                 return;
             }
 

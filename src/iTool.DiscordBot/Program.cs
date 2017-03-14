@@ -117,7 +117,7 @@ namespace iTool.DiscordBot
 
         private async static Task DiscordClient_MessageReceived(SocketMessage arg)
         {
-            await Log(new LogMessage(LogSeverity.Verbose, "", arg.Author.Username + ": " + arg.Content));
+            await Log(new LogMessage(LogSeverity.Verbose, nameof(Program), arg.Author.Username + ": " + arg.Content));
             
             if (Settings.AntiSwear && !bannedWords.IsNullOrEmpty()
                 && bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
