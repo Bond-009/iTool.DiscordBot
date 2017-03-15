@@ -68,7 +68,7 @@ namespace iTool.DiscordBot
             // If the command failed, notify the user
             if (!result.IsSuccess)
             {
-                if (result.ErrorReason.ToLower() == "unknown command.")
+                if (result is PreconditionResult || result is SearchResult)
                 { return; }
 
                 await Program.Log(new LogMessage(LogSeverity.Error, nameof(CommandHandler), result.ErrorReason));
