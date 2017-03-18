@@ -196,7 +196,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Color = new Color((uint)Program.Settings.Color),
-                ThumbnailUrl = user.GetAvatarUrl(AvatarFormat.Png)
+                ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
             };
             b.AddField(f =>
             {

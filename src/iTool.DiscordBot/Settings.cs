@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.Audio;
 using Discord.Commands;
 using OpenWeather;
 
@@ -10,7 +9,6 @@ namespace iTool.DiscordBot
         public string DiscordToken { get; set; } = string.Empty;
         public string OpenWeatherMapKey { get; set; } = string.Empty;
         public string SteamKey { get; set; } = string.Empty;
-        public AudioMode AudioMode { get; set; }
         public bool AlwaysDownloadUsers { get; set; }
         public int ConnectionTimeout { get; set; } = 30000;
         public RetryMode DefaultRetryMode { get; set; } = RetryMode.AlwaysRetry;

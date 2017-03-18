@@ -60,7 +60,6 @@ namespace iTool.DiscordBot
             discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
                 AlwaysDownloadUsers = Settings.AlwaysDownloadUsers,
-                AudioMode = Settings.AudioMode,
                 ConnectionTimeout = Settings.ConnectionTimeout,
                 DefaultRetryMode = Settings.DefaultRetryMode,
                 LogLevel = Settings.LogLevel,

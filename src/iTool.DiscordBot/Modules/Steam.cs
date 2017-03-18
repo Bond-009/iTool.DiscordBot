@@ -21,7 +21,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
             
-            await ReplyAsync((await DiscordBot.Steam.Steam.ResolveVanityURL(name)).ToString());
+            await ReplyAsync((await SteamAPI.ResolveVanityURL(name)).ToString());
         }
 
         [Command("steam")]
@@ -36,7 +36,7 @@ namespace iTool.DiscordBot.Modules
             }
 
             if (name == null) { name = Context.User.Username; }
-            PlayerSummaries player = await DiscordBot.Steam.Steam.GetPlayerSummaries(new [] {(await DiscordBot.Steam.Steam.ResolveVanityURL(name))});
+            PlayerSummaries player = await SteamAPI.GetPlayerSummaries(new [] {(await SteamAPI.ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -78,7 +78,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
 
-            PlayerBans player = await DiscordBot.Steam.Steam.GetPlayerBans(new [] {(await DiscordBot.Steam.Steam.ResolveVanityURL(name))});
+            PlayerBans player = await SteamAPI.GetPlayerBans(new [] {(await SteamAPI.ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -141,7 +141,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync("https://steamcommunity.com/profiles/" + (await DiscordBot.Steam.Steam.ResolveVanityURL(name)).ToString());
+            await ReplyAsync("https://steamcommunity.com/profiles/" + (await SteamAPI.ResolveVanityURL(name)).ToString());
         }
     }
 }

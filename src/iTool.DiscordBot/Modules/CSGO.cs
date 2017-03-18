@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Commands;
+using iTool.DiscordBot.Steam;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await DiscordBot.Steam.Steam.GetUserStatsForGame(730, await DiscordBot.Steam.Steam.ResolveVanityURL(name))).Stats
+            Dictionary<string, int> dict = (await SteamAPI.GetUserStatsForGame(730, await SteamAPI.ResolveVanityURL(name))).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
@@ -79,7 +80,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await DiscordBot.Steam.Steam.GetUserStatsForGame(730, await DiscordBot.Steam.Steam.ResolveVanityURL(name))).Stats
+            Dictionary<string, int> dict = (await SteamAPI.GetUserStatsForGame(730, await SteamAPI.ResolveVanityURL(name))).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()

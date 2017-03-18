@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 namespace iTool.DiscordBot.Steam
 {
     // HACK: 
-    static class Steam
+    static class SteamAPI
     {
         public async static Task<PlayerBans> GetPlayerBans(ulong[] steamIDs)
         {

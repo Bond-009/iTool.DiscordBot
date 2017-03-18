@@ -18,10 +18,8 @@ namespace iTool.DiscordBot
 
         public async Task Install(IDependencyMap _map, CommandServiceConfig config)
         {
-            // Create Command Service, inject it into Dependency Map
             client = _map.Get<DiscordSocketClient>();
             CommandService = new CommandService(config);
-            _map.Add(CommandService);
             map = _map;
 
             await CommandService.AddModulesAsync(Assembly.GetEntryAssembly());
