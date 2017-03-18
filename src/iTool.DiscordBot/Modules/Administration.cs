@@ -10,12 +10,9 @@ namespace iTool.DiscordBot.Modules
         [Command("delmsgs")]
         [Summary("Deletes the messages")]
         [RequireUserPermission(GuildPermission.ManageMessages)]
-        public async Task DelMsgs(int number = 100, params IUser[] users)
+        public async Task DelMsgs(int number = 100)
         {
-            foreach (IUser user in users)
-            {
-                await Context.Channel.DeleteMessagesAsync((await Context.Channel.GetMessagesAsync(number).Flatten()).Where(Dmsg => Dmsg.Author.Id == user.Id));
-            }
+            await Context.Channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(number).Flatten());
         }
 
         [Command("delmsgs")]
@@ -27,14 +24,6 @@ namespace iTool.DiscordBot.Modules
             {
                 await Context.Channel.DeleteMessagesAsync((await Context.Channel.GetMessagesAsync().Flatten()).Where(Dmsg => Dmsg.Author.Id == user.Id));
             }
-        }
-
-        [Command("delmsgs")]
-        [Summary("Deletes the messages")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
-        public async Task DelMsgs(int number = 100)
-        {
-            await Context.Channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(number).Flatten());
         }
 
         [Command("kick")]
