@@ -10,11 +10,15 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc-00649" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc-00649" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
     <PackageReference Include="OpenWeather.Net" Version="0.6.2" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
     <PackageReference Include="YamlDotNet.NetCore" Version="1.0.0" />
-    <!--<PackageReference Include="BfStats.Net.BfH" Version="0.0.2" />-->
+    <PackageReference Include="BfStats.Net.BfH" Version="0.2.0" />
   </ItemGroup>
+
+  <!--<ItemGroup>
+    <ProjectReference Include="../../../BfStats.Net/src/BfStats.Net.Bfh/BfStats.Net.Bfh.csproj" />
+  </ItemGroup>-->
 
 </Project>
