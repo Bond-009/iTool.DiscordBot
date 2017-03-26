@@ -53,7 +53,10 @@ namespace iTool.DiscordBot
             if (string.IsNullOrEmpty(Settings.DiscordToken))
             {
                 Console.WriteLine("No token");
-                Console.ReadKey();
+
+                if (!Console.IsInputRedirected)
+                { Console.ReadKey(); }
+
                 Environment.Exit(0);
             }
 
@@ -81,6 +84,11 @@ namespace iTool.DiscordBot
                 CaseSensitiveCommands = Settings.CaseSensitiveCommands,
                 DefaultRunMode = Settings.DefaultRunMode
             });
+
+            if (Console.IsInputRedirected)
+            {
+                await Task.Delay(-1);
+            }
 
             while (true)
             {
