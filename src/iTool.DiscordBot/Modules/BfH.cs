@@ -71,7 +71,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            BfHStatsClient client = new BfHStatsClient();
+            BfHStatsClient client = new BfHStatsClient(true);
             PlayerInfo playerInfo = await client.GetPlayerInfo(platform, name);
 
             await ReplyAsync("", embed: new EmbedBuilder()
@@ -79,7 +79,11 @@ namespace iTool.DiscordBot.Modules
                 Title = $"Battlefield Hardline stats for {playerInfo.Player.Name}",
                 Color = new Color((uint)Program.Settings.Color),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png",
-                Url = playerInfo.Player.BattlelogUser
+                Url = playerInfo.Player.BattlelogUser,
+                Footer = new EmbedFooterBuilder()
+                    {
+                        Text = "Powered by bfhstats.com",
+                    }
             }
             .AddField(f =>
             {
@@ -143,7 +147,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Last Update";
-                f.Value = playerInfo.Player.DateCheck.ToString();
+                f.Value = playerInfo.Player.DateUpdate.ToString();
             }));
         }
     }

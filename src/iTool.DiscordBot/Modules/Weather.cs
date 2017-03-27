@@ -37,7 +37,11 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = weather.City.Name + " " + weather.City.Country,
                 Color = new Color((uint)Colors.DodgerBlue),
-                ThumbnailUrl = Program.OpenWeatherClient.GetIconURL(weather.Weather.Icon)
+                ThumbnailUrl = Program.OpenWeatherClient.GetIconURL(weather.Weather.Icon),
+                Footer = new EmbedFooterBuilder()
+                    {
+                        Text = "Powered by openweathermap.org",
+                    }
             }
             .AddField(f =>
             {

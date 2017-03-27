@@ -14,7 +14,8 @@
     <PackageReference Include="OpenWeather.Net" Version="0.6.2" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
     <PackageReference Include="YamlDotNet.NetCore" Version="1.0.0" />
-    <PackageReference Include="BfStats.Net.BfH" Version="0.2.2" />
+    <PackageReference Include="BfStats.Net" Version="0.2.4" />
+    <PackageReference Include="BfStats.Net.BfH" Version="0.2.4" />
   </ItemGroup>
 
   <!--<ItemGroup>
