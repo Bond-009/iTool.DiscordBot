@@ -9,12 +9,14 @@ namespace iTool.DiscordBot.Modules
 {
     public class BfH : ModuleBase
     {
+        BfHStatsClient Client;
+        public BfH(BfHStatsClient statsClient) => this.Client = statsClient;
+
         [Command("bfhonlineplayers")]
         [Summary("Returns the amount of online players for Battlefield Hardline")]
         public async Task GetOnlinePlayers()
         {
-            BfHStatsClient client = new BfHStatsClient();
-            OnlinePlayers players = await client.GetOnlinePlayers();
+            OnlinePlayers players = await Client.GetOnlinePlayers();
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -71,8 +73,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            BfHStatsClient client = new BfHStatsClient(true);
-            PlayerInfo playerInfo = await client.GetPlayerInfo(platform, name);
+            PlayerInfo playerInfo = await Client.GetPlayerInfo(platform, name);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {

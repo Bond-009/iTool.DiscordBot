@@ -8,7 +8,7 @@ namespace iTool.DiscordBot.Modules
     public class AudioModule : ModuleBase<ICommandContext>
     {
         AudioService AudioService;
-        public AudioModule(AudioService audio) => this.AudioService = audio;
+        public AudioModule(AudioService audioService) => this.AudioService = audioService;
 
         [Command("join", RunMode = RunMode.Async)]
         [Summary("Joins the voice channel")]

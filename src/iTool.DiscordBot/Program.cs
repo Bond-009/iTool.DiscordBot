@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using BfStats.BfH;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using iTool.DiscordBot.Audio;
@@ -74,6 +75,7 @@ namespace iTool.DiscordBot
             DependencyMap map = new DependencyMap();
             map.Add(discordClient);
             map.Add(new AudioService());
+            map.Add(new BfHStatsClient(true));
             map.Add(new OpenWeatherClient(Settings.OpenWeatherMapKey));
 
             await new CommandHandler().Install(map, new CommandServiceConfig()
