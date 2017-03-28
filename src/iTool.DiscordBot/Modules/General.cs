@@ -11,6 +11,9 @@ namespace iTool.DiscordBot.Modules
 {
     public class General : ModuleBase
     {
+        CommandService CommandService;
+        public General(CommandService commandService) => this.CommandService = commandService;
+
         [Command("help")]
         [Summary("Returns the enabled commands in lists of 25")]
         public async Task Help(int help = 1)
@@ -26,7 +29,7 @@ namespace iTool.DiscordBot.Modules
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
 
-            IEnumerable<CommandInfo> cmds = Program.CommandHandler.CommandService.Commands
+            IEnumerable<CommandInfo> cmds = CommandService.Commands
                                         .GroupBy(x => x.Name)
                                         .Select(y => y.First())
                                         .OrderBy(x => x.Name)
@@ -61,7 +64,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the command")]
         public async Task Help(string input)
         {
-            IEnumerable<CommandInfo> icmd = Program.CommandHandler.CommandService.Commands
+            IEnumerable<CommandInfo> icmd = CommandService.Commands
                                 .Where(x => x.Name == input.ToLower()
                                 || x.Aliases.Contains(input));
 

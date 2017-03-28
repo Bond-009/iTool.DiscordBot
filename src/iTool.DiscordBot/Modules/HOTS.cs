@@ -19,7 +19,11 @@ namespace iTool.DiscordBot.Modules
                 Title = $"HOTS player summary for {player.Name}",
                 Color = new Color((uint)Program.Settings.Color),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
-                ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
+                ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
+                Footer = new EmbedFooterBuilder()
+                    {
+                        Text = "Powered by hotslogs.com",
+                    }
             }
             .AddField(f =>
             {

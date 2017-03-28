@@ -16,10 +16,7 @@ namespace iTool.DiscordBot
     {
         public static void Main(string[] args) => Start().GetAwaiter().GetResult();
 
-        public static AudioService AudioService { get; } = new AudioService();
         public static List<ulong> BlacklistedUsers { get; set; }
-        public static CommandHandler CommandHandler { get; } = new CommandHandler();
-        public static OpenWeatherClient OpenWeatherClient { get; private set; }
         public static IUser Owner { get; private set; }
         public static Settings Settings { get; set; }
         public static List<ulong> TrustedUsers { get; set; }
@@ -47,8 +44,6 @@ namespace iTool.DiscordBot
             bannedWords = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt").ToList();
 
             if (!File.Exists(Common.AudioIndexFile)) { AudioManager.ResetAudioIndex(); }
-
-            OpenWeatherClient = new OpenWeatherClient(Settings.OpenWeatherMapKey);
 
             if (string.IsNullOrEmpty(Settings.DiscordToken))
             {
@@ -78,8 +73,10 @@ namespace iTool.DiscordBot
 
             DependencyMap map = new DependencyMap();
             map.Add(discordClient);
+            map.Add(new AudioService());
+            map.Add(new OpenWeatherClient(Settings.OpenWeatherMapKey));
 
-            await CommandHandler.Install(map, new CommandServiceConfig()
+            await new CommandHandler().Install(map, new CommandServiceConfig()
             {
                 CaseSensitiveCommands = Settings.CaseSensitiveCommands,
                 DefaultRunMode = Settings.DefaultRunMode
@@ -145,11 +142,11 @@ namespace iTool.DiscordBot
 
         public static async Task Quit()
         {
-            await discordClient.StopAsync();
-            await discordClient.LogoutAsync();
+            await discordClient.LogoutAsync().ConfigureAwait(false);
             discordClient.Dispose();
 
-            OpenWeatherClient.Dispose();
+            // TODO: Dispose OpenWeatherClient
+            //OpenWeatherClient.Dispose();
 
             if (!BlacklistedUsers.IsNullOrEmpty())
             { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt", BlacklistedUsers.Select(x => x.ToString())); }

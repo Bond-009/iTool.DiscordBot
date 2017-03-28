@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
 
-namespace iTool.DiscordBot
+namespace iTool.DiscordBot.Audio
 {
     public static class AudioManager
     {

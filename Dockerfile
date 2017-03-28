@@ -1,13 +1,22 @@
-#FROM microsoft/dotnet
-FROM tobond/dotnetsdk
-COPY . .
-RUN dotnet restore
-RUN dotnet publish iTool.DiscordBot.sln -c Release -r debian.8-x64 -o ../../publish
-# Clearing local packages
-RUN dotnet nuget locals all -c
-# Uninstalling dotnet
-RUN rm -f /usr/bin/dotnet
-RUN rm -rf /opt/dotnet
-# Removing soucre code
-RUN rm -r src/
+FROM debian:jessie-slim
+
+COPY docker-build ./publish
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libc6 \
+        libcurl3 \
+        libgcc1 \
+        libgssapi-krb5-2 \
+        libicu52 \
+        liblttng-ust0 \
+        libssl1.0.0 \
+        libstdc++6 \
+        libunwind8 \
+        libuuid1 \
+        zlib1g \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
 ENTRYPOINT ["publish/iTool.DiscordBot"]
