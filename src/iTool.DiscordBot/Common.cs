@@ -10,5 +10,7 @@ namespace iTool.DiscordBot
         public static readonly string AudioDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "audio";
         public static readonly string AudioIndexFile = AudioDir + Path.DirectorySeparatorChar + "audioindex.yaml";
         public static readonly string GuildsDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "guilds";
+        public static readonly string BlackListFile = Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt";
+        public static readonly string TrustedListFile = Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt";
     }
 }

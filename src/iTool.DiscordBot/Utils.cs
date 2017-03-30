@@ -1,9 +1,9 @@
-using Discord;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace iTool.DiscordBot
 {
@@ -19,11 +19,9 @@ namespace iTool.DiscordBot
 
         public static double GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2);
 
-        public static bool IsTrustedUser(this IUser user) => Program.TrustedUsers.Contains(user.Id) || user.Id == Program.Owner.Id;
-
         public static List<string> LoadListFromFile(string path)
         {
-            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "backlisted_users.txt"))
+            if (File.Exists(path))
             {
                 return File.ReadAllText(path)
                         .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)

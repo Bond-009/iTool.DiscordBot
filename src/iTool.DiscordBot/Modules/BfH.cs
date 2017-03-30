@@ -9,19 +9,19 @@ namespace iTool.DiscordBot.Modules
 {
     public class BfH : ModuleBase
     {
-        BfHStatsClient Client;
-        public BfH(BfHStatsClient statsClient) => this.Client = statsClient;
+        DependencyMap depMap;
+        public BfH(DependencyMap map) => this.depMap = map;
 
         [Command("bfhonlineplayers")]
         [Summary("Returns the amount of online players for Battlefield Hardline")]
         public async Task GetOnlinePlayers()
         {
-            OnlinePlayers players = await Client.GetOnlinePlayers();
+            OnlinePlayers players = await depMap.Get<BfHStatsClient>().GetOnlinePlayers();
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Online players for BfH",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
             }
             .AddField(f =>
@@ -73,12 +73,12 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            PlayerInfo playerInfo = await Client.GetPlayerInfo(platform, name);
+            PlayerInfo playerInfo = await depMap.Get<BfHStatsClient>().GetPlayerInfo(platform, name);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Battlefield Hardline stats for {playerInfo.Player.Name}",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png",
                 Url = playerInfo.Player.BattlelogUser,
                 Footer = new EmbedFooterBuilder()

@@ -18,8 +18,4 @@
     <PackageReference Include="BfStats.Net.BfH" Version="0.2.4" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <ProjectReference Include="../../../BfStats.Net/src/BfStats.Net.Bfh/BfStats.Net.Bfh.csproj" />
-  </ItemGroup>-->
-
 </Project>

@@ -1,95 +1,29 @@
-﻿using BfStats.BfH;
-using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using iTool.DiscordBot.Audio;
-using OpenWeather;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
 
 namespace iTool.DiscordBot
 {
-    public static class Program
+    public static class DiscordBot
     {
-        public static void Main(string[] args) => Start().GetAwaiter().GetResult();
-
-        public static List<ulong> BlacklistedUsers { get; set; }
-        public static IUser Owner { get; private set; }
-        public static Settings Settings { get; set; }
-        public static List<ulong> TrustedUsers { get; set; }
-
-        private static DiscordSocketClient discordClient;
-        private static List<string> bannedWords;
-
-        public static async Task Start()
+        public static void Main(string[] args)
         {
-            try
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            if (!Console.IsInputRedirected)
             {
-                Settings = SettingsManager.LoadSettings();
+                new Thread(() => Input(tokenSource)).Start();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            Bot iToolBot  = new Bot(SettingsManager.LoadSettings());
+            iToolBot.Start().GetAwaiter().GetResult();
 
-            BlacklistedUsers = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt").Select(ulong.Parse).ToList();
+            while (!tokenSource.Token.IsCancellationRequested);
 
-            TrustedUsers = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt").Select(ulong.Parse).ToList();
+            SettingsManager.SaveSettings(iToolBot.GetSettings());
+            iToolBot.Stop().GetAwaiter().GetResult();
+        }
 
-            bannedWords = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt").ToList();
-
-            if (!File.Exists(Common.AudioIndexFile)) { AudioManager.ResetAudioIndex(); }
-
-            if (string.IsNullOrEmpty(Settings.DiscordToken))
-            {
-                Console.WriteLine("No token");
-
-                if (!Console.IsInputRedirected)
-                { Console.ReadKey(); }
-
-                Environment.Exit(0);
-            }
-
-            discordClient = new DiscordSocketClient(new DiscordSocketConfig()
-            {
-                AlwaysDownloadUsers = Settings.AlwaysDownloadUsers,
-                ConnectionTimeout = Settings.ConnectionTimeout,
-                DefaultRetryMode = Settings.DefaultRetryMode,
-                LogLevel = Settings.LogLevel,
-                MessageCacheSize = Settings.MessageCacheSize
-            });
-
-            discordClient.Log += Log;
-            discordClient.MessageReceived += DiscordClient_MessageReceived;
-            discordClient.Ready += DiscordClient_Ready;
-
-            await discordClient.LoginAsync(TokenType.Bot, Settings.DiscordToken);
-            await discordClient.StartAsync();
-
-            DependencyMap map = new DependencyMap();
-            map.Add(discordClient);
-            map.Add(new AudioService());
-            map.Add(new BfHStatsClient(true));
-            map.Add(new OpenWeatherClient(Settings.OpenWeatherMapKey));
-
-            await new CommandHandler().Install(map, new CommandServiceConfig()
-            {
-                CaseSensitiveCommands = Settings.CaseSensitiveCommands,
-                DefaultRunMode = Settings.DefaultRunMode
-            });
-
-            if (Console.IsInputRedirected)
-            {
-                await Task.Delay(-1);
-            }
-
-            while (true)
+        private static void Input(CancellationTokenSource tokenSource)
+        {
+            while (!tokenSource.Token.IsCancellationRequested)
             {
                 string input = Console.ReadLine().ToLower();
                 switch (input)
@@ -97,7 +31,7 @@ namespace iTool.DiscordBot
                     case "quit":
                     case "exit":
                     case "stop":
-                        await Quit();
+                        tokenSource.Cancel();
                         break;
                     case "clear":
                     case "cls":
@@ -108,56 +42,6 @@ namespace iTool.DiscordBot
                         break;
                 }
             }
-        }
-
-        private async static Task DiscordClient_Ready()
-        {
-            Owner = (await discordClient.GetApplicationInfoAsync()).Owner;
-            await Log(new LogMessage(LogSeverity.Critical, nameof(Program), $"Succesfully connected as {discordClient.CurrentUser.ToString()}, with {Owner.ToString()} as owner"));
-
-            if (!string.IsNullOrEmpty(Settings.Game))
-            {
-                await discordClient.SetGameAsync(Settings.Game);
-            }
-        }
-
-        private async static Task DiscordClient_MessageReceived(SocketMessage arg)
-        {
-            await Log(new LogMessage(LogSeverity.Verbose, nameof(Program), arg.Author.Username + ": " + arg.Content));
-
-            if (Settings.AntiSwear && !bannedWords.IsNullOrEmpty()
-                && bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
-            {
-                await arg.DeleteAsync();
-                await arg.Channel.SendMessageAsync(arg.Author.Mention + ", please don't put such things in chat");
-            }
-        }
-
-        public static Task Log(LogMessage msg)
-        {
-            if (msg.Severity > Settings.LogLevel)
-            { return Task.CompletedTask; }
-
-            Console.WriteLine(msg.ToString());
-            return Task.CompletedTask;
-        }
-
-        public static async Task Quit()
-        {
-            await discordClient.LogoutAsync().ConfigureAwait(false);
-            discordClient.Dispose();
-
-            // TODO: Dispose OpenWeatherClient
-            //OpenWeatherClient.Dispose();
-
-            if (!BlacklistedUsers.IsNullOrEmpty())
-            { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt", BlacklistedUsers.Select(x => x.ToString())); }
-
-            if (!TrustedUsers.IsNullOrEmpty())
-            { File.WriteAllLines(Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt", TrustedUsers.Select(x => x.ToString())); }
-
-            SettingsManager.SaveSettings(Settings);
-            Environment.Exit(0);
         }
     }
 }

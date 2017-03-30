@@ -8,6 +8,10 @@ namespace iTool.DiscordBot.Modules
 {
     public class Random : ModuleBase
     {
+        DependencyMap depMap;
+
+        public Random(DependencyMap map) => this.depMap = map;
+
         [Command("cat")]
         [Summary("Returns a random cat image")]
         public async Task Cat()
@@ -19,7 +23,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Cat",
-                    Color = new Color((uint)Program.Settings.Color),
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
                     ImageUrl = (string)o["file"]
                 });
             }
@@ -40,7 +44,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Dog",
-                    Color = new Color((uint)Program.Settings.Color),
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
                     ImageUrl =  link
                 });
             }

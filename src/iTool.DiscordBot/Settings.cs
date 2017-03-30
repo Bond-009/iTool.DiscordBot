@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
 using OpenWeather;
+using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
 {
@@ -22,5 +24,10 @@ namespace iTool.DiscordBot
         public RunMode DefaultRunMode { get; set; } = RunMode.Sync;
         public bool AntiSwear { get; set; }
         public TemperatureScale TemperatureScale { get; set; }
+
+        [YamlIgnore]
+        public List<ulong> BlacklistedUsers { get; set; } = new List<ulong>();
+        [YamlIgnore]
+        public List<ulong> TrustedUsers { get; set; } = new List<ulong>();
     }
 }

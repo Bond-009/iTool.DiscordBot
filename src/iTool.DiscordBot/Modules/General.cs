@@ -11,8 +11,14 @@ namespace iTool.DiscordBot.Modules
 {
     public class General : ModuleBase
     {
-        CommandService CommandService;
-        public General(CommandService commandService) => this.CommandService = commandService;
+        DependencyMap depMap;
+        CommandService cmdService;
+
+        public General(CommandService service, DependencyMap map)
+        {
+            this.cmdService = service;
+            this.depMap = map;
+        }
 
         [Command("help")]
         [Summary("Returns the enabled commands in lists of 25")]
@@ -24,12 +30,12 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Commands",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 Description = "Returns the enabled commands in lists of 25.",
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
 
-            IEnumerable<CommandInfo> cmds = CommandService.Commands
+            IEnumerable<CommandInfo> cmds = cmdService.Commands
                                         .GroupBy(x => x.Name)
                                         .Select(y => y.First())
                                         .OrderBy(x => x.Name)
@@ -41,7 +47,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Help",
-                    Color = new Color((uint)Program.Settings.Color),
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
                     Description = "No commands found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -64,7 +70,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the command")]
         public async Task Help(string input)
         {
-            IEnumerable<CommandInfo> icmd = CommandService.Commands
+            IEnumerable<CommandInfo> icmd = cmdService.Commands
                                 .Where(x => x.Name == input.ToLower()
                                 || x.Aliases.Contains(input));
 
@@ -73,7 +79,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Command info",
-                    Color = new Color((uint)Program.Settings.Color),
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
                     Description = "No command found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -84,7 +90,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Command info",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
             b.AddField(f =>
@@ -133,7 +139,7 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Color = new Color((uint)Program.Settings.Color)
+                Color = new Color((uint)depMap.Get<Settings>().Color)
             }
             .AddField(f =>
             {
@@ -181,12 +187,10 @@ namespace iTool.DiscordBot.Modules
 
         [Command("setgame")]
         [Summary("Sets the bot's game")]
+        [RequireTrustedUser]
         public async Task SetGame([Remainder] string input)
         {
-            if (!Utils.IsTrustedUser(Context.User))
-            { return; }
-
-            Program.Settings.Game = input;
+            depMap.Get<Settings>().Game = input;
             await (Context.Client as DiscordSocketClient).SetGameAsync(input);
             
         }
@@ -198,7 +202,7 @@ namespace iTool.DiscordBot.Modules
         {
             EmbedBuilder b = new EmbedBuilder()
             {
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
             };
             b.AddField(f =>
@@ -243,15 +247,10 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: b);
         }
 
-        [Command("quit", RunMode = RunMode.Async)]
-        [Alias("exit")]
-        [Summary("Quits the bot")]
-        public async Task Quit()
-        {
-            if (!Utils.IsTrustedUser(Context.User))
-            { return; }
-
-            await Program.Quit();
-        }
+        //[Command("quit", RunMode = RunMode.Async)]
+        //[Alias("exit")]
+        //[Summary("Quits the bot")]
+        //[RequireTrustedUser]
+        //public async Task Quit() => await Program.Quit();
     }
 }

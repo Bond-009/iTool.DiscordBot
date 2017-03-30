@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Commands;
 using iTool.DiscordBot.Steam;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,20 +9,23 @@ namespace iTool.DiscordBot.Modules
 {
     public class Steam : ModuleBase
     {
+        DependencyMap depMap;
+
+        public Steam(DependencyMap map) => this.depMap = map;
+
         [Command("vanityurl")]
         [Alias("resolvevanityurl")]
         [Summary("Returns the steamID64 of the user")]
         public async Task ResolveVanityURL(string name = null)
         {
-            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
-                return;
+                throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
             
-            await ReplyAsync((await SteamAPI.ResolveVanityURL(name)).ToString());
+            await ReplyAsync((await depMap.Get<SteamAPI>().ResolveVanityURL(name)).ToString());
         }
 
         [Command("steam")]
@@ -29,19 +33,18 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns basic steam profile information")]
         public async Task PlayerSummaries(string name = null)
         {
-            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
-                return;
+                throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
-            PlayerSummaries player = await SteamAPI.GetPlayerSummaries(new [] {(await SteamAPI.ResolveVanityURL(name))});
+            PlayerSummaries player = await depMap.Get<SteamAPI>().GetPlayerSummaries(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Player summary fot {player.Players.First().PersonaName}",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 ThumbnailUrl = player.Players.First().AvatarMedium,
                 Url = player.Players.First().ProfileURL
             }
@@ -70,20 +73,19 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns Community, VAC, and Economy ban statuses for given players")]
         public async Task PlayerBans(string name = null)
         {
-            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
-                return;
+                throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
 
-            PlayerBans player = await SteamAPI.GetPlayerBans(new [] {(await SteamAPI.ResolveVanityURL(name))});
+            PlayerBans player = await depMap.Get<SteamAPI>().GetPlayerBans(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Community, VAC, and Economy ban statuses",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
             }
             .AddField(f =>
             {
@@ -133,15 +135,14 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
         {
-            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Steam), "No SteamKey found."));
-                return;
+                throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync("https://steamcommunity.com/profiles/" + (await SteamAPI.ResolveVanityURL(name)).ToString());
+            await ReplyAsync("https://steamcommunity.com/profiles/" + (await depMap.Get<SteamAPI>().ResolveVanityURL(name)).ToString());
         }
     }
 }

@@ -10,25 +10,28 @@ namespace iTool.DiscordBot.Modules
 {
     public class CSGO : ModuleBase
     {
+        DependencyMap depMap;
+
+        public CSGO(DependencyMap map) => this.depMap = map;
+
         [Command("csgostats")]
         [Summary("Returns the CS:GO stats of the player")]
         public async Task CSGOStats(string name = null)
         {
-            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(CSGO), "No SteamKey found."));
-                return;
+                throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await SteamAPI.GetUserStatsForGame(730, await SteamAPI.ResolveVanityURL(name))).Stats
+            Dictionary<string, int> dict = (await depMap.Get<SteamAPI>().GetUserStatsForGame(730, await depMap.Get<SteamAPI>().ResolveVanityURL(name))).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"CS:GO stats for {name}",
-                Color = new Color((uint)Program.Settings.Color)
+                Color = new Color((uint)depMap.Get<Settings>().Color)
             }
             .AddField(f =>
             {
@@ -72,21 +75,20 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns stats of the player's last CS:GO match")]
         public async Task CSGOLastMatch(string name = null)
         {
-            if (string.IsNullOrEmpty(Program.Settings.SteamKey))
+            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(CSGO), "No SteamKey found."));
-                return;
+                throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await SteamAPI.GetUserStatsForGame(730, await SteamAPI.ResolveVanityURL(name))).Stats
+            Dictionary<string, int> dict = (await depMap.Get<SteamAPI>().GetUserStatsForGame(730, await depMap.Get<SteamAPI>().ResolveVanityURL(name))).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Last match CS:GO stats for {name}",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
             }
             .AddField(f =>
             {

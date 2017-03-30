@@ -8,21 +8,20 @@ namespace iTool.DiscordBot.Modules
 {
     public class Weather : ModuleBase
     {
-        OpenWeatherClient Client;
-        public Weather(OpenWeatherClient client) => this.Client = client;
+        DependencyMap depMap;
+        public Weather(DependencyMap map) => this.depMap = map;
 
         [Command("weather")]
         [Summary("Returns info about the weather")]
         public async Task GetWeather(string input)
         {
-            if (string.IsNullOrEmpty(Program.Settings.OpenWeatherMapKey))
+            if (string.IsNullOrEmpty(depMap.Get<Settings>().OpenWeatherMapKey))
             {
-                await Program.Log(new LogMessage(LogSeverity.Warning, nameof(Weather), "No OpenWeatherMapKey found."));
-                return;
+                throw new Exception("No OpenWeatherMapKey found.");
             }
 
-            WeatherInfo weather = await Client.GetCurrentAsync(input);
-            switch (Program.Settings.TemperatureScale)
+            WeatherInfo weather = await depMap.Get<OpenWeatherClient>().GetCurrentAsync(input);
+            switch (depMap.Get<Settings>().TemperatureScale)
             {
                 case TemperatureScale.Kelvin:
                     weather.Temperature = weather.Temperature.ToKelvin();
@@ -40,7 +39,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = weather.City.Name + " " + weather.City.Country,
                 Color = new Color((uint)Colors.DodgerBlue),
-                ThumbnailUrl = Client.GetIconURL(weather.Weather.Icon),
+                ThumbnailUrl = depMap.Get<OpenWeatherClient>().GetIconURL(weather.Weather.Icon),
                 Footer = new EmbedFooterBuilder()
                     {
                         Text = "Powered by openweathermap.org",

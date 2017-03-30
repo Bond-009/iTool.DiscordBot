@@ -7,6 +7,10 @@ namespace iTool.DiscordBot.Modules
 {
     public class TagModule : ModuleBase
     {
+        DependencyMap depMap;
+
+        public TagModule(DependencyMap map) => this.depMap = map;
+
         [Command("createtag")]
         [Summary("Creates a new tag")]
         [RequireContext(ContextType.Guild)]
@@ -47,7 +51,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = tag.Title,
-                    Color = new Color((uint)Program.Settings.Color),
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
                     Description = tag.Text,
                     ImageUrl = tag.Attachment
                 });

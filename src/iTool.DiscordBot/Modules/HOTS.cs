@@ -8,6 +8,10 @@ namespace iTool.DiscordBot.Modules
 {
     public class HOTS : ModuleBase
     {
+        DependencyMap depMap;
+
+        public HOTS(DependencyMap map) => this.depMap = map;
+
         [Command("hotsstats")]
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(int region, string battleTag)
@@ -17,7 +21,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
                 Footer = new EmbedFooterBuilder()
@@ -61,7 +65,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color((uint)Program.Settings.Color),
+                Color = new Color((uint)depMap.Get<Settings>().Color),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }
