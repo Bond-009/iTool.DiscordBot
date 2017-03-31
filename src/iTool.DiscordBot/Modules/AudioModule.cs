@@ -5,22 +5,23 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class AudioModule : ModuleBase<ICommandContext>
+    public class AudioModule : ModuleBase
     {
         AudioService AudioService;
+
         public AudioModule(AudioService audioService) => this.AudioService = audioService;
 
         [Command("join", RunMode = RunMode.Async)]
         [Summary("Joins the voice channel")]
         [RequireContext(ContextType.Guild)]
-        public async Task Join() =>
-            await AudioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
+        public async Task Join()
+            => await AudioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
 
         [Command("stop", RunMode = RunMode.Async)]
         [Summary("Stops the audio blayback and leaves the voice channel")]
         [RequireContext(ContextType.Guild)]
-        public async Task Stop() =>
-            await AudioService.LeaveAudio(Context.Guild);
+        public async Task Stop()
+            => await AudioService.LeaveAudio(Context.Guild);
 
         [Command("play", RunMode = RunMode.Async)]
         [Summary("Plays an audio files")]

@@ -13,14 +13,14 @@ namespace iTool.DiscordBot.Modules
 
         [Command("weather")]
         [Summary("Returns info about the weather")]
-        public async Task GetWeather(string input)
+        public async Task GetWeather(string city, string countryCode = null)
         {
             if (string.IsNullOrEmpty(depMap.Get<Settings>().OpenWeatherMapKey))
             {
                 throw new Exception("No OpenWeatherMapKey found.");
             }
 
-            WeatherInfo weather = await depMap.Get<OpenWeatherClient>().GetCurrentAsync(input);
+            WeatherInfo weather = await depMap.Get<OpenWeatherClient>().GetCurrentAsync(city, countryCode);
             switch (depMap.Get<Settings>().TemperatureScale)
             {
                 case TemperatureScale.Kelvin:

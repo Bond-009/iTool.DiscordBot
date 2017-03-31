@@ -11,8 +11,7 @@ namespace iTool.DiscordBot
 {
     public class CommandHandler
     {
-        public CommandService CommandService { get; private set; }
-
+        private CommandService CommandService;
         private DiscordSocketClient client;
         private IDependencyMap map;
 
@@ -46,7 +45,7 @@ namespace iTool.DiscordBot
             if (message == null) { return; }
 
             // Check if the user is blacklisted. If so return
-            if (!Utils.IsNullOrEmpty(map.Get<Settings>().BlacklistedUsers))
+            if (!map.Get<Settings>().BlacklistedUsers.IsNullOrEmpty())
             {
                 if (map.Get<Settings>().BlacklistedUsers.Contains(message.Author.Id))
                 { return; }

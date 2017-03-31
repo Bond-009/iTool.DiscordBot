@@ -22,24 +22,16 @@ namespace iTool.DiscordBot.Modules
 
         [Command("help")]
         [Summary("Returns the enabled commands in lists of 25")]
-        public async Task Help(int help = 1)
+        public async Task Help(int page = 1)
         {
-            help -= 1;
-            if (help < 0) { return; }
-
-            EmbedBuilder b = new EmbedBuilder()
-            {
-                Title = "Commands",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
-                Description = "Returns the enabled commands in lists of 25.",
-                Url = "https://github.com/Bond-009/iTool.DiscordBot"
-            };
+            page -= 1;
+            if (page < 0) { return; }
 
             IEnumerable<CommandInfo> cmds = cmdService.Commands
                                         .GroupBy(x => x.Name)
                                         .Select(y => y.First())
                                         .OrderBy(x => x.Name)
-                                        .Skip(help * 25)
+                                        .Skip(page * 25)
                                         .Take(25);
 
             if (cmds.IsNullOrEmpty())
@@ -53,6 +45,14 @@ namespace iTool.DiscordBot.Modules
                 });
                 return;
             }
+
+            EmbedBuilder b = new EmbedBuilder()
+            {
+                Title = "Commands",
+                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Description = "Returns the enabled commands in lists of 25.",
+                Url = "https://github.com/Bond-009/iTool.DiscordBot"
+            };
 
             foreach (CommandInfo cmd in cmds)
             {
@@ -68,13 +68,13 @@ namespace iTool.DiscordBot.Modules
         [Command("cmdinfo")]
         [Alias("commandinfo")]
         [Summary("Returns info about the command")]
-        public async Task Help(string input)
+        public async Task Help(string cmdName)
         {
-            IEnumerable<CommandInfo> icmd = cmdService.Commands
-                                .Where(x => x.Name == input.ToLower()
-                                || x.Aliases.Contains(input));
+            CommandInfo cmd = cmdService.Commands
+                                .Where(x => x.Name == cmdName.ToLower()
+                                || x.Aliases.Contains(cmdName)).FirstOrDefault();
 
-            if (icmd.IsNullOrEmpty())
+            if (cmd == null)
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
@@ -85,7 +85,6 @@ namespace iTool.DiscordBot.Modules
                 });
                 return;
             }
-            CommandInfo cmd = icmd.First();
 
             EmbedBuilder b = new EmbedBuilder()
             {

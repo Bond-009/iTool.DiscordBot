@@ -10,6 +10,7 @@ namespace iTool.DiscordBot.Modules
     public class BfH : ModuleBase
     {
         DependencyMap depMap;
+
         public BfH(DependencyMap map) => this.depMap = map;
 
         [Command("bfhonlineplayers")]

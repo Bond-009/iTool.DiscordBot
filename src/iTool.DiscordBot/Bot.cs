@@ -16,32 +16,21 @@ namespace iTool.DiscordBot
 {
     public class Bot
     {
-        public static IUser Owner { get; private set; }
-
+        DependencyMap map = new DependencyMap();
         DiscordSocketClient discordClient;
         List<string> bannedWords;
 
-        DependencyMap map = new DependencyMap();
-
         public Bot(Settings Settings) => map.Add(Settings);
 
-        public async Task Start()
+        public async Task<bool> Start()
         {
             bannedWords = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt").ToList();
-
-            if (!File.Exists(Common.AudioIndexFile)) { AudioManager.ResetAudioIndex(); }
 
             if (string.IsNullOrEmpty(map.Get<Settings>().DiscordToken))
             {
                 Console.WriteLine("No token");
-
-                if (!Console.IsInputRedirected)
-                { Console.ReadKey(); }
-
-                return;
+                return false;
             }
-
-            
 
             discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
@@ -70,6 +59,8 @@ namespace iTool.DiscordBot
                 CaseSensitiveCommands = map.Get<Settings>().CaseSensitiveCommands,
                 DefaultRunMode = map.Get<Settings>().DefaultRunMode
             });
+
+            return true;
         }
 
         public async Task Stop()
@@ -78,7 +69,6 @@ namespace iTool.DiscordBot
             discordClient.Dispose();
 
             // TODO: Dispose OpenWeatherClient, BfHStatsClient and SteamAPI
-            //OpenWeatherClient.Dispose();
         }
 
         public Settings GetSettings() => map.Get<Settings>();
@@ -108,7 +98,6 @@ namespace iTool.DiscordBot
 
         private async Task DiscordClient_Ready()
         {
-            Owner = (await discordClient.GetApplicationInfoAsync()).Owner;
             Console.Title = discordClient.CurrentUser.ToString();
 
             if (!map.Get<Settings>().Game.IsNullOrEmpty())

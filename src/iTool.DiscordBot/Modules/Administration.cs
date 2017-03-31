@@ -11,9 +11,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Deletes the messages")]
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task DelMsgs(int number = 100)
-        {
-            await Context.Channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(number).Flatten());
-        }
+            => await Context.Channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(number).Flatten());
 
         [Command("delmsgs")]
         [Summary("Deletes the messages")]

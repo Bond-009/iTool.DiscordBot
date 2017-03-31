@@ -10,6 +10,7 @@ namespace iTool.DiscordBot.Modules
     public class Core : ModuleBase
     {
         DependencyMap depMap;
+
         public Core(DependencyMap map) => this.depMap = map;
 
         [Command("blacklist")]
@@ -29,12 +30,24 @@ namespace iTool.DiscordBot.Modules
                     blacklistedUsers.Add(user);
                 }
             }
-            await ReplyAsync("", embed: new EmbedBuilder()
+            if (blacklistedUsers.IsNullOrEmpty())
             {
-                Title = "Blacklist",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
-                Description = $"Succesfully blacklisted {string.Join(", ", blacklistedUsers)}."
-            });
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Blacklist",
+                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                    Description = $"Failed to blacklist {string.Join(", ", users.ToList())}."
+                });
+            }
+            else
+            {
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Blacklist",
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Description = $"Succesfully blacklisted {string.Join(", ", blacklistedUsers)}."
+                });
+            }
         }
 
         [Command("rmblacklist")]
@@ -52,12 +65,24 @@ namespace iTool.DiscordBot.Modules
                     rmBlacklistedUsers.Add(user);
                 }
             }
-            await ReplyAsync("", embed: new EmbedBuilder()
+            if (rmBlacklistedUsers.IsNullOrEmpty())
             {
-                Title = "Remove blacklist",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
-                Description = $"Succesfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
-            });
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Remove blacklist",
+                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                    Description = $"Failed to remove blacklist for {string.Join(", ", users.ToList())}."
+                });
+            }
+            else
+            {
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Remove blacklist",
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Description = $"Succesfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
+                });
+            }
         }
 
         [Command("trust")]

@@ -12,13 +12,18 @@ namespace iTool.DiscordBot
             {
                 new Thread(() => Input(tokenSource)).Start();
             }
-            Bot iToolBot  = new Bot(SettingsManager.LoadSettings());
-            iToolBot.Start().GetAwaiter().GetResult();
+            Bot iToolBot = new Bot(SettingsManager.LoadSettings());
+            if (iToolBot.Start().GetAwaiter().GetResult())
+            {
+                while (!tokenSource.Token.IsCancellationRequested) ;
 
-            while (!tokenSource.Token.IsCancellationRequested);
-
-            SettingsManager.SaveSettings(iToolBot.GetSettings());
-            iToolBot.Stop().GetAwaiter().GetResult();
+                SettingsManager.SaveSettings(iToolBot.GetSettings());
+                iToolBot.Stop().GetAwaiter().GetResult();
+            }
+            else
+            {
+                tokenSource.Cancel();
+            }
         }
 
         private static void Input(CancellationTokenSource tokenSource)
