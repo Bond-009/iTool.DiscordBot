@@ -260,5 +260,28 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Cake - Uncomment if you are using it
+# tools/
+
+#############
+## Windows detritus
+#############
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Mac crap
+.DS_Store
+
+# VS Code stuff
+.vscode
+
 # Extra
 docker-build

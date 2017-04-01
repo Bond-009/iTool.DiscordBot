@@ -7,23 +7,19 @@ namespace iTool.DiscordBot
     {
         public static void Main(string[] args)
         {
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            if (!Console.IsInputRedirected)
-            {
-                new Thread(() => Input(tokenSource)).Start();
-            }
             Bot iToolBot = new Bot(SettingsManager.LoadSettings());
-            if (iToolBot.Start().GetAwaiter().GetResult())
-            {
-                while (!tokenSource.Token.IsCancellationRequested) ;
+            if (!iToolBot.Start().GetAwaiter().GetResult())
+            { return; }
 
-                SettingsManager.SaveSettings(iToolBot.GetSettings());
-                iToolBot.Stop().GetAwaiter().GetResult();
-            }
-            else
-            {
-                tokenSource.Cancel();
-            }
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+            if (!Console.IsInputRedirected)
+            { new Thread(() => Input(tokenSource)).Start(); }
+
+            while (!tokenSource.Token.IsCancellationRequested) ;
+
+            SettingsManager.SaveSettings(iToolBot.GetSettings());
+            iToolBot.Stop().GetAwaiter().GetResult();
         }
 
         private static void Input(CancellationTokenSource tokenSource)

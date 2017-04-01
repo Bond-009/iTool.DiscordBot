@@ -29,6 +29,10 @@ namespace iTool.DiscordBot
             if (string.IsNullOrEmpty(map.Get<Settings>().DiscordToken))
             {
                 Console.WriteLine("No token");
+
+                if (!Console.IsInputRedirected)
+                { Console.ReadKey(); }
+
                 return false;
             }
 

@@ -1,2 +1,2 @@
-#!/usr/bin/env bash
-dotnet restore && dotnet build iTool.DiscordBot.sln
+#!/bin/sh
+dotnet restore && dotnet build iTool.DiscordBot.sln -c Release

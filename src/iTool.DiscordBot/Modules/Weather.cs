@@ -20,7 +20,7 @@ namespace iTool.DiscordBot.Modules
                 throw new Exception("No OpenWeatherMapKey found.");
             }
 
-            WeatherInfo weather = await depMap.Get<OpenWeatherClient>().GetCurrentAsync(city, countryCode);
+            WeatherInfo weather = await depMap.Get<OpenWeatherClient>().GetWeatherAsync(city, countryCode);
             switch (depMap.Get<Settings>().TemperatureScale)
             {
                 case TemperatureScale.Kelvin:

@@ -6,7 +6,6 @@ namespace iTool.DiscordBot
 {
     public class RequireTrustedUserAttribute : PreconditionAttribute
     {
-        // Override the CheckPermissions method
         public async override Task<PreconditionResult> CheckPermissions(ICommandContext context, CommandInfo command, IDependencyMap map)
         {
             if (map.Get<Settings>().TrustedUsers.Contains(context.User.Id)
