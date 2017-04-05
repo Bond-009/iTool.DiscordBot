@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class General : ModuleBase
+    public class General : ModuleBase<SocketCommandContext>
     {
         DependencyMap depMap;
         CommandService cmdService;
@@ -71,8 +70,7 @@ namespace iTool.DiscordBot.Modules
         public async Task Help(string cmdName)
         {
             CommandInfo cmd = cmdService.Commands
-                                .Where(x => x.Name == cmdName.ToLower()
-                                || x.Aliases.Contains(cmdName)).FirstOrDefault();
+                                .Where(x => x.Aliases.Contains(cmdName)).FirstOrDefault();
 
             if (cmd == null)
             {
@@ -103,7 +101,7 @@ namespace iTool.DiscordBot.Modules
                 b.AddField(f =>
                 {
                     f.Name = "Summary";
-                    f.Value = cmd.Summary ?? "No summary";
+                    f.Value = cmd.Summary;
                 });
             }
 
@@ -152,19 +150,17 @@ namespace iTool.DiscordBot.Modules
             {
                 f.Name = "Stats";
                 f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB" + Environment.NewLine +
-                            $"- Guilds: {(Context.Client as DiscordSocketClient).Guilds.Count}" + Environment.NewLine +
-                            $"- Channels: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
-                            $"- Users: {(Context.Client as DiscordSocketClient).Guilds.Sum(g => g.Users.Count)}";
+                            $"- Guilds: {Context.Client.Guilds.Count}" + Environment.NewLine +
+                            $"- Channels: {Context.Client.Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
+                            $"- Users: {Context.Client.Guilds.Sum(g => g.Users.Count)}";
             }));
         }
 
         [Command("invite")]
         [Summary("Returns the OAuth2 Invite URL of the bot")]
         public async Task Invite()
-        {
-            IApplication application = await Context.Client.GetApplicationInfoAsync();
-            await ReplyAsync($"A user with `MANAGE_SERVER` can invite me to your server here: <https://discordapp.com/oauth2/authorize?client_id={application.Id}&scope=bot>");
-        }
+            => await ReplyAsync("A user with `MANAGE_SERVER` can invite me to your server here: " +
+                $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>");
 
         [Command("leave")]
         [Summary("Instructs the bot to leave this Guild")]
@@ -180,9 +176,7 @@ namespace iTool.DiscordBot.Modules
         [Alias("echo")]
         [Summary("Echos the provided input")]
         public async Task Say([Remainder] string input)
-        {
-            await ReplyAsync(input);
-        }
+            => await ReplyAsync(input);
 
         [Command("setgame")]
         [Summary("Sets the bot's game")]
@@ -190,8 +184,7 @@ namespace iTool.DiscordBot.Modules
         public async Task SetGame([Remainder] string input)
         {
             depMap.Get<Settings>().Game = input;
-            await (Context.Client as DiscordSocketClient).SetGameAsync(input);
-            
+            await Context.Client.SetGameAsync(input);
         }
 
         // TODO: Allow without parm
@@ -203,32 +196,32 @@ namespace iTool.DiscordBot.Modules
             {
                 Color = new Color((uint)depMap.Get<Settings>().Color),
                 ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
-            };
-            b.AddField(f =>
+            }
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Username";
                 f.Value = user.Username;
-            });
-            b.AddField(f =>
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Discriminator";
                 f.Value = user.Discriminator;
-            });
-            b.AddField(f =>
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Id";
                 f.Value = user.Id.ToString();
-            });
-            b.AddField(f =>
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Bot";
                 f.Value = user.IsBot.ToString();
-            });
-            b.AddField(f =>
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Created at";

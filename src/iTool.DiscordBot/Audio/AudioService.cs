@@ -14,19 +14,13 @@ namespace iTool.DiscordBot.Audio
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
         {
-            IAudioClient client;
-            if (ConnectedChannels.TryGetValue(guild.Id, out client))
-            {
-                return;
-            }
-            if (target.Guild.Id != guild.Id)
+            if (ConnectedChannels.TryGetValue(guild.Id, out IAudioClient client)
+                || target.Guild.Id != guild.Id)
             {
                 return;
             }
 
-            IAudioClient audioClient = await target.ConnectAsync();
-
-            if (ConnectedChannels.TryAdd(guild.Id, audioClient))
+            if (ConnectedChannels.TryAdd(guild.Id, await target.ConnectAsync()))
             {
                 //await Program.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Connected to voice on {guild.Name}."));
             }
@@ -34,8 +28,7 @@ namespace iTool.DiscordBot.Audio
 
         public async Task LeaveAudio(IGuild guild)
         {
-            IAudioClient client;
-            if (ConnectedChannels.TryRemove(guild.Id, out client))
+            if (ConnectedChannels.TryRemove(guild.Id, out IAudioClient client))
             {
                 await client.StopAsync();
                 //await Program.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Disconnected from voice on {guild.Name}."));
@@ -49,8 +42,8 @@ namespace iTool.DiscordBot.Audio
                 //await Program.Log(new LogMessage(LogSeverity.Error, nameof(AudioService), $"File not found {path}"));
                 return;
             }
-            IAudioClient client;
-            if (ConnectedChannels.TryGetValue(guild.Id, out client))
+
+            if (ConnectedChannels.TryGetValue(guild.Id, out IAudioClient client))
             {
                 //await Program.Log(new LogMessage(LogSeverity.Debug, nameof(AudioService), $"Starting playback of {path} in {guild.Name}"));
                 Stream output = CreateStream(path).StandardOutput.BaseStream;
@@ -69,7 +62,7 @@ namespace iTool.DiscordBot.Audio
             }
             else { filename = "ffmpeg"; }
             
-            return Process.Start(new ProcessStartInfo
+            return Process.Start(new ProcessStartInfo()
             {
                 FileName = filename,
                 Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",

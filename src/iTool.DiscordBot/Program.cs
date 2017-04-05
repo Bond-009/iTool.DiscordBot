@@ -5,26 +5,26 @@ namespace iTool.DiscordBot
 {
     public static class DiscordBot
     {
+        static bool running = true;
+
         public static void Main(string[] args)
         {
             Bot iToolBot = new Bot(SettingsManager.LoadSettings());
             if (!iToolBot.Start().GetAwaiter().GetResult())
             { return; }
 
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-
             if (!Console.IsInputRedirected)
-            { new Thread(() => Input(tokenSource)).Start(); }
+            { new Thread(Input).Start(); }
 
-            while (!tokenSource.Token.IsCancellationRequested) ;
+            while (running) ;
 
             SettingsManager.SaveSettings(iToolBot.GetSettings());
             iToolBot.Stop().GetAwaiter().GetResult();
         }
 
-        private static void Input(CancellationTokenSource tokenSource)
+        static void Input()
         {
-            while (!tokenSource.Token.IsCancellationRequested)
+            while (running)
             {
                 string input = Console.ReadLine().ToLower();
                 switch (input)
@@ -32,7 +32,7 @@ namespace iTool.DiscordBot
                     case "quit":
                     case "exit":
                     case "stop":
-                        tokenSource.Cancel();
+                        running = false;
                         break;
                     case "clear":
                     case "cls":
