@@ -1,25 +1,29 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 
 namespace iTool.DiscordBot
 {
-    public static class DiscordBot
+    public static class Program
     {
         static bool running = true;
+        public static ILoggerFactory LoggerFactory;
 
         public static void Main(string[] args)
         {
-            Bot iToolBot = new Bot(SettingsManager.LoadSettings());
-            if (!iToolBot.Start().GetAwaiter().GetResult())
-            { return; }
+            Bot iToolBot = new Bot();
+            iToolBot.Start().GetAwaiter().GetResult();
+
+            Console.CancelKeyPress += Console_CancelKeyPress;
 
             if (!Console.IsInputRedirected)
             { new Thread(Input).Start(); }
 
             while (running) ;
 
-            SettingsManager.SaveSettings(iToolBot.GetSettings());
             iToolBot.Stop().GetAwaiter().GetResult();
+
+            Environment.Exit(0);
         }
 
         static void Input()
@@ -43,6 +47,12 @@ namespace iTool.DiscordBot
                         break;
                 }
             }
+        }
+
+        static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            e.Cancel = true;
+            running = false;
         }
     }
 }

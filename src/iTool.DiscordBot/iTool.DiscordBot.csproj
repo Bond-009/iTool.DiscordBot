@@ -10,10 +10,12 @@
   <ItemGroup>
     <PackageReference Include="BfStats.Net" Version="0.2.4" />
     <PackageReference Include="BfStats.Net.BfH" Version="0.2.4" />
-    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2-00679" />
-    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc2-00679" />
+    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2-00699" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc2-00699" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="OpenWeather.Net" Version="0.6.4" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.0.1" />
     <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
     <PackageReference Include="YamlDotNet.NetCore" Version="1.0.0" />
   </ItemGroup>

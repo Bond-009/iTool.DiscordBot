@@ -22,7 +22,7 @@ namespace iTool.DiscordBot.Audio
 
             if (ConnectedChannels.TryAdd(guild.Id, await target.ConnectAsync()))
             {
-                //await Program.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Connected to voice on {guild.Name}."));
+                await Logger.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Connected to voice on {guild.Name}."));
             }
         }
 
@@ -31,7 +31,7 @@ namespace iTool.DiscordBot.Audio
             if (ConnectedChannels.TryRemove(guild.Id, out IAudioClient client))
             {
                 await client.StopAsync();
-                //await Program.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Disconnected from voice on {guild.Name}."));
+                await Logger.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Disconnected from voice on {guild.Name}."));
             }
         }
 
@@ -39,15 +39,15 @@ namespace iTool.DiscordBot.Audio
         {
             if (!File.Exists(path))
             {
-                //await Program.Log(new LogMessage(LogSeverity.Error, nameof(AudioService), $"File not found {path}"));
+                await Logger.Log(new LogMessage(LogSeverity.Error, nameof(AudioService), $"File not found {path}"));
                 return;
             }
 
             if (ConnectedChannels.TryGetValue(guild.Id, out IAudioClient client))
             {
-                //await Program.Log(new LogMessage(LogSeverity.Debug, nameof(AudioService), $"Starting playback of {path} in {guild.Name}"));
+                await Logger.Log(new LogMessage(LogSeverity.Debug, nameof(AudioService), $"Starting playback of {path} in {guild.Name}"));
                 Stream output = CreateStream(path).StandardOutput.BaseStream;
-                AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music, 1920);
+                AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music);
                 await output.CopyToAsync(stream);
                 await stream.FlushAsync().ConfigureAwait(false);
             }

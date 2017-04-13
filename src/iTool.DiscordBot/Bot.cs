@@ -20,20 +20,17 @@ namespace iTool.DiscordBot
         DiscordSocketClient discordClient;
         List<string> bannedWords;
 
-        public Bot(Settings Settings) => map.Add(Settings);
-
-        public async Task<bool> Start()
+        public async Task Start()
         {
+            map.Add(Settings.Load());
+            Logger.LogLevel = map.Get<Settings>().LogLevel;
+
             bannedWords = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt").ToList();
 
             if (string.IsNullOrEmpty(map.Get<Settings>().DiscordToken))
             {
                 Console.WriteLine("No token");
-
-                if (!Console.IsInputRedirected)
-                { Console.ReadKey(); }
-
-                return false;
+                return;
             }
 
             discordClient = new DiscordSocketClient(new DiscordSocketConfig()
@@ -45,7 +42,7 @@ namespace iTool.DiscordBot
                 MessageCacheSize = map.Get<Settings>().MessageCacheSize
             });
 
-            discordClient.Log += Log;
+            discordClient.Log += Logger.Log;
             discordClient.MessageReceived += DiscordClient_MessageReceived;
             discordClient.Ready += DiscordClient_Ready;
 
@@ -63,8 +60,6 @@ namespace iTool.DiscordBot
                 CaseSensitiveCommands = map.Get<Settings>().CaseSensitiveCommands,
                 DefaultRunMode = map.Get<Settings>().DefaultRunMode
             });
-
-            return true;
         }
 
         public async Task Stop()
@@ -73,31 +68,8 @@ namespace iTool.DiscordBot
             discordClient.Dispose();
 
             // TODO: Dispose OpenWeatherClient, BfHStatsClient and SteamAPI
-        }
 
-        public Settings GetSettings() => map.Get<Settings>();
-
-        public Task Log(LogMessage msg)
-        {
-            if (msg.Severity > map.Get<Settings>().LogLevel)
-            { return Task.CompletedTask; }
-
-            switch(msg.Severity)
-            {
-                case LogSeverity.Critical:
-                case LogSeverity.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogSeverity.Warning:
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    break;
-            }
-
-            Console.WriteLine(msg.ToString());
-
-            Console.ResetColor();
-
-            return Task.CompletedTask;
+            Settings.Save(map.Get<Settings>());
         }
 
         private async Task DiscordClient_Ready()
@@ -112,7 +84,7 @@ namespace iTool.DiscordBot
 
         private async Task DiscordClient_MessageReceived(SocketMessage arg)
         {
-            await Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), arg.Author.Username + ": " + arg.Content));
+            await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), arg.Author.Username + ": " + arg.Content));
 
             if (map.Get<Settings>().AntiSwear && !bannedWords.IsNullOrEmpty()
                 && bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))

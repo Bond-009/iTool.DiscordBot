@@ -30,7 +30,7 @@ namespace iTool.DiscordBot
 
                 foreach (ModuleInfo moduleInfo in CommandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
                 {
-                    //await Program.Log(new LogMessage(LogSeverity.Info, nameof(CommandHandler), $"Disabled {moduleInfo.Name} module"));
+                    await Logger.Log(new LogMessage(LogSeverity.Info, nameof(CommandHandler), $"Disabled {moduleInfo.Name} module"));
                     await CommandService.RemoveModuleAsync(moduleInfo);
                 }
             }
@@ -60,7 +60,7 @@ namespace iTool.DiscordBot
             { return; }
 
             // Execute the Command, store the result
-            IResult result = await CommandService.ExecuteAsync(new CommandContext(client, message), argPos, map);
+            IResult result = await CommandService.ExecuteAsync(new SocketCommandContext(client, message), argPos, map);
 
             // If the command failed, notify the user
             if (!result.IsSuccess)
@@ -68,7 +68,7 @@ namespace iTool.DiscordBot
                 if (result is PreconditionResult || result is SearchResult)
                 { return; }
 
-                //await Program.Log(new LogMessage(LogSeverity.Error, nameof(CommandHandler), result.ErrorReason));
+                await Logger.Log(new LogMessage(LogSeverity.Error, nameof(CommandHandler), result.ErrorReason));
 
                 await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                 {

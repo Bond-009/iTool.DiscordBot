@@ -141,7 +141,7 @@ namespace iTool.DiscordBot.Modules
             .AddField(f =>
             {
                 f.Name = "Info";
-                f.Value = $"- Owner: {application.Owner.Username} (ID {application.Owner.Id})" + Environment.NewLine +
+                f.Value = $"- Owner: {application.Owner.ToString()} (ID {application.Owner.Id})" + Environment.NewLine +
                             $"- Library: Discord.Net ({DiscordConfig.Version})\n" +
                             $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
                             $"- Uptime: {Utils.GetUptime().ToString(@"dd\.hh\:mm\:ss")}";
