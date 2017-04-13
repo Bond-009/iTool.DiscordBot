@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +66,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("cmdinfo")]
-        [Alias("commandinfo")]
+        [Alias("commandinfo", "cmdinformation", "commandinformation")]
         [Summary("Returns info about the command")]
         public async Task Help(string cmdName)
         {
@@ -129,6 +130,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("info")]
+        [Alias("information")]
         [Summary("Returns info about the bot")]
         public async Task Info()
         {
@@ -136,6 +138,7 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
+                Title = "Info",
                 Color = new Color((uint)depMap.Get<Settings>().Color)
             }
             .AddField(f =>
@@ -187,13 +190,18 @@ namespace iTool.DiscordBot.Modules
             await Context.Client.SetGameAsync(input);
         }
 
-        // TODO: Allow without parm
         [Command("userinfo")]
         [Summary("Returns info about the user")]
-        public async Task UserInfo(IGuildUser user)
+        public async Task UserInfo(SocketUser user = null)
         {
+            if (user == null)
+            {
+                user = Context.User;
+            }
+
             EmbedBuilder b = new EmbedBuilder()
             {
+                Title = $"Info about {user.ToString()}",
                 Color = new Color((uint)depMap.Get<Settings>().Color),
                 ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
             }
@@ -202,8 +210,17 @@ namespace iTool.DiscordBot.Modules
                 f.IsInline = true;
                 f.Name = "Username";
                 f.Value = user.Username;
-            })
-            .AddField(f =>
+            });
+            if (user is SocketGuildUser gUser && gUser.Nickname != null)
+            {
+                b.AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Nickname";
+                    f.Value = gUser.Nickname;
+                });
+            }
+            b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Discriminator";
@@ -218,8 +235,28 @@ namespace iTool.DiscordBot.Modules
             .AddField(f =>
             {
                 f.IsInline = true;
-                f.Name = "Bot";
-                f.Value = user.IsBot.ToString();
+                f.Name = "Status";
+                f.Value = user.Status.ToString();
+            });
+            if (user is SocketGuildUser gUser2)
+            {
+                b.AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Voice status";
+                    f.Value = $"- Deafened: {gUser2.IsDeafened.ToString()}" + Environment.NewLine +
+                        $"- Musted: {gUser2.IsMuted.ToString()}" + Environment.NewLine +
+                        $"- SelfDeafened: {gUser2.IsSelfDeafened.ToString()}" + Environment.NewLine +
+                        $"- SelfMuted: {gUser2.IsSelfMuted.ToString()}" + Environment.NewLine +
+                        $"- Suppressed: {gUser2.IsSuppressed.ToString()}";
+                });
+            }
+            b.AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Bot/Webhook";
+                f.Value = $"- Bot: {user.IsBot.ToString()}" + Environment.NewLine +
+                    $"- Webhook: {user.IsWebhook.ToString()}";
             })
             .AddField(f =>
             {
@@ -227,22 +264,16 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Created at";
                 f.Value = user.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             });
-            if (user.JoinedAt == null)
+            if (user is SocketGuildUser gUser3)
             {
                 b.AddField(f =>
                 {
                     f.IsInline = true;
                     f.Name = "Joined at";
-                    f.Value = user.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
+                    f.Value = gUser3.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
                 });
             }
             await ReplyAsync("", embed: b);
         }
-
-        //[Command("quit", RunMode = RunMode.Async)]
-        //[Alias("exit")]
-        //[Summary("Quits the bot")]
-        //[RequireTrustedUser]
-        //public async Task Quit() => await Program.Quit();
     }
 }

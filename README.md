@@ -9,8 +9,8 @@ Just a Discord bot
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | help | | | Returns the enabled commands in lists of 25 |
-| cmdinfo | commandinfo | | Returns info about the command |
-| info | | | Returns info about the bot |
+| cmdinfo | commandinfo, cmdinformation, commandinformation | | Returns info about the command |
+| info | information | | Returns info about the bot |
 | invite | | | Returns the OAuth2 Invite URL of the bot |
 | leave | | GuildPermission.ManageGuild | Instructs the bot to leave this Guild |
 | say | echo | | Echos the provided input |
