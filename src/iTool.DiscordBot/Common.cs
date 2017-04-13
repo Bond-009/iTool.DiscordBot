@@ -12,5 +12,6 @@ namespace iTool.DiscordBot
         public static readonly string GuildsDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "guilds";
         public static readonly string BlackListFile = Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt";
         public static readonly string TrustedListFile = Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt";
+        public static readonly string LogsDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "logs";
     }
 }

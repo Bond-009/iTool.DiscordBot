@@ -16,7 +16,6 @@ Just a Discord bot
 | say | echo | | Echos the provided input |
 | setgame | | **Trusted user** | Sets the bot's game |
 | userinfo | | | Returns info about the user |
-| quit | exit | **Trusted user** | Quits the bot |
 
 ## Administration commands
 
