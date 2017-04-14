@@ -17,21 +17,21 @@ namespace iTool.DiscordBot.Steam
             httpClient.BaseAddress = new Uri("https://api.steampowered.com");
         }
 
-        public async Task<PlayerBans> GetPlayerBans(ulong[] steamIDs)
+        public async Task<PlayerList<PlayerBan>> GetPlayerBans(ulong[] steamIDs)
         {
             using (Stream stream = await httpClient.GetStreamAsync(
                 $"/ISteamUser/GetPlayerBans/v1/?key={key}&steamids={string.Join(",", steamIDs)}&format=xml"))
             {
-                return (PlayerBans)new XmlSerializer(typeof(PlayerBans)).Deserialize(stream);
+                return (PlayerList<PlayerBan>)new XmlSerializer(typeof(PlayerList<PlayerBan>)).Deserialize(stream);
             }
         }
 
-        public async Task<PlayerSummaries> GetPlayerSummaries(ulong[] steamIDs)
+        public async Task<PlayerList<PlayerSummary>> GetPlayerSummaries(ulong[] steamIDs)
         {
             using (Stream stream = await httpClient.GetStreamAsync(
                 $"/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={string.Join(",", steamIDs)}&format=xml"))
             {
-                return (PlayerSummaries)new XmlSerializer(typeof(PlayerSummaries)).Deserialize(stream);
+                return (PlayerList<PlayerSummary>)new XmlSerializer(typeof(PlayerList<PlayerSummary>)).Deserialize(stream);
             }
         }
 

@@ -13,7 +13,6 @@ namespace iTool.DiscordBot.Modules
 
         [Command("createtag")]
         [Summary("Creates a new tag")]
-        [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task CreateTag(string name, [Remainder]string text = "")
         {

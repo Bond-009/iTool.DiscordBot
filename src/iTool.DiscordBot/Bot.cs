@@ -16,18 +16,17 @@ namespace iTool.DiscordBot
 {
     public class Bot
     {
-        DependencyMap map = new DependencyMap();
         DiscordSocketClient discordClient;
         List<string> bannedWords;
+        Settings settings = Settings.Load();
 
         public async Task Start()
         {
-            map.Add(Settings.Load());
-            Logger.LogLevel = map.Get<Settings>().LogLevel;
+            Logger.LogLevel = settings.LogLevel;
 
             bannedWords = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt").ToList();
 
-            if (string.IsNullOrEmpty(map.Get<Settings>().DiscordToken))
+            if (string.IsNullOrEmpty(settings.DiscordToken))
             {
                 Console.WriteLine("No token");
                 return;
@@ -35,30 +34,32 @@ namespace iTool.DiscordBot
 
             discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
-                AlwaysDownloadUsers = map.Get<Settings>().AlwaysDownloadUsers,
-                ConnectionTimeout = map.Get<Settings>().ConnectionTimeout,
-                DefaultRetryMode = map.Get<Settings>().DefaultRetryMode,
-                LogLevel = map.Get<Settings>().LogLevel,
-                MessageCacheSize = map.Get<Settings>().MessageCacheSize
+                AlwaysDownloadUsers = settings.AlwaysDownloadUsers,
+                ConnectionTimeout = settings.ConnectionTimeout,
+                DefaultRetryMode = settings.DefaultRetryMode,
+                LogLevel = settings.LogLevel,
+                MessageCacheSize = settings.MessageCacheSize
             });
 
             discordClient.Log += Logger.Log;
             discordClient.MessageReceived += DiscordClient_MessageReceived;
             discordClient.Ready += DiscordClient_Ready;
 
-            await discordClient.LoginAsync(TokenType.Bot, map.Get<Settings>().DiscordToken);
+            await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
             await discordClient.StartAsync();
 
+            DependencyMap map = new DependencyMap();
             map.Add(discordClient);
             map.Add(new AudioService());
             map.Add(new BfHStatsClient(true));
-            map.Add(new OpenWeatherClient(map.Get<Settings>().OpenWeatherMapKey));
-            map.Add(new SteamAPI(map.Get<Settings>().SteamKey));
+            map.Add(new OpenWeatherClient(settings.OpenWeatherMapKey));
+            map.Add(settings);
+            map.Add(new SteamAPI(settings.SteamKey));
 
             await new CommandHandler().Install(map, new CommandServiceConfig()
             {
-                CaseSensitiveCommands = map.Get<Settings>().CaseSensitiveCommands,
-                DefaultRunMode = map.Get<Settings>().DefaultRunMode
+                CaseSensitiveCommands = settings.CaseSensitiveCommands,
+                DefaultRunMode = settings.DefaultRunMode
             });
         }
 
@@ -67,18 +68,16 @@ namespace iTool.DiscordBot
             await discordClient.LogoutAsync();
             discordClient.Dispose();
 
-            // TODO: Dispose OpenWeatherClient, BfHStatsClient and SteamAPI
-
-            Settings.Save(map.Get<Settings>());
+            Settings.Save(settings);
         }
 
         private async Task DiscordClient_Ready()
         {
             Console.Title = discordClient.CurrentUser.ToString();
 
-            if (!map.Get<Settings>().Game.IsNullOrEmpty())
+            if (!settings.Game.IsNullOrEmpty())
             {
-                await discordClient.SetGameAsync(map.Get<Settings>().Game);
+                await discordClient.SetGameAsync(settings.Game);
             }
         }
 
@@ -86,7 +85,7 @@ namespace iTool.DiscordBot
         {
             await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), arg.Author.Username + ": " + arg.Content));
 
-            if (map.Get<Settings>().AntiSwear && !bannedWords.IsNullOrEmpty()
+            if (settings.AntiSwear && !bannedWords.IsNullOrEmpty()
                 && bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
             {
                 await arg.DeleteAsync();

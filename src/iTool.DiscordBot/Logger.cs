@@ -8,9 +8,9 @@ namespace iTool.DiscordBot
 {
     public static class Logger
     {
-        static ILoggerFactory LoggerFactory = new LoggerFactory()
-                .AddFile(Common.LogsDir + Path.DirectorySeparatorChar + "log-{Date}.log");
-        static ILogger logger = LoggerFactory.CreateLogger(string.Empty);
+        static ILogger logger = new LoggerFactory()
+                .AddFile(Common.LogsDir + Path.DirectorySeparatorChar + "log-{Date}.log")
+                .CreateLogger(string.Empty);
         public static LogSeverity LogLevel { get; internal set; } = LogSeverity.Verbose;
 
         public static Task Log(LogMessage msg)

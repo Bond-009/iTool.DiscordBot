@@ -1,11 +1,7 @@
-using System.Xml.Serialization;
-
 namespace iTool.DiscordBot.Steam
 {
-    public class PlayerBan
+    public class PlayerBan : Player
     {
-        [XmlElement("SteamId")]
-        public ulong SteamID { get; set; }
         public bool CommunityBanned { get; set; }
         public bool VACBanned { get; set; }
         public int NumberOfVACBans { get; set; }

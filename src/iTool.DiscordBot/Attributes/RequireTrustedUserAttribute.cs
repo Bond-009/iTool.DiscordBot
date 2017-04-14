@@ -13,10 +13,7 @@ namespace iTool.DiscordBot
             {
                 return PreconditionResult.FromSuccess();
             }
-            else
-            {
-                return PreconditionResult.FromError("You must be a trusted user or the owner of the bot to run this command.");
-            }
+            return PreconditionResult.FromError("You must be a trusted user or the owner of the bot to run this command.");
         }
     }
 }

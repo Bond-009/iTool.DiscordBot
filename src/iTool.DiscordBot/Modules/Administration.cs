@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,23 +10,30 @@ namespace iTool.DiscordBot.Modules
     {
         [Command("delmsgs")]
         [Summary("Deletes the messages")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
+        [RequireBotPermission(ChannelPermission.ManageMessages)]
+        [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DelMsgs(int number = 100)
-            => await Context.Channel.DeleteMessagesAsync(await Context.Channel.GetMessagesAsync(number).Flatten());
+            => await Context.Channel.DeleteMessagesAsync(
+                (await Context.Channel.GetMessagesAsync(number).Flatten())
+                    .Where(x => DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));
 
         [Command("delmsgs")]
         [Summary("Deletes the messages")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
+        [RequireBotPermission(ChannelPermission.ManageMessages)]
+        [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DelMsgs(params IUser[] users)
         {
             foreach (IUser user in users)
             {
-                await Context.Channel.DeleteMessagesAsync((await Context.Channel.GetMessagesAsync().Flatten()).Where(Dmsg => Dmsg.Author.Id == user.Id));
+                await Context.Channel.DeleteMessagesAsync((await Context.Channel.GetMessagesAsync().Flatten())
+                .Where(x => x.Author.Id == user.Id 
+                    && DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));
             }
         }
 
         [Command("kick")]
         [Summary("Kicks the user")]
+        [RequireBotPermission(GuildPermission.KickMembers)]
         [RequireUserPermission(GuildPermission.KickMembers)]
         public async Task Kick(params IGuildUser[] users)
         {
@@ -37,6 +45,7 @@ namespace iTool.DiscordBot.Modules
 
         [Command("ban")]
         [Summary("Bans the user")]
+        [RequireBotPermission(GuildPermission.BanMembers)]
         [RequireUserPermission(GuildPermission.BanMembers)]
         public async Task Ban(params IGuildUser[] users)
         {

@@ -8,11 +8,9 @@ On Windows you need to run: `dotnet restore && dotnet build -c Release`
 
 ## Self-contained
 
-You can build self-contained versions for Debian 8 x64, Ubuntu 16.10 x64 and Windows 10 x64
+You can build self-contained versions for Debian 8 x64 and Windows 10 x64
 
 Debian 8 x64: `dotnet restore && dotnet build -c Release -r debian.8-x64`
-
-Ubuntu 16.10: `dotnet restore && dotnet build -c Release -r ubuntu.16.10-x64`
 
 Windows 10: `dotnet restore && dotnet build -c Release -r win10-x64`
 

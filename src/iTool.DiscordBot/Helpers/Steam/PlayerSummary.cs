@@ -2,10 +2,8 @@ using System.Xml.Serialization;
 
 namespace iTool.DiscordBot.Steam
 {
-    public class PlayerSummary
+    public class PlayerSummary : Player
     {
-        [XmlElement("steamid")]
-        public ulong SteamID { get; set; }
         [XmlElementAttribute("communityvisibilitystate")]
         public CommunityVisibilityState CommunityVisibilityState { get; set; }
         [XmlElement("profilestate")]

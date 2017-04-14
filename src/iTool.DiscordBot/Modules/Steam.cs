@@ -39,7 +39,7 @@ namespace iTool.DiscordBot.Modules
             }
 
             if (name == null) { name = Context.User.Username; }
-            PlayerSummaries player = await depMap.Get<SteamAPI>().GetPlayerSummaries(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
+            PlayerList<PlayerSummary> player = await depMap.Get<SteamAPI>().GetPlayerSummaries(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -80,7 +80,7 @@ namespace iTool.DiscordBot.Modules
 
             if (name == null) { name = Context.User.Username; }
 
-            PlayerBans player = await depMap.Get<SteamAPI>().GetPlayerBans(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
+            PlayerList<PlayerBan> player = await depMap.Get<SteamAPI>().GetPlayerBans(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {

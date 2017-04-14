@@ -167,7 +167,6 @@ namespace iTool.DiscordBot.Modules
 
         [Command("leave")]
         [Summary("Instructs the bot to leave this Guild")]
-        [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Leave()
         {
@@ -199,6 +198,12 @@ namespace iTool.DiscordBot.Modules
                 user = Context.User;
             }
 
+            SocketGuildUser gUser = null;
+            if (user is SocketGuildUser tGUser)
+            {
+                gUser = tGUser;
+            }
+
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"Info about {user.ToString()}",
@@ -211,7 +216,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Username";
                 f.Value = user.Username;
             });
-            if (user is SocketGuildUser gUser && gUser.Nickname != null)
+            if (gUser != null && gUser.Nickname != null)
             {
                 b.AddField(f =>
                 {
@@ -238,17 +243,17 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Status";
                 f.Value = user.Status.ToString();
             });
-            if (user is SocketGuildUser gUser2)
+            if (gUser != null)
             {
                 b.AddField(f =>
                 {
                     f.IsInline = true;
                     f.Name = "Voice status";
-                    f.Value = $"- Deafened: {gUser2.IsDeafened.ToString()}" + Environment.NewLine +
-                        $"- Musted: {gUser2.IsMuted.ToString()}" + Environment.NewLine +
-                        $"- SelfDeafened: {gUser2.IsSelfDeafened.ToString()}" + Environment.NewLine +
-                        $"- SelfMuted: {gUser2.IsSelfMuted.ToString()}" + Environment.NewLine +
-                        $"- Suppressed: {gUser2.IsSuppressed.ToString()}";
+                    f.Value = $"- Deafened: {gUser.IsDeafened.ToString()}" + Environment.NewLine +
+                        $"- Musted: {gUser.IsMuted.ToString()}" + Environment.NewLine +
+                        $"- SelfDeafened: {gUser.IsSelfDeafened.ToString()}" + Environment.NewLine +
+                        $"- SelfMuted: {gUser.IsSelfMuted.ToString()}" + Environment.NewLine +
+                        $"- Suppressed: {gUser.IsSuppressed.ToString()}";
                 });
             }
             b.AddField(f =>
@@ -264,13 +269,13 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Created at";
                 f.Value = user.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             });
-            if (user is SocketGuildUser gUser3)
+            if (gUser != null)
             {
                 b.AddField(f =>
                 {
                     f.IsInline = true;
                     f.Name = "Joined at";
-                    f.Value = gUser3.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
+                    f.Value = gUser.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
                 });
             }
             await ReplyAsync("", embed: b);
