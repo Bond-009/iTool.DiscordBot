@@ -1,13 +1,12 @@
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Core : ModuleBase
+    public class Core : ModuleBase<SocketCommandContext>
     {
         DependencyMap depMap;
 
@@ -24,7 +23,7 @@ namespace iTool.DiscordBot.Modules
             {
                 if (!depMap.Get<Settings>().TrustedUsers.Contains(user.Id)
                     && !depMap.Get<Settings>().BlacklistedUsers.Contains(user.Id)&& user.Id
-                    != (await depMap.Get<DiscordSocketClient>().GetApplicationInfoAsync()).Owner.Id)
+                    != (await Context.Client.GetApplicationInfoAsync()).Owner.Id)
                 {
                     depMap.Get<Settings>().BlacklistedUsers.Add(user.Id);
                     blacklistedUsers.Add(user);
@@ -45,7 +44,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Blacklist",
                     Color = new Color((uint)depMap.Get<Settings>().Color),
-                    Description = $"Succesfully blacklisted {string.Join(", ", blacklistedUsers)}."
+                    Description = $"Successfully blacklisted {string.Join(", ", blacklistedUsers)}."
                 });
             }
         }
@@ -80,7 +79,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Remove blacklist",
                     Color = new Color((uint)depMap.Get<Settings>().Color),
-                    Description = $"Succesfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
+                    Description = $"Successfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
                 });
             }
         }
@@ -102,7 +101,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = "Trust",
                 Color = new Color((uint)depMap.Get<Settings>().Color),
-                Description = $"Succesfully added {string.Join(", ", users.ToList())} to the list of trusted users."
+                Description = $"Successfully added {string.Join(", ", users.ToList())} to the list of trusted users."
             });
         }
     }

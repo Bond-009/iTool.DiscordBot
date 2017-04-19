@@ -90,8 +90,8 @@ namespace iTool.DiscordBot.Modules
                 Title = "Command info",
                 Color = new Color((uint)depMap.Get<Settings>().Color),
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
-            };
-            b.AddField(f =>
+            }
+            .AddField(f =>
             {
                 f.Name = "Name";
                 f.Value = cmd.Name;

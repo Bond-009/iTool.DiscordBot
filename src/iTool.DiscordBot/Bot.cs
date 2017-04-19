@@ -1,10 +1,8 @@
-using BfStats.BfH;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using iTool.DiscordBot.Audio;
 using iTool.DiscordBot.Steam;
-using OpenWeather;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,14 +47,14 @@ namespace iTool.DiscordBot
             await discordClient.StartAsync();
 
             DependencyMap map = new DependencyMap();
-            map.Add(discordClient);
             map.Add(new AudioService());
-            map.Add(new BfHStatsClient(true));
-            map.Add(new OpenWeatherClient(settings.OpenWeatherMapKey));
+            map.Add(new BfStats.BfH.BfHStatsClient(true));
+            map.Add(new HOTSLogs.HOTSLogsClient());
+            map.Add(new OpenWeather.OpenWeatherClient(settings.OpenWeatherMapKey));
             map.Add(settings);
             map.Add(new SteamAPI(settings.SteamKey));
 
-            await new CommandHandler().Install(map, new CommandServiceConfig()
+            await new CommandHandler().Install(map, discordClient, new CommandServiceConfig()
             {
                 CaseSensitiveCommands = settings.CaseSensitiveCommands,
                 DefaultRunMode = settings.DefaultRunMode

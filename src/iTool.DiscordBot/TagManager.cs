@@ -17,7 +17,7 @@ namespace iTool.DiscordBot
             {
                 return new Deserializer().Deserialize<List<Tag>>(File.ReadAllText(Common.GuildsDir + Path.DirectorySeparatorChar + guildID + Path.DirectorySeparatorChar + "tags.yaml"))
                             .Where(x => x.Title == name.ToLower())
-                            .First();
+                            .FirstOrDefault();
             }
             catch (Exception ex)
             {

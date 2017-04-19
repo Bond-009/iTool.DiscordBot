@@ -9,7 +9,7 @@ namespace iTool.DiscordBot
         public async override Task<PreconditionResult> CheckPermissions(ICommandContext context, CommandInfo command, IDependencyMap map)
         {
             if (map.Get<Settings>().TrustedUsers.Contains(context.User.Id)
-                || context.User.Id == (await map.Get<DiscordSocketClient>().GetApplicationInfoAsync()).Owner.Id)
+                || context.User.Id == (await (context.Client as DiscordSocketClient).GetApplicationInfoAsync()).Owner.Id)
             {
                 return PreconditionResult.FromSuccess();
             }

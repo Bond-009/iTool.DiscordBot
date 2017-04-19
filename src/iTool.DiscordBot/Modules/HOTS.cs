@@ -1,6 +1,6 @@
 using Discord;
 using Discord.Commands;
-using iTool.DiscordBot.HOTS;
+using HOTSLogs;
 using System;
 using System.Threading.Tasks;
 
@@ -14,9 +14,9 @@ namespace iTool.DiscordBot.Modules
 
         [Command("hotsstats")]
         [Summary("Returns the HOTS stats of the player")]
-        public async Task HOTSStats(int region, string battleTag)
+        public async Task HOTSStats(Region region, string battleTag)
         {
-            Player player = await HOTSLogs.GetPlayerSummary(region, battleTag);
+            Player player = await depMap.Get<HOTSLogsClient>().GetPlayerSummary(region, battleTag);
 
             EmbedBuilder b = new EmbedBuilder()
             {
@@ -60,7 +60,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(int playerID)
         {
-            Player player = await HOTSLogs.GetPlayerSummary(playerID);
+            Player player = await depMap.Get<HOTSLogsClient>().GetPlayerSummary(playerID);
 
             EmbedBuilder b = new EmbedBuilder()
             {

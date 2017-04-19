@@ -15,9 +15,9 @@ namespace iTool.DiscordBot
         private DiscordSocketClient client;
         private IDependencyMap map;
 
-        public async Task Install(IDependencyMap _map, CommandServiceConfig config)
+        public async Task Install(IDependencyMap _map, DiscordSocketClient discordClient, CommandServiceConfig config)
         {
-            client = _map.Get<DiscordSocketClient>();
+            client = discordClient;
             CommandService = new CommandService(config);
             map = _map;
 
@@ -45,10 +45,10 @@ namespace iTool.DiscordBot
             if (message == null) { return; }
 
             // Check if the user is blacklisted. If so return
-            if (!map.Get<Settings>().BlacklistedUsers.IsNullOrEmpty())
+            if (!map.Get<Settings>().BlacklistedUsers.IsNullOrEmpty()
+                 && map.Get<Settings>().BlacklistedUsers.Contains(message.Author.Id))
             {
-                if (map.Get<Settings>().BlacklistedUsers.Contains(message.Author.Id))
-                { return; }
+                return;
             }
 
             // Mark where the prefix ends and the command begins
