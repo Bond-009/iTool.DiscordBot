@@ -1,5 +1,5 @@
 using Discord;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,9 +8,9 @@ namespace iTool.DiscordBot
 {
     public static class Logger
     {
-        static ILogger logger = new LoggerFactory()
-                .AddFile(Common.LogsDir + Path.DirectorySeparatorChar + "log-{Date}.log")
-                .CreateLogger(string.Empty);
+        static ILogger logger = new LoggerConfiguration()
+                .WriteTo.RollingFile(Common.LogsDir + Path.DirectorySeparatorChar + "log-{Date}.log")
+                .CreateLogger();
         public static LogSeverity LogLevel { get; internal set; } = LogSeverity.Verbose;
 
         public static Task Log(LogMessage msg)
@@ -22,17 +22,19 @@ namespace iTool.DiscordBot
             {
                 case LogSeverity.Critical:
                 case LogSeverity.Error:
-                    logger.LogError($"{msg.Source}: {msg.Message}");
+                    logger.Error($"{msg.Source}: {msg.Message}");
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 case LogSeverity.Warning:
+                    logger.Warning($"{msg.Source}: {msg.Message}");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
                 case LogSeverity.Info:
-                    logger.LogInformation($"{msg.Source}: {msg.Message}");
+                    logger.Information($"{msg.Source}: {msg.Message}");
                     break;
                 case LogSeverity.Verbose:
                 case LogSeverity.Debug:
+                    logger.Debug($"{msg.Source}: {msg.Message}");
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
             }

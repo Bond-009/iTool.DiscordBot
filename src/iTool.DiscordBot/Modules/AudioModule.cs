@@ -18,7 +18,7 @@ namespace iTool.DiscordBot.Modules
             => await AudioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
 
         [Command("stop", RunMode = RunMode.Async)]
-        [Summary("Stops the audio blayback and leaves the voice channel")]
+        [Summary("Stops the audio playback and leaves the voice channel")]
         [RequireContext(ContextType.Guild)]
         public async Task Stop()
             => await AudioService.LeaveAudio(Context.Guild);

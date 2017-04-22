@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Threading;
 
 namespace iTool.DiscordBot
@@ -7,7 +6,6 @@ namespace iTool.DiscordBot
     public static class Program
     {
         static bool running = true;
-        public static ILoggerFactory LoggerFactory;
 
         public static void Main(string[] args)
         {

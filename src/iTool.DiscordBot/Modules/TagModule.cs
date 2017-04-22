@@ -88,7 +88,7 @@ namespace iTool.DiscordBot.Modules
             {
                 LiteCollection<Tag> col = db.GetCollection<Tag>("tags");
                 int? id = col.Find(x => x.Title == name
-                                && x.Author == Context.User.Id)
+                                && (x.Author == Context.User.Id || Context.User.Id == Context.Guild.OwnerId))
                             .FirstOrDefault()?.Id;
 
                 if (id == null)
