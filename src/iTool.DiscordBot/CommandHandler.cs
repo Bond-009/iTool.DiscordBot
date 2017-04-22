@@ -11,15 +11,17 @@ namespace iTool.DiscordBot
 {
     public class CommandHandler
     {
-        private CommandService CommandService;
-        private DiscordSocketClient client;
-        private IDependencyMap map;
+        CommandService CommandService;
+        DiscordSocketClient client;
+        IDependencyMap map;
+        Settings settings;
 
         public async Task Install(IDependencyMap _map, DiscordSocketClient discordClient, CommandServiceConfig config)
         {
             client = discordClient;
             CommandService = new CommandService(config);
             map = _map;
+            settings = map.Get<Settings>();
 
             await CommandService.AddModulesAsync(Assembly.GetEntryAssembly());
 
@@ -45,8 +47,8 @@ namespace iTool.DiscordBot
             if (message == null) { return; }
 
             // Check if the user is blacklisted. If so return
-            if (!map.Get<Settings>().BlacklistedUsers.IsNullOrEmpty()
-                 && map.Get<Settings>().BlacklistedUsers.Contains(message.Author.Id))
+            if (!settings.BlacklistedUsers.IsNullOrEmpty()
+                && settings.BlacklistedUsers.Contains(message.Author.Id))
             {
                 return;
             }
@@ -54,9 +56,9 @@ namespace iTool.DiscordBot
             // Mark where the prefix ends and the command begins
             int argPos = 0;
 
-            // Determine if the message has a valid prefix, adjust argPos 
-            if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) 
-                || message.HasStringPrefix(map.Get<Settings>().Prefix, ref argPos)))
+            // Determine if the message has a valid prefix, adjust argPos
+            if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos)
+                || message.HasStringPrefix(settings.Prefix, ref argPos)))
             { return; }
 
             // Execute the Command, store the result
@@ -73,7 +75,7 @@ namespace iTool.DiscordBot
                 await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Error",
-                    Color = new Color((uint)map.Get<Settings>().ErrorColor),
+                    Color = new Color((uint)settings.ErrorColor),
                     Description = result.ErrorReason
                 });
             }
