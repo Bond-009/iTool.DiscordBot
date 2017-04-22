@@ -181,12 +181,19 @@ namespace iTool.DiscordBot.Modules
             => await ReplyAsync(input);
 
         [Command("setgame")]
-        [Summary("Sets the bot's game")]
+        [Summary("Sets the bots game")]
         [RequireTrustedUser]
         public async Task SetGame([Remainder] string input)
         {
             depMap.Get<Settings>().Game = input;
             await Context.Client.SetGameAsync(input);
+        }
+
+        [Command("ping")]
+        [Summary("Gets the estimated round-trip latency, in milliseconds, to the gateway server")]
+        public async Task Ping()
+        {
+            await ReplyAsync(Context.Client.Latency + " ms");
         }
 
         [Command("userinfo")]
