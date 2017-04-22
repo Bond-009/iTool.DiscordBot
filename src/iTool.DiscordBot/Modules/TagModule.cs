@@ -25,7 +25,7 @@ namespace iTool.DiscordBot.Modules
             {
                 LiteCollection<Tag> col = db.GetCollection<Tag>("tags");
 
-                if (col.Find(x => x.Title == name).FirstOrDefault() != null)
+                if (!col.EnsureIndex(x => x.Title, true))
                 {
                     await ReplyAsync("", embed: new EmbedBuilder()
                     {
@@ -35,8 +35,6 @@ namespace iTool.DiscordBot.Modules
                     });
                     return;
                 }
-
-                col.EnsureIndex(x => x.Title, true);
 
                 col.Insert(new Tag()
                 {
