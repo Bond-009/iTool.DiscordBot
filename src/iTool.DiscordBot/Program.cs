@@ -9,10 +9,14 @@ namespace iTool.DiscordBot
 
         public static void Main(string[] args)
         {
-            Bot iToolBot = new Bot();
-            iToolBot.Start().GetAwaiter().GetResult();
-
             Console.CancelKeyPress += Console_CancelKeyPress;
+
+            Bot iToolBot = new Bot();
+            if (!iToolBot.Start().GetAwaiter().GetResult())
+            {
+                if (!Console.IsInputRedirected) Console.ReadKey();
+                return;
+            }
 
             if (!Console.IsInputRedirected)
             { new Thread(Input).Start(); }

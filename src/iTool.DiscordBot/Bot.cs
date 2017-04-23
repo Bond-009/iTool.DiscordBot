@@ -18,7 +18,7 @@ namespace iTool.DiscordBot
         List<string> bannedWords;
         Settings settings = Settings.Load();
 
-        public async Task Start()
+        public async Task<bool> Start()
         {
             Logger.LogLevel = settings.LogLevel;
 
@@ -27,7 +27,7 @@ namespace iTool.DiscordBot
             if (string.IsNullOrEmpty(settings.DiscordToken))
             {
                 Console.WriteLine("No token");
-                return;
+                return false;
             }
 
             discordClient = new DiscordSocketClient(new DiscordSocketConfig()
@@ -59,6 +59,7 @@ namespace iTool.DiscordBot
                 CaseSensitiveCommands = settings.CaseSensitiveCommands,
                 DefaultRunMode = settings.DefaultRunMode
             });
+            return true;
         }
 
         public async Task Stop()
