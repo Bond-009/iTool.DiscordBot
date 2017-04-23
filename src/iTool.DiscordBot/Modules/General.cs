@@ -192,9 +192,12 @@ namespace iTool.DiscordBot.Modules
         [Command("ping")]
         [Summary("Gets the estimated round-trip latency, in milliseconds, to the gateway server")]
         public async Task Ping()
-        {
-            await ReplyAsync(Context.Client.Latency + " ms");
-        }
+            => await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Title = "Ping",
+                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Description = $"Latency: {Context.Client.Latency}ms"
+            });
 
         [Command("userinfo")]
         [Summary("Returns info about the user")]
