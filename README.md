@@ -49,6 +49,13 @@ Just a Discord bot
 | csgostats | | | Returns the CS:GO stats of the player |
 | csgolastmatch | | | Returns stats of the player's last CS:GO match |
 
+## Dev commands
+
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| gc | collectgarbage | **Thrusted user** | Forces the GC to clean up resources |
+| eval | cseval, csharp, evaluate | **Thrusted user** | Evaluates C# code |
+
 ## HOTS commands
 
 | Command | Aliases | Permission | Description |
