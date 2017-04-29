@@ -138,7 +138,6 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Title = "Info",
                 Color = new Color((uint)depMap.Get<Settings>().Color)
             }
             .AddField(f =>

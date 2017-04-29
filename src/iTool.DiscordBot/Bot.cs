@@ -48,6 +48,7 @@ namespace iTool.DiscordBot
 
             DependencyMap map = new DependencyMap();
             map.Add(new AudioService());
+            map.Add(new Battlelog.BfH.BfHClient());
             map.Add(new BfStats.BfH.BfHStatsClient(true));
             map.Add(new HOTSLogs.HOTSLogsClient());
             map.Add(new OpenWeather.OpenWeatherClient(settings.OpenWeatherMapKey));
