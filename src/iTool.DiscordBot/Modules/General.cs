@@ -161,8 +161,13 @@ namespace iTool.DiscordBot.Modules
         [Command("invite")]
         [Summary("Returns the OAuth2 Invite URL of the bot")]
         public async Task Invite()
-            => await ReplyAsync("A user with `MANAGE_SERVER` can invite me to your server here: " +
-                $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>");
+            => await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Invite",
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Description = "A user with the `MANAGE_SERVER` permission can invite with this link: " + Environment.NewLine +
+                                $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
+            });
 
         [Command("leave")]
         [Summary("Instructs the bot to leave this Guild")]
@@ -192,11 +197,11 @@ namespace iTool.DiscordBot.Modules
         [Summary("Gets the estimated round-trip latency, in milliseconds, to the gateway server")]
         public async Task Ping()
             => await ReplyAsync("", embed: new EmbedBuilder()
-            {
-                Title = "Ping",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
-                Description = $"Latency: {Context.Client.Latency}ms"
-            });
+                {
+                    Title = "Ping",
+                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Description = $"Latency: {Context.Client.Latency}ms"
+                });
 
         [Command("userinfo")]
         [Summary("Returns info about the user")]
@@ -207,11 +212,7 @@ namespace iTool.DiscordBot.Modules
                 user = Context.User;
             }
 
-            SocketGuildUser gUser = null;
-            if (user is SocketGuildUser tGUser)
-            {
-                gUser = tGUser;
-            }
+            SocketGuildUser gUser = user as SocketGuildUser;
 
             EmbedBuilder b = new EmbedBuilder()
             {
