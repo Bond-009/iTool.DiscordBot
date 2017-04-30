@@ -11,7 +11,7 @@ namespace iTool.DiscordBot
 {
     public class CommandHandler
     {
-        CommandService CommandService;
+        CommandService commandService;
         DiscordSocketClient client;
         IDependencyMap map;
         Settings settings;
@@ -19,21 +19,21 @@ namespace iTool.DiscordBot
         public async Task Install(IDependencyMap _map, DiscordSocketClient discordClient, CommandServiceConfig config)
         {
             client = discordClient;
-            CommandService = new CommandService(config);
+            commandService = new CommandService(config);
             map = _map;
             settings = map.Get<Settings>();
 
-            await CommandService.AddModulesAsync(Assembly.GetEntryAssembly());
+            await commandService.AddModulesAsync(Assembly.GetEntryAssembly());
 
             // HACK: Loads all commands and than unloads the disabled modules
             if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt"))
             {
                 IEnumerable<string> disabledModules = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt");
 
-                foreach (ModuleInfo moduleInfo in CommandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
+                foreach (ModuleInfo moduleInfo in commandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
                 {
                     await Logger.Log(new LogMessage(LogSeverity.Info, nameof(CommandHandler), $"Disabled {moduleInfo.Name} module"));
-                    await CommandService.RemoveModuleAsync(moduleInfo);
+                    await commandService.RemoveModuleAsync(moduleInfo);
                 }
             }
 
@@ -62,7 +62,7 @@ namespace iTool.DiscordBot
             { return; }
 
             // Execute the Command, store the result
-            IResult result = await CommandService.ExecuteAsync(new SocketCommandContext(client, message), argPos, map);
+            IResult result = await commandService.ExecuteAsync(new SocketCommandContext(client, message), argPos, map);
 
             // If the command failed, notify the user
             if (!result.IsSuccess)

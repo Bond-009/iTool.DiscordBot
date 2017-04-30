@@ -72,7 +72,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Misc";
-                f.Value = $"- Accuracy: {stats.GeneralStats.Accuracy}%" + Environment.NewLine +
+                f.Value = $"- Accuracy: {Math.Round(stats.GeneralStats.Accuracy, 2)}%" + Environment.NewLine +
                         $"- Dogtags Taken: {stats.GeneralStats.DogtagsTaken}" + Environment.NewLine +
                         $"- Time played: {Math.Round(stats.GeneralStats.TimePlayed.TotalHours, 2)} hours";
             })
