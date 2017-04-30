@@ -1,5 +1,5 @@
 using Battlelog;
-using Battlelog.BfH;
+using Battlelog.Bf4;
 using Discord;
 using Discord.Commands;
 using System;
@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class BfH : ModuleBase
+    public class Bf4 : ModuleBase
     {
         DependencyMap depMap;
-        BfHClient client;
+        Bf4Client client;
 
-        public BfH(DependencyMap map)
+        public Bf4(DependencyMap map)
         {
             this.depMap = map;
-            this.client = depMap.Get<BfHClient>();
+            this.client = depMap.Get<Bf4Client>();
         }
 
-        [Command("bfhstats")]
-        [Summary("Returns the Battlefield Hardline stats of the player")]
-        public async Task BfHStats(string name = null, Platform platform = Platform.PC)
+        [Command("bf4stats")]
+        [Summary("Returns the Battlefield 4 stats of the player")]
+        public async Task Bf4Stats(string name = null, Platform platform = Platform.PC)
         {
             if (name == null) { name = Context.User.Username; }
 
@@ -31,7 +31,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = $"No player found",
                     Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
-                    ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
+                    ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png"
                 });
                 return;
             }
@@ -40,17 +40,17 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Title = $"Battlefield Hardline stats for {name}",
+                Title = $"Battlefield 4 stats for {name}",
                 Color = new Color((uint)depMap.Get<Settings>().Color),
-                ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png",
+                ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png",
             }
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Rank";
                 f.Value = $"- Rank: {stats.GeneralStats.Rank}" + Environment.NewLine +
-                        $"- Cash per minute: {stats.GeneralStats.ScorePerMinute}" + Environment.NewLine +
-                        $"- Total cash: {stats.GeneralStats.Score}";
+                        $"- Score per minute: {stats.GeneralStats.ScorePerMinute}" + Environment.NewLine +
+                        $"- Total score: {stats.GeneralStats.Score}";
             })
             .AddField(f =>
             {

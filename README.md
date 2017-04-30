@@ -34,6 +34,18 @@ Just a Discord bot
 | stop | | | Stops the audio playback and leaves the voice channel |
 | play | | | Plays an audio files |
 
+## Bf4 commands
+
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| bf4stats | | | Returns the Battlefield 4 stats of the player |
+
+## BfH commands
+
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| bfhstats | | | Returns the Battlefield Hardline stats of the player |
+
 ## Core commands
 
 | Command | Aliases | Permission | Description |
