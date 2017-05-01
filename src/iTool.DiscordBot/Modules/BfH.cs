@@ -2,7 +2,9 @@ using Battlelog;
 using Battlelog.BfH;
 using Discord;
 using Discord.Commands;
+using LiteDB;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
@@ -11,11 +13,13 @@ namespace iTool.DiscordBot.Modules
     {
         DependencyMap depMap;
         BfHClient client;
+        BattlelogHelper helper;
 
         public BfH(DependencyMap map)
         {
             this.depMap = map;
             this.client = depMap.Get<BfHClient>();
+            this.helper = depMap.Get<BattlelogHelper>();
         }
 
         [Command("bfhstats")]
@@ -24,8 +28,13 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            long? personaID = await client.GetPersonaID(name);
-            if (personaID == null)
+            long? personaID = helper.GetPersonaID(name) ?? await client.GetPersonaID(name);
+
+            if (personaID != null)
+            {
+                helper.SavePersonaID(name, personaID.Value);
+            }
+            else 
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {

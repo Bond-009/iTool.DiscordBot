@@ -11,11 +11,13 @@ namespace iTool.DiscordBot.Modules
     {
         DependencyMap depMap;
         Bf3Client client;
+        BattlelogService helper;
 
         public Bf3(DependencyMap map)
         {
             this.depMap = map;
             this.client = depMap.Get<Bf3Client>();
+            this.helper = depMap.Get<BattlelogService>();
         }
 
         [Command("bf3stats")]
@@ -24,8 +26,13 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            long? personaID = await client.GetPersonaID(name);
-            if (personaID == null)
+            long? personaID = helper.GetPersonaID(name) ?? await client.GetPersonaID(name);
+
+            if (personaID != null)
+            {
+                helper.SavePersonaID(name, personaID.Value);
+            }
+            else
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {

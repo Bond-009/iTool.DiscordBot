@@ -22,7 +22,8 @@ namespace iTool.DiscordBot.Modules
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteMessages(params IUser[] users)
-            => await Context.Channel.DeleteMessagesAsync((await Context.Channel.GetMessagesAsync().Flatten())
+            => await Context.Channel.DeleteMessagesAsync(
+                (await Context.Channel.GetMessagesAsync().Flatten())
                     .Where(x => users.Select(y => y.Id).Contains(x.Author.Id)
                         && DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));
 
