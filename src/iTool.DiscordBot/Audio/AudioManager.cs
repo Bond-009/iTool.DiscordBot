@@ -4,8 +4,9 @@ using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
 
-namespace iTool.DiscordBot.Audio
+namespace iTool.DiscordBot
 {
+    // TODO: Rework
     public static class AudioManager
     {
         public static string GetSong(string name)

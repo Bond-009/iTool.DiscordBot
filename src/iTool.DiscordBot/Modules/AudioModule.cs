@@ -1,6 +1,5 @@
 using Discord;
 using Discord.Commands;
-using iTool.DiscordBot.Audio;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules

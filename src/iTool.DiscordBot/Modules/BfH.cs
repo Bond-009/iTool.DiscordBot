@@ -13,13 +13,13 @@ namespace iTool.DiscordBot.Modules
     {
         DependencyMap depMap;
         BfHClient client;
-        BattlelogHelper helper;
+        BattlelogService helper;
 
         public BfH(DependencyMap map)
         {
             this.depMap = map;
             this.client = depMap.Get<BfHClient>();
-            this.helper = depMap.Get<BattlelogHelper>();
+            this.helper = depMap.Get<BattlelogService>();
         }
 
         [Command("bfhstats")]

@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace iTool.DiscordBot.Audio
+namespace iTool.DiscordBot
 {
     public class AudioService
     {
