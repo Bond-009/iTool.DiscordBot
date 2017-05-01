@@ -9,15 +9,15 @@ namespace iTool.DiscordBot.Modules
 {
     public class Bf3 : ModuleBase
     {
-        DependencyMap depMap;
         Bf3Client client;
         BattlelogService helper;
+        Settings settings;
 
-        public Bf3(DependencyMap map)
+        public Bf3(Bf3Client bfhClient, BattlelogService battlelogService, Settings settings)
         {
-            this.depMap = map;
-            this.client = depMap.Get<Bf3Client>();
-            this.helper = depMap.Get<BattlelogService>();
+            this.client = bfhClient;
+            this.helper = battlelogService;
+            this.settings = settings;
         }
 
         [Command("bf3stats")]
@@ -37,7 +37,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"No player found",
-                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                    Color = new Color((uint)settings.ErrorColor),
                     ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png"
                 });
                 return;
@@ -48,7 +48,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Battlefield 3 stats for {name}",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png",
             }
             .AddField(f =>

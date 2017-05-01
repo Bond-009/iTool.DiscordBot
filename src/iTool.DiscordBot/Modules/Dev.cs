@@ -14,9 +14,9 @@ namespace iTool.DiscordBot.Modules
 {
     public class Dev : ModuleBase
     {
-        DependencyMap depMap;
+        Settings settings;
 
-        public Dev(DependencyMap map) => this.depMap = map;
+        public Dev(Settings settings) => this.settings = settings;
 
         [Command("gc")]
         [Alias("collectgarbage")]
@@ -29,7 +29,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "GC",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 Description = ":thumbsup:"
             });
         }
@@ -51,7 +51,7 @@ namespace iTool.DiscordBot.Modules
             IUserMessage msg = await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Evaluation",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 Description = "Evaluating..."
             });
 
@@ -87,7 +87,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Evaluation",
                     Description = result?.ToString() ?? "Success, nothing got returned",
-                    Color = new Color((uint)depMap.Get<Settings>().Color)
+                    Color = new Color((uint)settings.Color)
                 }.Build());
             }
             catch (Exception ex)
@@ -96,7 +96,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Evaluation Failure",
                     Description = $"**{ex.GetType().ToString()}**: {ex.Message}",
-                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor)
+                    Color = new Color((uint)settings.ErrorColor)
                 }.Build());
             }
         }

@@ -11,13 +11,13 @@ namespace iTool.DiscordBot.Modules
 {
     public class General : ModuleBase<SocketCommandContext>
     {
-        DependencyMap depMap;
         CommandService cmdService;
+        Settings settings;
 
-        public General(CommandService service, DependencyMap map)
+        public General(CommandService service, Settings settings)
         {
             this.cmdService = service;
-            this.depMap = map;
+            this.settings = settings;
         }
 
         [Command("help")]
@@ -39,7 +39,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Help",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = "No commands found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -49,7 +49,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Commands",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 Description = "Returns the enabled commands in lists of 25.",
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
@@ -78,7 +78,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Command info",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = "No command found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -88,7 +88,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Command info",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             }
             .AddField(f =>
@@ -138,7 +138,7 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Color = new Color((uint)depMap.Get<Settings>().Color)
+                Color = new Color((uint)settings.Color)
             }
             .AddField(f =>
             {
@@ -164,7 +164,7 @@ namespace iTool.DiscordBot.Modules
             => await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Invite",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = "A user with the `MANAGE_SERVER` permission can invite with this link: " + Environment.NewLine +
                                 $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
             });
@@ -189,7 +189,7 @@ namespace iTool.DiscordBot.Modules
         [RequireTrustedUser]
         public async Task SetGame([Remainder] string input)
         {
-            depMap.Get<Settings>().Game = input;
+            settings.Game = input;
             await Context.Client.SetGameAsync(input);
         }
 
@@ -199,7 +199,7 @@ namespace iTool.DiscordBot.Modules
             => await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Ping",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = $"Latency: {Context.Client.Latency}ms"
                 });
 
@@ -217,7 +217,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"Info about {user.ToString()}",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
             }
             .AddField(f =>

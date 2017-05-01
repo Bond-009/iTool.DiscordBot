@@ -11,15 +11,15 @@ namespace iTool.DiscordBot.Modules
 {
     public class BfH : ModuleBase
     {
-        DependencyMap depMap;
         BfHClient client;
         BattlelogService helper;
+        Settings settings;
 
-        public BfH(DependencyMap map)
+        public BfH(BfHClient bfhClient, BattlelogService battlelogService, Settings settings)
         {
-            this.depMap = map;
-            this.client = depMap.Get<BfHClient>();
-            this.helper = depMap.Get<BattlelogService>();
+            this.client = bfhClient;
+            this.helper = battlelogService;
+            this.settings = settings;
         }
 
         [Command("bfhstats")]
@@ -39,7 +39,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"No player found",
-                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                    Color = new Color((uint)settings.ErrorColor),
                     ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
                 });
                 return;
@@ -50,7 +50,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Battlefield Hardline stats for {name}",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png",
             }
             .AddField(f =>

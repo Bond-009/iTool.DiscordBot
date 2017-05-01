@@ -8,9 +8,9 @@ namespace iTool.DiscordBot.Modules
 {
     public class Core : ModuleBase<SocketCommandContext>
     {
-        DependencyMap depMap;
+        Settings settings;
 
-        public Core(DependencyMap map) => this.depMap = map;
+        public Core(Settings settings) => this.settings = settings;
 
         [Command("blacklist")]
         [Summary("Adds the user to the blacklist")]
@@ -21,11 +21,11 @@ namespace iTool.DiscordBot.Modules
 
             foreach (IUser user in users)
             {
-                if (!depMap.Get<Settings>().TrustedUsers.Contains(user.Id)
-                    && !depMap.Get<Settings>().BlacklistedUsers.Contains(user.Id)&& user.Id
+                if (settings.TrustedUsers.Contains(user.Id)
+                    && !settings.BlacklistedUsers.Contains(user.Id)&& user.Id
                     != (await Context.Client.GetApplicationInfoAsync()).Owner.Id)
                 {
-                    depMap.Get<Settings>().BlacklistedUsers.Add(user.Id);
+                    settings.BlacklistedUsers.Add(user.Id);
                     blacklistedUsers.Add(user);
                 }
             }
@@ -34,7 +34,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Blacklist",
-                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                    Color = new Color((uint)settings.ErrorColor),
                     Description = $"Failed to blacklist {string.Join(", ", users.ToList())}."
                 });
             }
@@ -43,7 +43,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Blacklist",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = $"Successfully blacklisted {string.Join(", ", blacklistedUsers)}."
                 });
             }
@@ -58,9 +58,9 @@ namespace iTool.DiscordBot.Modules
 
             foreach (IUser user in users)
             {
-                if (depMap.Get<Settings>().BlacklistedUsers.Contains(user.Id))
+                if (settings.BlacklistedUsers.Contains(user.Id))
                 {
-                    depMap.Get<Settings>().BlacklistedUsers.RemoveAll(x => x == user.Id);
+                    settings.BlacklistedUsers.RemoveAll(x => x == user.Id);
                     rmBlacklistedUsers.Add(user);
                 }
             }
@@ -69,7 +69,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Remove blacklist",
-                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                    Color = new Color((uint)settings.ErrorColor),
                     Description = $"Failed to remove blacklist for {string.Join(", ", users.ToList())}."
                 });
             }
@@ -78,7 +78,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Remove blacklist",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = $"Successfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
                 });
             }
@@ -91,16 +91,16 @@ namespace iTool.DiscordBot.Modules
         {
             foreach (IUser user in users)
             {
-                depMap.Get<Settings>().BlacklistedUsers.RemoveAll(x => x == user.Id);
-                if (!depMap.Get<Settings>().TrustedUsers.Contains(user.Id))
+                settings.BlacklistedUsers.RemoveAll(x => x == user.Id);
+                if (!settings.TrustedUsers.Contains(user.Id))
                 {
-                    depMap.Get<Settings>().TrustedUsers.Add(user.Id);
+                    settings.TrustedUsers.Add(user.Id);
                 }
             }
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Trust",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 Description = $"Successfully added {string.Join(", ", users.ToList())} to the list of trusted users."
             });
         }

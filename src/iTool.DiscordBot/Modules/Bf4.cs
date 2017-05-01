@@ -9,15 +9,15 @@ namespace iTool.DiscordBot.Modules
 {
     public class Bf4 : ModuleBase
     {
-        DependencyMap depMap;
         Bf4Client client;
         BattlelogService helper;
+        Settings settings;
 
-        public Bf4(DependencyMap map)
+        public Bf4(Bf4Client bfhClient, BattlelogService battlelogService, Settings settings)
         {
-            this.depMap = map;
-            this.client = depMap.Get<Bf4Client>();
-            this.helper = depMap.Get<BattlelogService>();
+            this.client = bfhClient;
+            this.helper = battlelogService;
+            this.settings = settings;
         }
 
         [Command("bf4stats")]
@@ -37,7 +37,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"No player found",
-                    Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                    Color = new Color((uint)settings.ErrorColor),
                     ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png"
                 });
                 return;
@@ -48,7 +48,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Battlefield 4 stats for {name}",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png",
             }
             .AddField(f =>

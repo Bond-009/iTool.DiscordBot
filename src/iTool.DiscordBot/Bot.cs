@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot
@@ -13,15 +12,12 @@ namespace iTool.DiscordBot
     public class Bot
     {
         DiscordSocketClient discordClient;
-        List<string> bannedWords;
         Settings settings = Settings.Load();
         DependencyMap depMap = new DependencyMap();
 
         public async Task<bool> Start()
         {
             Logger.LogLevel = settings.LogLevel;
-
-            bannedWords = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "banned_words.txt").ToList();
 
             if (string.IsNullOrEmpty(settings.DiscordToken))
             {
@@ -39,8 +35,9 @@ namespace iTool.DiscordBot
             });
 
             discordClient.Log += Logger.Log;
-            discordClient.MessageReceived += DiscordClient_MessageReceived;
             discordClient.Ready += DiscordClient_Ready;
+            discordClient.MessageReceived += async msg
+                => await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), msg.Author.Username + ": " + msg.Content));
 
             await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
             await discordClient.StartAsync();
@@ -60,6 +57,12 @@ namespace iTool.DiscordBot
                 CaseSensitiveCommands = settings.CaseSensitiveCommands,
                 DefaultRunMode = settings.DefaultRunMode
             });
+
+            if (settings.AntiSwear)
+            {
+                new AntiSwear(discordClient);
+            }
+
             return true;
         }
 
@@ -86,18 +89,6 @@ namespace iTool.DiscordBot
             if (!settings.Game.IsNullOrEmpty())
             {
                 await discordClient.SetGameAsync(settings.Game);
-            }
-        }
-
-        private async Task DiscordClient_MessageReceived(SocketMessage arg)
-        {
-            await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), arg.Author.Username + ": " + arg.Content));
-
-            if (settings.AntiSwear && !bannedWords.IsNullOrEmpty()
-                && bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
-            {
-                await arg.DeleteAsync();
-                await arg.Channel.SendMessageAsync(arg.Author.Mention + ", please don't put such things in chat");
             }
         }
     }

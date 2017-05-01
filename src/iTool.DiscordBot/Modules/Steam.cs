@@ -9,23 +9,28 @@ namespace iTool.DiscordBot.Modules
 {
     public class Steam : ModuleBase
     {
-        DependencyMap depMap;
+        Settings settings;
+        SteamAPI client;
 
-        public Steam(DependencyMap map) => this.depMap = map;
+        public Steam(Settings settings, SteamAPI steamapi)
+        {
+            this.settings = settings;
+            this.client = steamapi;
+        }
 
         [Command("vanityurl")]
         [Alias("resolvevanityurl")]
         [Summary("Returns the steamID64 of the user")]
         public async Task ResolveVanityURL(string name = null)
         {
-            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
+            if (string.IsNullOrEmpty(settings.SteamKey))
             {
                 throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
             
-            await ReplyAsync((await depMap.Get<SteamAPI>().ResolveVanityURL(name)).ToString());
+            await ReplyAsync((await client.ResolveVanityURL(name)).ToString());
         }
 
         [Command("steam")]
@@ -33,18 +38,18 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns basic steam profile information")]
         public async Task PlayerSummaries(string name = null)
         {
-            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
+            if (string.IsNullOrEmpty(settings.SteamKey))
             {
                 throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
-            PlayerList<PlayerSummary> player = await depMap.Get<SteamAPI>().GetPlayerSummaries(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
+            PlayerList<PlayerSummary> player = await client.GetPlayerSummaries(new [] {(await client.ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Player summary fot {player.Players.First().PersonaName}",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 ThumbnailUrl = player.Players.First().AvatarMedium,
                 Url = player.Players.First().ProfileURL
             }
@@ -73,19 +78,19 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns Community, VAC, and Economy ban statuses for given players")]
         public async Task PlayerBans(string name = null)
         {
-            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
+            if (string.IsNullOrEmpty(settings.SteamKey))
             {
                 throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
 
-            PlayerList<PlayerBan> player = await depMap.Get<SteamAPI>().GetPlayerBans(new [] {(await depMap.Get<SteamAPI>().ResolveVanityURL(name))});
+            PlayerList<PlayerBan> player = await client.GetPlayerBans(new [] {(await client.ResolveVanityURL(name))});
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Community, VAC, and Economy ban statuses",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
             }
             .AddField(f =>
             {
@@ -135,14 +140,14 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
         {
-            if (string.IsNullOrEmpty(depMap.Get<Settings>().SteamKey))
+            if (string.IsNullOrEmpty(settings.SteamKey))
             {
                 throw new Exception("No SteamKey found.");
             }
 
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync("https://steamcommunity.com/profiles/" + (await depMap.Get<SteamAPI>().ResolveVanityURL(name)).ToString());
+            await ReplyAsync("https://steamcommunity.com/profiles/" + (await client.ResolveVanityURL(name)).ToString());
         }
     }
 }

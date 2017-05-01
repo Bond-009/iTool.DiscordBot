@@ -8,20 +8,25 @@ namespace iTool.DiscordBot.Modules
 {
     public class HOTS : ModuleBase
     {
-        DependencyMap depMap;
+        HOTSLogsClient client;
+        Settings settings;
 
-        public HOTS(DependencyMap map) => this.depMap = map;
+        public HOTS(HOTSLogsClient hotsClient, Settings settings)
+        {
+            this.client = hotsClient;
+            this.settings = settings;
+        }
 
         [Command("hotsstats")]
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(Region region, string battleTag)
         {
-            Player player = await depMap.Get<HOTSLogsClient>().GetPlayerSummary(region, battleTag);
+            Player player = await client.GetPlayerSummary(region, battleTag);
 
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
                 Footer = new EmbedFooterBuilder()
@@ -60,12 +65,12 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(int playerID)
         {
-            Player player = await depMap.Get<HOTSLogsClient>().GetPlayerSummary(playerID);
+            Player player = await client.GetPlayerSummary(playerID);
 
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color((uint)depMap.Get<Settings>().Color),
+                Color = new Color((uint)settings.Color),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }

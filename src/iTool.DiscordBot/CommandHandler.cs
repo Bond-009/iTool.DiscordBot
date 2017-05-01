@@ -18,8 +18,10 @@ namespace iTool.DiscordBot
 
         public async Task Install(IDependencyMap _map, DiscordSocketClient discordClient, CommandServiceConfig config)
         {
-            client = discordClient;
             commandService = new CommandService(config);
+            commandService.Log += Logger.Log;
+
+            client = discordClient;
             map = _map;
             settings = map.Get<Settings>();
 

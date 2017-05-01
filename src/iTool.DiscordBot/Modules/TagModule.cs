@@ -9,9 +9,9 @@ namespace iTool.DiscordBot.Modules
 {
     public class TagModule : ModuleBase
     {
-        DependencyMap depMap;
+        Settings settings;
 
-        public TagModule(DependencyMap map) => this.depMap = map;
+        public TagModule(Settings settings) => this.settings = settings;
 
         [Command("tag create")]
         [Alias("createtag")]
@@ -30,7 +30,7 @@ namespace iTool.DiscordBot.Modules
                     await ReplyAsync("", embed: new EmbedBuilder()
                     {
                         Title = "Failed to create tag",
-                        Color = new Color((uint)depMap.Get<Settings>().ErrorColor),
+                        Color = new Color((uint)settings.ErrorColor),
                         Description = "A tag with that name already exists",
                     });
                     return;
@@ -66,7 +66,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = tag.Title,
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = tag.Text,
                     ImageUrl = tag.Attachment
                 });
@@ -97,7 +97,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"Delete tag {name}",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = $"Successfully deleted tag {name}",
                 });
             }
@@ -117,7 +117,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"List tags",
-                    Color = new Color((uint)depMap.Get<Settings>().Color),
+                    Color = new Color((uint)settings.Color),
                     Description = string.Join(" ,", db.GetCollection<Tag>("tags")
                                                     .FindAll()
                                                     .Select(x => x.Title)),
