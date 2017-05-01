@@ -2,10 +2,12 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
+using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
 {
@@ -16,7 +18,7 @@ namespace iTool.DiscordBot
         IDependencyMap map;
         Settings settings;
 
-        public async Task Install(IDependencyMap _map, DiscordSocketClient discordClient, CommandServiceConfig config)
+        public CommandHandler(IDependencyMap _map, DiscordSocketClient discordClient, CommandServiceConfig config)
         {
             commandService = new CommandService(config);
             commandService.Log += Logger.Log;
@@ -25,24 +27,48 @@ namespace iTool.DiscordBot
             map = _map;
             settings = map.Get<Settings>();
 
-            await commandService.AddModulesAsync(Assembly.GetEntryAssembly());
-
-            // HACK: Loads all commands and than unloads the disabled modules
-            if (File.Exists(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt"))
-            {
-                IEnumerable<string> disabledModules = Utils.LoadListFromFile(Common.SettingsDir + Path.DirectorySeparatorChar + "disabled_modules.txt");
-
-                foreach (ModuleInfo moduleInfo in commandService.Modules.Where(x => disabledModules.Contains(x.Name)).ToArray())
-                {
-                    await Logger.Log(new LogMessage(LogSeverity.Info, nameof(CommandHandler), $"Disabled {moduleInfo.Name} module"));
-                    await commandService.RemoveModuleAsync(moduleInfo);
-                }
-            }
-
             client.MessageReceived += HandleCommand;
         }
 
-        public async Task HandleCommand(SocketMessage parameterMessage)
+        public async Task LoadModules()
+        {
+            string modulepath = Common.SettingsDir + Path.DirectorySeparatorChar + "modules.yaml";
+            Dictionary<string, bool> enabledmodules = new Dictionary<string, bool>();
+            if (!File.Exists(modulepath))
+            {
+                foreach(Type t in Assembly.GetEntryAssembly().GetExportedTypes())
+                {
+                    if (typeof(ModuleBase).IsAssignableFrom(t) || IsSubclassOfRawGeneric(typeof(ModuleBase<>), t))
+                        enabledmodules.Add(t.Name, true);
+                }
+
+                File.WriteAllText(modulepath,
+                    new SerializerBuilder().EmitDefaults().Build()
+                        .Serialize(enabledmodules));
+            }
+
+            enabledmodules = new Deserializer().Deserialize<Dictionary<string, bool>>(File.ReadAllText(modulepath));
+
+            foreach (Type type in Assembly.GetEntryAssembly().GetExportedTypes()
+                .Where(x => typeof(ModuleBase).IsAssignableFrom(x)
+                 || IsSubclassOfRawGeneric(typeof(ModuleBase<>), x)))
+            {
+                if (!enabledmodules.Keys.Contains(type.Name))
+                {
+                    enabledmodules.Add(type.Name, true);
+                }
+                if (enabledmodules[type.Name])
+                {
+                    await commandService.AddModuleAsync(type);
+                    await Logger.Log(new LogMessage(LogSeverity.Info, nameof(CommandHandler), $"Loaded {type.Name} module"));
+                }
+            }
+            File.WriteAllText(modulepath,
+                    new SerializerBuilder().EmitDefaults().Build()
+                        .Serialize(enabledmodules));
+        }
+
+        private async Task HandleCommand(SocketMessage parameterMessage)
         {
             // Don't handle the command if it is a system message
             SocketUserMessage message = parameterMessage as SocketUserMessage;
@@ -81,6 +107,21 @@ namespace iTool.DiscordBot
                     Description = result.ErrorReason
                 });
             }
+        }
+
+        private static bool IsSubclassOfRawGeneric(Type baseType, Type derivedType)
+        {
+            while (derivedType != null && derivedType != typeof(object))
+            {
+                var currentType = derivedType.GetTypeInfo().IsGenericType ? derivedType.GetGenericTypeDefinition() : derivedType;
+                if (baseType == currentType)
+                {
+                    return true;
+                }
+
+                derivedType = derivedType.GetTypeInfo().BaseType;
+            }
+            return false;
         }
     }
 }

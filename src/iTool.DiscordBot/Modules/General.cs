@@ -56,7 +56,7 @@ namespace iTool.DiscordBot.Modules
 
             foreach (CommandInfo cmd in cmds)
             {
-               b.AddField(f =>
+                b.AddField(f =>
                 {
                     f.Name = cmd.Name;
                     f.Value = cmd.Summary ?? "No summary";
@@ -167,7 +167,7 @@ namespace iTool.DiscordBot.Modules
                     Color = new Color((uint)settings.Color),
                     Description = "A user with the `MANAGE_SERVER` permission can invite with this link: " + Environment.NewLine +
                                 $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
-            });
+                });
 
         [Command("leave")]
         [Summary("Instructs the bot to leave this Guild")]

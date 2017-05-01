@@ -52,11 +52,11 @@ namespace iTool.DiscordBot
             depMap.Add(settings);
             depMap.Add(new Steam.SteamAPI(settings.SteamKey));
 
-            await new CommandHandler().Install(depMap, discordClient, new CommandServiceConfig()
+            await new CommandHandler(depMap, discordClient, new CommandServiceConfig()
             {
                 CaseSensitiveCommands = settings.CaseSensitiveCommands,
                 DefaultRunMode = settings.DefaultRunMode
-            });
+            }).LoadModules();
 
             if (settings.AntiSwear)
             {
