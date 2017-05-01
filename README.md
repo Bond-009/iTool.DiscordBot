@@ -13,7 +13,6 @@ Just a Discord bot
 | info | information | | Returns info about the bot |
 | invite | | | Returns the OAuth2 Invite URL of the bot |
 | leave | | GuildPermission.ManageGuild | Instructs the bot to leave this Guild |
-| say | echo | | Echos the provided input |
 | setgame | | **Trusted user** | Sets the bots game |
 | ping | | | Gets the estimated round-trip latency, in milliseconds, to the gateway server |
 | userinfo | | | Returns info about the user |
@@ -34,7 +33,7 @@ Just a Discord bot
 | stop | | | Stops the audio playback and leaves the voice channel |
 | play | | | Plays an audio files |
 
-## Bf4 commands
+## Bf3 commands
 
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |

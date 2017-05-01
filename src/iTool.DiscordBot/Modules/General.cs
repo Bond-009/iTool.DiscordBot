@@ -178,12 +178,6 @@ namespace iTool.DiscordBot.Modules
             await Context.Guild.LeaveAsync();
         }
 
-        [Command("say")]
-        [Alias("echo")]
-        [Summary("Echos the provided input")]
-        public async Task Say([Remainder] string input)
-            => await ReplyAsync(input);
-
         [Command("setgame")]
         [Summary("Sets the bots game")]
         [RequireTrustedUser]
