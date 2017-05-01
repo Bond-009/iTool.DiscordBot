@@ -38,6 +38,12 @@ Just a Discord bot
 
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
+| bf3stats | | | Returns the Battlefield 3 stats of the player |
+
+## Bf4 commands
+
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
 | bf4stats | | | Returns the Battlefield 4 stats of the player |
 
 ## BfH commands

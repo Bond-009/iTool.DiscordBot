@@ -48,6 +48,7 @@ namespace iTool.DiscordBot
 
             DependencyMap map = new DependencyMap();
             map.Add(new AudioService());
+            map.Add(new Battlelog.Bf3.Bf3Client());
             map.Add(new Battlelog.Bf4.Bf4Client());
             map.Add(new Battlelog.BfH.BfHClient());
             map.Add(new HOTSLogs.HOTSLogsClient());
