@@ -52,7 +52,7 @@ namespace iTool.DiscordBot.Steam
             {
                 VanityURL vanityurl = (VanityURL)new XmlSerializer(typeof(VanityURL)).Deserialize(stream);
 
-                switch (vanityurl.Succes)
+                switch (vanityurl.Success)
                 {
                     case 1:
                         return vanityurl.SteamID64.Value;

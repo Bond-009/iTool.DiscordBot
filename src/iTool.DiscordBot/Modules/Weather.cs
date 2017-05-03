@@ -12,6 +12,11 @@ namespace iTool.DiscordBot.Modules
         Settings settings;
         public Weather(OpenWeatherClient client, Settings settings)
         {
+            if (string.IsNullOrEmpty(settings.OpenWeatherMapKey))
+            {
+                throw new Exception("No OpenWeatherMapKey found.");
+            }
+
             this.client = client;
             this.settings = settings;
         }
@@ -20,11 +25,6 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the weather")]
         public async Task GetWeather(string city, string countryCode = null)
         {
-            if (string.IsNullOrEmpty(settings.OpenWeatherMapKey))
-            {
-                throw new Exception("No OpenWeatherMapKey found.");
-            }
-
             WeatherInfo weather = await client.GetWeatherAsync(city, countryCode);
             switch (settings.TemperatureScale)
             {

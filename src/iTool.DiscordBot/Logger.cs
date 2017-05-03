@@ -9,7 +9,7 @@ namespace iTool.DiscordBot
     public static class Logger
     {
         static ILogger logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(Common.LogsDir + Path.DirectorySeparatorChar + "log-{Date}.log")
+                .WriteTo.RollingFile(Path.Combine(AppContext.BaseDirectory, "logs", "log-{Date}.log"))
                 .CreateLogger();
         public static LogSeverity LogLevel { get; internal set; } = LogSeverity.Verbose;
 

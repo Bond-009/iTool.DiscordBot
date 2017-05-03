@@ -37,7 +37,9 @@ namespace iTool.DiscordBot
         {
             if (!File.Exists(Common.SettingsFile))
             {
-                Reset();
+                Directory.CreateDirectory(Common.SettingsDir);
+
+                Save(new Settings());
             }
 
             Settings settings  = new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile));
@@ -55,26 +57,6 @@ namespace iTool.DiscordBot
             { File.WriteAllLines(Common.TrustedListFile, settings.TrustedUsers.Select(x => x.ToString())); }
 
             File.WriteAllText(Common.SettingsFile, new SerializerBuilder().EmitDefaults().Build().Serialize(settings));
-        }
-
-        public static void Reset()
-        {
-            Directory.CreateDirectory(Common.SettingsDir);
-
-            if (File.Exists(Common.SettingsFile))
-            { File.Delete(Common.SettingsFile); }
-
-            if (File.Exists(Common.BlackListFile))
-            { File.Delete(Common.BlackListFile); }
-
-            if (File.Exists(Common.TrustedListFile))
-            { File.Delete(Common.TrustedListFile); }
-
-            Console.WriteLine("Settings reset.");
-
-            File.WriteAllText(Common.SettingsFile, 
-                new SerializerBuilder().EmitDefaults().Build()
-                    .Serialize(new Settings()));
         }
     }
 }

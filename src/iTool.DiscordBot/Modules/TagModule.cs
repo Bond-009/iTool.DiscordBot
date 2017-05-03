@@ -93,14 +93,13 @@ namespace iTool.DiscordBot.Modules
                 { return; }
 
                 col.Delete(id);
-
-                await ReplyAsync("", embed: new EmbedBuilder()
-                {
-                    Title = $"Delete tag {name}",
-                    Color = new Color((uint)settings.Color),
-                    Description = $"Successfully deleted tag {name}",
-                });
             }
+            await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Title = $"Delete tag {name}",
+                Color = new Color((uint)settings.Color),
+                Description = $"Successfully deleted tag {name}",
+            });
         }
 
         [Command("tag list")]

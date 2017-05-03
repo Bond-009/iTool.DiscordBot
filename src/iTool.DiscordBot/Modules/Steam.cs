@@ -14,6 +14,11 @@ namespace iTool.DiscordBot.Modules
 
         public Steam(Settings settings, SteamAPI steamapi)
         {
+            if (string.IsNullOrEmpty(settings.SteamKey))
+            {
+                throw new Exception("No SteamKey found.");
+            }
+
             this.settings = settings;
             this.client = steamapi;
         }
@@ -23,11 +28,6 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the steamID64 of the user")]
         public async Task ResolveVanityURL(string name = null)
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             if (name == null) { name = Context.User.Username; }
             
             await ReplyAsync((await client.ResolveVanityURL(name)).ToString());
@@ -38,11 +38,6 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns basic steam profile information")]
         public async Task PlayerSummaries(string name = null)
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             if (name == null) { name = Context.User.Username; }
             PlayerList<PlayerSummary> player = await client.GetPlayerSummaries(new [] {(await client.ResolveVanityURL(name))});
 
@@ -78,11 +73,6 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns Community, VAC, and Economy ban statuses for given players")]
         public async Task PlayerBans(string name = null)
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             if (name == null) { name = Context.User.Username; }
 
             PlayerList<PlayerBan> player = await client.GetPlayerBans(new [] {(await client.ResolveVanityURL(name))});
@@ -140,11 +130,6 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             if (name == null) { name = Context.User.Username; }
 
             await ReplyAsync("https://steamcommunity.com/profiles/" + (await client.ResolveVanityURL(name)).ToString());

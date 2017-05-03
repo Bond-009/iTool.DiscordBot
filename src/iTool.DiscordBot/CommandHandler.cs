@@ -32,26 +32,16 @@ namespace iTool.DiscordBot
 
         public async Task LoadModules()
         {
-            string modulepath = Common.SettingsDir + Path.DirectorySeparatorChar + "modules.yaml";
             Dictionary<string, bool> enabledmodules = new Dictionary<string, bool>();
-            if (!File.Exists(modulepath))
-            {
-                foreach(Type t in Assembly.GetEntryAssembly().GetExportedTypes())
-                {
-                    if (typeof(ModuleBase).IsAssignableFrom(t) || IsSubclassOfRawGeneric(typeof(ModuleBase<>), t))
-                        enabledmodules.Add(t.Name, true);
-                }
 
-                File.WriteAllText(modulepath,
-                    new SerializerBuilder().EmitDefaults().Build()
-                        .Serialize(enabledmodules));
+            if (File.Exists(Common.ModuleFile))
+            {
+                enabledmodules = new Deserializer().Deserialize<Dictionary<string, bool>>(File.ReadAllText(Common.ModuleFile));
             }
 
-            enabledmodules = new Deserializer().Deserialize<Dictionary<string, bool>>(File.ReadAllText(modulepath));
-
             foreach (Type type in Assembly.GetEntryAssembly().GetExportedTypes()
-                .Where(x => typeof(ModuleBase).IsAssignableFrom(x)
-                 || IsSubclassOfRawGeneric(typeof(ModuleBase<>), x)))
+                                            .Where(x => typeof(ModuleBase).IsAssignableFrom(x)
+                                                || IsSubclassOfRawGeneric(typeof(ModuleBase<>), x)))
             {
                 if (!enabledmodules.Keys.Contains(type.Name))
                 {
@@ -63,7 +53,7 @@ namespace iTool.DiscordBot
                     await Logger.Log(new LogMessage(LogSeverity.Info, nameof(CommandHandler), $"Loaded {type.Name} module"));
                 }
             }
-            File.WriteAllText(modulepath,
+            File.WriteAllText(Common.ModuleFile,
                     new SerializerBuilder().EmitDefaults().Build()
                         .Serialize(enabledmodules));
         }

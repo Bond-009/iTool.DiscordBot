@@ -1,3 +1,4 @@
+using Discord;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,17 +15,19 @@ namespace iTool.DiscordBot
             if (!File.Exists(Common.AudioIndexFile))
             {
                 ResetAudioIndex();
+
+                return null;
             }
             try
             {
                 return Common.AudioDir + Path.DirectorySeparatorChar +
                             new Deserializer().Deserialize<List<AudioFile>>(File.ReadAllText(Common.AudioIndexFile))
                                 .Where(x => x.Names.Contains(name))
-                                .First().FileName;
+                                .FirstOrDefault()?.FileName;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Logger.Log(new LogMessage(LogSeverity.Error, nameof(AudioManager), ex.Message, ex));
                 return null;
             }
         }
@@ -32,12 +35,6 @@ namespace iTool.DiscordBot
         public static void ResetAudioIndex()
         {
             Directory.CreateDirectory(Common.AudioDir);
-
-            if (File.Exists(Common.AudioIndexFile))
-            {
-                File.Delete(Common.AudioIndexFile);
-                Console.WriteLine("AudioIndexFile reset.");
-            }
 
             List<AudioFile> audioindex = new List<AudioFile>();
             audioindex.Add(new AudioFile()

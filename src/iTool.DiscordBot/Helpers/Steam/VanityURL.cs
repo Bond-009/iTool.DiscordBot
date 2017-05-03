@@ -9,6 +9,6 @@ namespace iTool.DiscordBot.Steam
         public ulong? SteamID64 { get; set; }
 
         [XmlElement("success")]
-        public int Succes { get; set; }
+        public int Success { get; set; }
     }
 }
