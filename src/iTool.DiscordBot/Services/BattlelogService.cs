@@ -27,11 +27,11 @@ namespace iTool.DiscordBot
 
         public void SavePersonaID(BfPlayer name)
         {
-                LiteCollection<BfPlayer> col = db.GetCollection<BfPlayer>("bfplayers");
+            LiteCollection<BfPlayer> col = db.GetCollection<BfPlayer>("bfplayers");
 
-                if (!col.EnsureIndex(x => x.Name, true)) return;
+            if (!col.EnsureIndex(x => x.Name, true)) return;
 
-                col.Insert(name);
+            col.Insert(name);
         }
 
         public void Dispose()

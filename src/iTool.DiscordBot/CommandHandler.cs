@@ -15,17 +15,17 @@ namespace iTool.DiscordBot
     {
         CommandService commandService;
         DiscordSocketClient client;
-        IDependencyMap map;
+        IServiceProvider serviceProvider;
         Settings settings;
 
-        public CommandHandler(IDependencyMap _map, DiscordSocketClient discordClient, CommandServiceConfig config)
+        public CommandHandler(IServiceProvider serviceProvider, DiscordSocketClient discordClient, CommandServiceConfig config)
         {
             commandService = new CommandService(config);
             commandService.Log += Logger.Log;
 
             client = discordClient;
-            map = _map;
-            settings = map.Get<Settings>();
+            this.serviceProvider = serviceProvider;
+            settings = (Settings)this.serviceProvider.GetService(typeof(Settings));
 
             client.MessageReceived += HandleCommand;
         }
@@ -80,7 +80,7 @@ namespace iTool.DiscordBot
             { return; }
 
             // Execute the Command, store the result
-            IResult result = await commandService.ExecuteAsync(new SocketCommandContext(client, message), argPos, map);
+            IResult result = await commandService.ExecuteAsync(new SocketCommandContext(client, message), argPos, serviceProvider);
 
             // If the command failed, notify the user
             if (!result.IsSuccess)

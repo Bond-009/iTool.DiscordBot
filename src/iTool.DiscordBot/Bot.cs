@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +13,8 @@ namespace iTool.DiscordBot
     public class Bot
     {
         DiscordSocketClient discordClient;
+        IServiceProvider serviceProvider;
         Settings settings = Settings.Load();
-        DependencyMap depMap = new DependencyMap();
 
         public async Task<bool> Start()
         {
@@ -42,17 +43,19 @@ namespace iTool.DiscordBot
             await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
             await discordClient.StartAsync();
 
-            depMap.Add(new AudioService());
-            depMap.Add(new Battlelog.Bf3.Bf3Client());
-            depMap.Add(new Battlelog.Bf4.Bf4Client());
-            depMap.Add(new Battlelog.BfH.BfHClient());
-            depMap.Add(new BattlelogService());
-            depMap.Add(new HOTSLogs.HOTSLogsClient());
-            depMap.Add(new OpenWeather.OpenWeatherClient(settings.OpenWeatherMapKey));
-            depMap.Add(settings);
-            depMap.Add(new Steam.SteamAPI(settings.SteamKey));
+            IServiceCollection serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton(new AudioService());
+            serviceCollection.AddSingleton(new Battlelog.Bf3.Bf3Client());
+            serviceCollection.AddSingleton(new Battlelog.Bf4.Bf4Client());
+            serviceCollection.AddSingleton(new Battlelog.BfH.BfHClient());
+            serviceCollection.AddSingleton(new BattlelogService());
+            serviceCollection.AddSingleton(new HOTSLogs.HOTSLogsClient());
+            serviceCollection.AddSingleton(new OpenWeather.OpenWeatherClient(settings.OpenWeatherMapKey));
+            serviceCollection.AddSingleton(settings);
+            serviceCollection.AddSingleton(new Steam.SteamAPI(settings.SteamKey));
+            serviceProvider = serviceCollection.BuildServiceProvider();
 
-            await new CommandHandler(depMap, discordClient, new CommandServiceConfig()
+            await new CommandHandler(serviceProvider, discordClient, new CommandServiceConfig()
             {
                 CaseSensitiveCommands = settings.CaseSensitiveCommands,
                 DefaultRunMode = settings.DefaultRunMode
@@ -71,13 +74,13 @@ namespace iTool.DiscordBot
             await discordClient.LogoutAsync();
             discordClient.Dispose();
 
-            depMap.Get<Battlelog.Bf3.Bf3Client>().Dispose();
-            depMap.Get<Battlelog.Bf4.Bf4Client>().Dispose();
-            depMap.Get<Battlelog.BfH.BfHClient>().Dispose();
-            depMap.Get<BattlelogService>().Dispose();
-            depMap.Get<HOTSLogs.HOTSLogsClient>().Dispose();
-            depMap.Get<OpenWeather.OpenWeatherClient>().Dispose();;
-            depMap.Get<Steam.SteamAPI>().Dispose();
+            serviceProvider.GetService<Battlelog.Bf3.Bf3Client>().Dispose();
+            serviceProvider.GetService<Battlelog.Bf4.Bf4Client>().Dispose();
+            serviceProvider.GetService<Battlelog.BfH.BfHClient>().Dispose();
+            serviceProvider.GetService<BattlelogService>().Dispose();
+            serviceProvider.GetService<HOTSLogs.HOTSLogsClient>().Dispose();
+            serviceProvider.GetService<OpenWeather.OpenWeatherClient>().Dispose();;
+            serviceProvider.GetService<Steam.SteamAPI>().Dispose();
 
             Settings.Save(settings);
         }

@@ -1,14 +1,16 @@
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot
 {
     public class RequireTrustedUserAttribute : PreconditionAttribute
     {
-        public async override Task<PreconditionResult> CheckPermissions(ICommandContext context, CommandInfo command, IDependencyMap map)
+        public async override Task<PreconditionResult> CheckPermissions(ICommandContext context, CommandInfo command, IServiceProvider serviceProvider)
         {
-            if (map.Get<Settings>().TrustedUsers.Contains(context.User.Id)
+            if (serviceProvider.GetService<Settings>().TrustedUsers.Contains(context.User.Id)
                 || context.User.Id == (await (context.Client as DiscordSocketClient).GetApplicationInfoAsync()).Owner.Id)
             {
                 return PreconditionResult.FromSuccess();
