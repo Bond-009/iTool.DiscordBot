@@ -43,17 +43,17 @@ namespace iTool.DiscordBot
             await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
             await discordClient.StartAsync();
 
-            IServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(new AudioService());
-            serviceCollection.AddSingleton(new Battlelog.Bf3.Bf3Client());
-            serviceCollection.AddSingleton(new Battlelog.Bf4.Bf4Client());
-            serviceCollection.AddSingleton(new Battlelog.BfH.BfHClient());
-            serviceCollection.AddSingleton(new BattlelogService());
-            serviceCollection.AddSingleton(new HOTSLogs.HOTSLogsClient());
-            serviceCollection.AddSingleton(new OpenWeather.OpenWeatherClient(settings.OpenWeatherMapKey));
-            serviceCollection.AddSingleton(settings);
-            serviceCollection.AddSingleton(new Steam.SteamAPI(settings.SteamKey));
-            serviceProvider = serviceCollection.BuildServiceProvider();
+            serviceProvider = new ServiceCollection()
+                .AddSingleton(new AudioService())
+                .AddSingleton(new Battlelog.Bf3.Bf3Client())
+                .AddSingleton(new Battlelog.Bf4.Bf4Client())
+                .AddSingleton(new Battlelog.BfH.BfHClient())
+                .AddSingleton(new BattlelogService())
+                .AddSingleton(new HOTSLogs.HOTSLogsClient())
+                .AddSingleton(new OpenWeather.OpenWeatherClient(settings.OpenWeatherMapKey))
+                .AddSingleton(settings)
+                .AddSingleton(new Steam.SteamAPI(settings.SteamKey))
+                .BuildServiceProvider();
 
             await new CommandHandler(serviceProvider, discordClient, new CommandServiceConfig()
             {

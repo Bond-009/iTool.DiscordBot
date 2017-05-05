@@ -71,7 +71,7 @@ namespace iTool.DiscordBot.Modules
         public async Task Help(string cmdName)
         {
             CommandInfo cmd = cmdService.Commands
-                                .Where(x => x.Aliases.Contains(cmdName)).FirstOrDefault();
+                                .FirstOrDefault(x => x.Aliases.Contains(cmdName));
 
             if (cmd == null)
             {

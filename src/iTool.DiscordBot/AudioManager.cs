@@ -22,8 +22,7 @@ namespace iTool.DiscordBot
             {
                 return Common.AudioDir + Path.DirectorySeparatorChar +
                             new Deserializer().Deserialize<List<AudioFile>>(File.ReadAllText(Common.AudioIndexFile))
-                                .Where(x => x.Names.Contains(name))
-                                .FirstOrDefault()?.FileName;
+                                .FirstOrDefault(x => x.Names.Contains(name))?.FileName;
             }
             catch (Exception ex)
             {

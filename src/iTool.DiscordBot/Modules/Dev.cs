@@ -34,7 +34,7 @@ namespace iTool.DiscordBot.Modules
             });
         }
 
-        [Command("eval")]
+        [Command("eval", RunMode = RunMode.Async)]
         [Alias("cseval", "csharp", "evaluate")]
         [Summary("Evaluates C# code")]
         [RequireTrustedUser]
