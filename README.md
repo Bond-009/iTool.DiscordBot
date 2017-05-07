@@ -21,7 +21,7 @@ Just a Discord bot
 
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
-| delmsgs | | GuildPermission.ManageMessages | Deletes the messages |
+| delmsgs | purge, clean | GuildPermission.ManageMessages | Deletes the messages |
 | kick | | GuildPermission.KickMembers | Kicks the user |
 | ban | | GuildPermission.BanMembers | Bans the user |
 

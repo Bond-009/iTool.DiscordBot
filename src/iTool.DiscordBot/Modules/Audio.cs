@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class AudioModule : ModuleBase
+    public class Audio : ModuleBase
     {
         AudioService AudioService;
 
-        public AudioModule(AudioService audioService) => this.AudioService = audioService;
+        public Audio(AudioService audioService) => this.AudioService = audioService;
 
         [Command("join", RunMode = RunMode.Async)]
         [Summary("Joins the voice channel")]

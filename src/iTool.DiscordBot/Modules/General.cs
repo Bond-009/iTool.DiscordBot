@@ -21,26 +21,34 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("help")]
-        [Summary("Returns the enabled commands in lists of 25")]
-        public async Task Help(int page = 1)
+        [Summary("Returns all the enabled modules")]
+        public async Task Help(string moduleName = null)
         {
-            page -= 1;
-            if (page < 0) { return; }
+            if (moduleName == null)
+            {
+                IEnumerable<ModuleInfo> modules = cmdService.Modules
+                                                    .OrderBy(x => x.Name);
 
-            IEnumerable<CommandInfo> cmds = cmdService.Commands
-                                        .GroupBy(x => x.Name)
-                                        .Select(y => y.First())
-                                        .OrderBy(x => x.Name)
-                                        .Skip(page * 25)
-                                        .Take(25);
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Modules",
+                    Color = new Color((uint)settings.Color),
+                    Description = string.Join(", ", modules.Select(x => x.Name)),
+                    Url = "https://github.com/Bond-009/iTool.DiscordBot"
+                });
+                return;
+            }
 
+            IReadOnlyList<CommandInfo> cmds = cmdService.Modules
+                                                .FirstOrDefault(x => x.Name.ToLower() == moduleName.ToLower())
+                                                ?.Commands;
             if (cmds.IsNullOrEmpty())
             { 
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Help",
                     Color = new Color((uint)settings.Color),
-                    Description = "No commands found",
+                    Description = $"No module named {moduleName} found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
                 return;
@@ -48,9 +56,9 @@ namespace iTool.DiscordBot.Modules
 
             EmbedBuilder b = new EmbedBuilder()
             {
-                Title = "Commands",
+                Title = "Module commands",
                 Color = new Color((uint)settings.Color),
-                Description = "Returns the enabled commands in lists of 25.",
+                Description = $"All commands from the {moduleName} module.",
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
 
@@ -62,13 +70,13 @@ namespace iTool.DiscordBot.Modules
                     f.Value = cmd.Summary ?? "No summary";
                 });
             }
-            await (await Context.User.CreateDMChannelAsync()).SendMessageAsync("", embed: b);
+            await ReplyAsync("", embed: b);
         }
 
         [Command("cmdinfo")]
         [Alias("commandinfo", "cmdinformation", "commandinformation")]
         [Summary("Returns info about the command")]
-        public async Task Help(string cmdName)
+        public async Task CMDInfo(string cmdName)
         {
             CommandInfo cmd = cmdService.Commands
                                 .FirstOrDefault(x => x.Aliases.Contains(cmdName));
@@ -273,7 +281,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Created at";
                 f.Value = user.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             });
-            if (gUser != null)
+            if (gUser != null && gUser.JoinedAt != null)
             {
                 b.AddField(f =>
                 {

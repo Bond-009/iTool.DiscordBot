@@ -9,6 +9,7 @@ namespace iTool.DiscordBot.Modules
     public class Administration : ModuleBase
     {
         [Command("delmsgs")]
+        [Alias("purge", "clean")]
         [Summary("Deletes the messages")]
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
@@ -18,6 +19,7 @@ namespace iTool.DiscordBot.Modules
                     .Where(x => DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));
 
         [Command("delmsgs")]
+        [Alias("purge", "clean")]
         [Summary("Deletes the messages")]
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class TagModule : ModuleBase
+    public class Tags : ModuleBase
     {
         Settings settings;
 
-        public TagModule(Settings settings) => this.settings = settings;
+        public Tags(Settings settings) => this.settings = settings;
 
         [Command("tag create")]
         [Alias("createtag")]

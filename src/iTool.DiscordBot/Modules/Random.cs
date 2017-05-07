@@ -12,6 +12,20 @@ namespace iTool.DiscordBot.Modules
 
         public Random(Settings settings) => this.settings = settings;
 
+        [Command("random")]
+        [Summary("Returns a random number between")]
+        public async Task Cat(int num1, int num2)
+        {
+            if (num1 > num2) return;
+
+            await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Title = "Random",
+                Color = new Color((uint)settings.Color),
+                Description = new System.Random().Next(num1, num2).ToString()
+            });
+        }
+
         [Command("cat")]
         [Summary("Returns a random cat image")]
         public async Task Cat()
@@ -28,6 +42,7 @@ namespace iTool.DiscordBot.Modules
                 });
             }
         }
+
         [Command("dog")]
         [Summary("Returns a random dog image")]
         public async Task Dog()

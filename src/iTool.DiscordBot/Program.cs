@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace iTool.DiscordBot
 {
     public static class Program
     {
-        static bool running = true;
+        static CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        public static void Main(string[] args)
+        public static void Main(string[] args) => MainAsync(args).GetAwaiter().GetResult();
+        public static async Task MainAsync(string[] args)
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
 
             Bot iToolBot = new Bot();
-            if (!iToolBot.Start().GetAwaiter().GetResult())
+            if (!await iToolBot.Start())
             {
                 if (!Console.IsInputRedirected) Console.ReadKey();
                 return;
@@ -21,16 +23,16 @@ namespace iTool.DiscordBot
             if (!Console.IsInputRedirected)
             { new Thread(Input).Start(); }
 
-            while (running) ;
+            await Task.Delay(-1, tokenSource.Token).ContinueWith(tsk => { });
 
-            iToolBot.Stop().GetAwaiter().GetResult();
+            await iToolBot.Stop();
 
             Environment.Exit(0);
         }
 
         static void Input()
         {
-            while (running)
+            while (!tokenSource.IsCancellationRequested)
             {
                 string input = Console.ReadLine().ToLower();
                 switch (input)
@@ -38,7 +40,7 @@ namespace iTool.DiscordBot
                     case "quit":
                     case "exit":
                     case "stop":
-                        running = false;
+                        tokenSource.Cancel();
                         break;
                     case "clear":
                     case "cls":
@@ -54,7 +56,7 @@ namespace iTool.DiscordBot
         static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
-            running = false;
+            tokenSource.Cancel();
         }
     }
 }

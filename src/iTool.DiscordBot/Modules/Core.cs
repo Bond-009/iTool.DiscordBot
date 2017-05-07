@@ -21,9 +21,9 @@ namespace iTool.DiscordBot.Modules
 
             foreach (IUser user in users)
             {
-                if (settings.TrustedUsers.Contains(user.Id)
-                    && !settings.BlacklistedUsers.Contains(user.Id)&& user.Id
-                    != (await Context.Client.GetApplicationInfoAsync()).Owner.Id)
+                if (!settings.TrustedUsers.Contains(user.Id)
+                    && !settings.BlacklistedUsers.Contains(user.Id) 
+                    && user.Id != (await Context.Client.GetApplicationInfoAsync()).Owner.Id)
                 {
                     settings.BlacklistedUsers.Add(user.Id);
                     blacklistedUsers.Add(user);
