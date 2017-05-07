@@ -8,22 +8,23 @@ Just a Discord bot
 
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
-| help | | | Returns the enabled commands in lists of 25 |
-| cmdinfo | commandinfo, cmdinformation, commandinformation | | Returns info about the command |
+| help | | | Returns all the enabled modules |
+| cmdinfo | commandinfo | | Returns info about the command |
 | info | information | | Returns info about the bot |
 | invite | | | Returns the OAuth2 Invite URL of the bot |
-| leave | | GuildPermission.ManageGuild | Instructs the bot to leave this Guild |
+| leave | | GuildPermission.ManageGuild | Instructs the bot to leave the guild |
 | setgame | | **Trusted user** | Sets the bots game |
 | ping | | | Gets the estimated round-trip latency, in milliseconds, to the gateway server |
-| userinfo | | | Returns info about the user |
+| userinfo | user | | Returns info about the user |
+| serverinfo | server, guild, guildinfo | | Returns info about the guild |
 
 ## Administration commands
 
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | delmsgs | purge, clean | GuildPermission.ManageMessages | Deletes the messages |
-| kick | | GuildPermission.KickMembers | Kicks the user |
-| ban | | GuildPermission.BanMembers | Bans the user |
+| kick | | GuildPermission.KickMembers | Kicks the user(s) |
+| ban | | GuildPermission.BanMembers | Bans the user(s) |
 
 ## Audio commands
 
@@ -31,7 +32,7 @@ Just a Discord bot
 | ------- | ------- | ---------- | ----------- |
 | join | | | Joins the voice channel |
 | stop | | | Stops the audio playback and leaves the voice channel |
-| play | | | Plays an audio files |
+| play | | | Plays an audio file |
 
 ## Bf3 commands
 

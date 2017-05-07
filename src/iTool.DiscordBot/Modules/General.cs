@@ -74,7 +74,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("cmdinfo")]
-        [Alias("commandinfo", "cmdinformation", "commandinformation")]
+        [Alias("commandinfo")]
         [Summary("Returns info about the command")]
         public async Task CMDInfo(string cmdName)
         {
@@ -142,7 +142,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the bot")]
         public async Task Info()
         {
-            IApplication application = await Context.Client.GetApplicationInfoAsync();
+            IUser owner = (await Context.Client.GetApplicationInfoAsync()).Owner;
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -151,10 +151,10 @@ namespace iTool.DiscordBot.Modules
             .AddField(f =>
             {
                 f.Name = "Info";
-                f.Value = $"- Owner: {application.Owner.ToString()} (ID {application.Owner.Id})" + Environment.NewLine +
+                f.Value = $"- Owner: {owner} (ID {owner.Id})" + Environment.NewLine +
                             $"- Library: Discord.Net ({DiscordConfig.Version})\n" +
                             $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
-                            $"- Uptime: {Utils.GetUptime().ToString(@"dd\.hh\:mm\:ss")}";
+                            $"- Uptime: {Utils.GetUptime().ToString(@"d\d\ hh\:mm\:ss")}";
             })
             .AddField(f =>
             {
@@ -162,7 +162,7 @@ namespace iTool.DiscordBot.Modules
                 f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB" + Environment.NewLine +
                             $"- Guilds: {Context.Client.Guilds.Count}" + Environment.NewLine +
                             $"- Channels: {Context.Client.Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
-                            $"- Users: {Context.Client.Guilds.Sum(g => g.Users.Count)}";
+                            $"- Users: {Context.Client.Guilds.Sum(g => g.MemberCount)}";
             }));
         }
 
@@ -178,7 +178,7 @@ namespace iTool.DiscordBot.Modules
                 });
 
         [Command("leave")]
-        [Summary("Instructs the bot to leave this Guild")]
+        [Summary("Instructs the bot to leave the guild")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Leave()
         {
@@ -206,6 +206,7 @@ namespace iTool.DiscordBot.Modules
                 });
 
         [Command("userinfo")]
+        [Alias("user")]
         [Summary("Returns info about the user")]
         public async Task UserInfo(SocketUser user = null)
         {
@@ -218,7 +219,7 @@ namespace iTool.DiscordBot.Modules
 
             EmbedBuilder b = new EmbedBuilder()
             {
-                Title = $"Info about {user.ToString()}",
+                Title = $"Info about {user}",
                 Color = new Color((uint)settings.Color),
                 ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
             }
@@ -261,19 +262,19 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = "Voice status";
-                    f.Value = $"- Deafened: {gUser.IsDeafened.ToString()}" + Environment.NewLine +
-                        $"- Musted: {gUser.IsMuted.ToString()}" + Environment.NewLine +
-                        $"- SelfDeafened: {gUser.IsSelfDeafened.ToString()}" + Environment.NewLine +
-                        $"- SelfMuted: {gUser.IsSelfMuted.ToString()}" + Environment.NewLine +
-                        $"- Suppressed: {gUser.IsSuppressed.ToString()}";
+                    f.Value = $"- Deafened: {gUser.IsDeafened}" + Environment.NewLine +
+                        $"- Musted: {gUser.IsMuted}" + Environment.NewLine +
+                        $"- SelfDeafened: {gUser.IsSelfDeafened}" + Environment.NewLine +
+                        $"- SelfMuted: {gUser.IsSelfMuted}" + Environment.NewLine +
+                        $"- Suppressed: {gUser.IsSuppressed}";
                 });
             }
             b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Bot/Webhook";
-                f.Value = $"- Bot: {user.IsBot.ToString()}" + Environment.NewLine +
-                    $"- Webhook: {user.IsWebhook.ToString()}";
+                f.Value = $"- Bot: {user.IsBot}" + Environment.NewLine +
+                    $"- Webhook: {user.IsWebhook}";
             })
             .AddField(f =>
             {
@@ -291,6 +292,56 @@ namespace iTool.DiscordBot.Modules
                 });
             }
             await ReplyAsync("", embed: b);
+        }
+
+        [Command("serverinfo")]
+        [Alias("server", "guild", "quildinfo")]
+        [Summary("Returns info about the guild")]
+        [RequireContext(ContextType.Guild)]
+        public async Task GuildInfo()
+        {
+            await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Title = $"Info about {Context.Guild}",
+                Color = new Color((uint)settings.Color),
+                ThumbnailUrl = Context.Guild.IconUrl
+            }
+            .AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Name";
+                f.Value = Context.Guild.Name;
+            })
+            .AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Id";
+                f.Value = Context.Guild.Id;
+            })
+            .AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Owner";
+                f.Value = Context.Guild.Owner.ToString();
+            })
+            .AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Members";
+                f.Value = Context.Guild.MemberCount;
+            })
+            .AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Voice region";
+                f.Value = Context.Guild.VoiceRegionId;
+            })
+            .AddField(f =>
+            {
+                f.IsInline = true;
+                f.Name = "Created at";
+                f.Value = Context.Guild.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
+            }));
         }
     }
 }

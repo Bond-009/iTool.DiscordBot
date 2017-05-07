@@ -23,7 +23,7 @@ namespace iTool.DiscordBot.Modules
             => await AudioService.LeaveAudio(Context.Guild);
 
         [Command("play", RunMode = RunMode.Async)]
-        [Summary("Plays an audio files")]
+        [Summary("Plays an audio file")]
         [RequireContext(ContextType.Guild)]
         public async Task Play([Remainder] string song)
         {

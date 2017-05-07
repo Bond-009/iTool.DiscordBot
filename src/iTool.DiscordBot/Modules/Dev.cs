@@ -77,12 +77,14 @@ namespace iTool.DiscordBot.Modules
                         "System.Collections.Generic",
                     });
 
-                RoslynGlobals global = new RoslynGlobals() {
-                    Client = Context.Client as DiscordSocketClient,
-                    Channel = Context.Channel as SocketTextChannel
-                };
+                object result = await CSharpScript.EvaluateAsync(code, options, globals:
+                    new RoslynGlobals()
+                    {
+                        Client = Context.Client as DiscordSocketClient,
+                        Channel = Context.Channel as SocketTextChannel
+                    }
+                );
 
-                object result = await CSharpScript.EvaluateAsync(code, options, globals: global);
                 await msg.ModifyAsync(x => x.Embed = new EmbedBuilder
                 {
                     Title = "Evaluation",
@@ -95,7 +97,7 @@ namespace iTool.DiscordBot.Modules
                 await msg.ModifyAsync(x => x.Embed = new EmbedBuilder
                 {
                     Title = "Evaluation Failure",
-                    Description = $"**{ex.GetType().ToString()}**: {ex.Message}",
+                    Description = $"**{ex.GetType()}**: {ex.Message}",
                     Color = new Color((uint)settings.ErrorColor)
                 }.Build());
             }
