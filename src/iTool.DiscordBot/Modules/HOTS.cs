@@ -9,12 +9,12 @@ namespace iTool.DiscordBot.Modules
     public class HOTS : ModuleBase
     {
         static HOTSLogsClient client;
-        Settings settings;
+        Color color;
 
         public HOTS(Settings settings)
         {
             if (client == null) client = new HOTSLogsClient();
-            this.settings = settings;
+            this.color = new Color((uint)settings.Color);
         }
 
         [Command("hotsstats")]
@@ -26,7 +26,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color((uint)settings.Color),
+                Color = color,
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
                 Footer = new EmbedFooterBuilder()
@@ -70,7 +70,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = new Color((uint)settings.Color),
+                Color = color,
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }

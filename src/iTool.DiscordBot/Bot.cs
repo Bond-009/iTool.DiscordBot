@@ -48,7 +48,6 @@ namespace iTool.DiscordBot
                 .AddSingleton(new Battlelog.Bf3.Bf3Client())
                 .AddSingleton(new Battlelog.Bf4.Bf4Client())
                 .AddSingleton(new Battlelog.BfH.BfHClient())
-                .AddSingleton(new BattlelogService())
                 .AddSingleton(settings)
                 .AddSingleton(new Steam.SteamAPI(settings.SteamKey))
                 .BuildServiceProvider();
@@ -75,7 +74,6 @@ namespace iTool.DiscordBot
             serviceProvider.GetService<Battlelog.Bf3.Bf3Client>().Dispose();
             serviceProvider.GetService<Battlelog.Bf4.Bf4Client>().Dispose();
             serviceProvider.GetService<Battlelog.BfH.BfHClient>().Dispose();
-            serviceProvider.GetService<BattlelogService>().Dispose();
             serviceProvider.GetService<Steam.SteamAPI>().Dispose();
 
             Settings.Save(settings);

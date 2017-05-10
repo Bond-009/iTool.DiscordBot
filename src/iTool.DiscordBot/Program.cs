@@ -46,6 +46,8 @@ namespace iTool.DiscordBot
                     case "cls":
                         Console.Clear();
                         break;
+                    case "":
+                        break;
                     default:
                         Console.WriteLine(input + ": command not found");
                         break;

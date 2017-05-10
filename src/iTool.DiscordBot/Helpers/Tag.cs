@@ -1,11 +1,15 @@
+using System;
+using System.Collections.Generic;
+
 namespace iTool.DiscordBot
 {
-    public class Tag
+    public class Tag : DbEntity
     {
-        public int Id { get; set; }
-        public ulong Author { get; set; }
-        public string Title { get; set; }
+        public ulong AuthorID { get; set; }
+        public ulong GuildID { get; set; }
+        public string Name { get; set; }
         public string Text { get; set; }
         public string Attachment { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

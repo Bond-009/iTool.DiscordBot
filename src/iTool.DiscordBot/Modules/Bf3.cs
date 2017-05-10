@@ -10,14 +10,15 @@ namespace iTool.DiscordBot.Modules
     public class Bf3 : ModuleBase
     {
         Bf3Client client;
-        BattlelogService helper;
+        BfPlayerDatabase db;
         Settings settings;
 
-        public Bf3(Bf3Client bfhClient, BattlelogService battlelogService, Settings settings)
+        public Bf3(Bf3Client bfhClient, Settings settings)
         {
             this.client = bfhClient;
-            this.helper = battlelogService;
             this.settings = settings;
+            db = new BfPlayerDatabase();
+            db.Database.EnsureCreated();
         }
 
         [Command("bf3stats")]
@@ -26,21 +27,26 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            long? personaID = helper.GetPersonaID(name) ?? await client.GetPersonaID(name);
+            long? personaID = await db.GetPersonaIDAsync(name);
 
-            if (personaID != null)
+            if (personaID == null)
             {
-                helper.SavePersonaID(name, personaID.Value);
-            }
-            else
-            {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                personaID = await client.GetPersonaID(name);
+
+                if (personaID != null)
                 {
-                    Title = $"No player found",
-                    Color = new Color((uint)settings.ErrorColor),
-                    ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png"
-                });
-                return;
+                    await db.SavePersonaIDAsync(name, personaID.Value);
+                }
+                else
+                {
+                    await ReplyAsync("", embed: new EmbedBuilder()
+                    {
+                        Title = $"No player found",
+                        Color = new Color((uint)settings.ErrorColor),
+                        ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png"
+                    });
+                    return;
+                }
             }
 
             Stats stats = await client.GetStatsAsync(platform, personaID.Value);
@@ -84,6 +90,11 @@ namespace iTool.DiscordBot.Modules
                         $"- Time played: {Math.Round(stats.OverviewStats.TimePlayed.TotalHours, 2)} hours";
             })
             );
+        }
+
+        public void Dispose()
+        {
+            db.Dispose();
         }
     }
 }

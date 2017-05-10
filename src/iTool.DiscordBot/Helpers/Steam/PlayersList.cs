@@ -8,6 +8,6 @@ namespace iTool.DiscordBot.Steam
     {
         [XmlArray("players")]
         [XmlArrayItem("player")]
-        public List<T> Players { get; set; } = new List<T>();
+        public IEnumerable<T> Players { get; set; }
     }
 }

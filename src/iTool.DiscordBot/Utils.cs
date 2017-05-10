@@ -20,14 +20,12 @@ namespace iTool.DiscordBot
 
         public static IEnumerable<string> LoadListFromFile(string path)
         {
-            if (File.Exists(path))
-            {
-                return File.ReadAllText(path)
-                        .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
-                        .Where(s => !string.IsNullOrWhiteSpace(s))
-                        .Distinct();
-            }
-            return null;
+            if (!File.Exists(path)) return null;
+
+            return File.ReadAllText(path)
+                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Distinct();
         }
     }
 }

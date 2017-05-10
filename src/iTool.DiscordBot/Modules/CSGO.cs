@@ -10,12 +10,17 @@ namespace iTool.DiscordBot.Modules
 {
     public class CSGO : ModuleBase
     {
-        Settings settings;
+        Color color;
         SteamAPI client;
 
         public CSGO(Settings settings, SteamAPI steamapi)
         {
-            this.settings = settings;
+            if (string.IsNullOrEmpty(settings.SteamKey))
+            {
+                throw new Exception("No SteamKey found.");
+            }
+
+            this.color = new Color((uint)settings.Color);
             this.client = steamapi;
         }
 
@@ -23,11 +28,6 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the CS:GO stats of the player")]
         public async Task CSGOStats(string name = null)
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             if (name == null) { name = Context.User.Username; }
 
             Dictionary<string, int> dict = (await client.GetUserStatsForGame(730, await client.ResolveVanityURL(name))).Stats
@@ -36,7 +36,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"CS:GO stats for {name}",
-                Color = new Color((uint)settings.Color)
+                Color = color
             }
             .AddField(f =>
             {
@@ -80,11 +80,6 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns stats of the player's last CS:GO match")]
         public async Task CSGOLastMatch(string name = null)
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             if (name == null) { name = Context.User.Username; }
 
             Dictionary<string, int> dict = (await client.GetUserStatsForGame(730, await client.ResolveVanityURL(name))).Stats
@@ -93,7 +88,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Last match CS:GO stats for {name}",
-                Color = new Color((uint)settings.Color),
+                Color = color,
             }
             .AddField(f =>
             {

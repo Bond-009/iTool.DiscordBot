@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Bf4 : ModuleBase
+    public class Bf4 : ModuleBase, IDisposable
     {
         Bf4Client client;
-        BattlelogService helper;
+        BfPlayerDatabase db;
         Settings settings;
 
-        public Bf4(Bf4Client bfhClient, BattlelogService battlelogService, Settings settings)
+        public Bf4(Bf4Client bfhClient, Settings settings)
         {
             this.client = bfhClient;
-            this.helper = battlelogService;
             this.settings = settings;
+            db = new BfPlayerDatabase();
+            db.Database.EnsureCreated();
         }
 
         [Command("bf4stats")]
@@ -26,21 +27,26 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            long? personaID = helper.GetPersonaID(name) ?? await client.GetPersonaID(name);
+            long? personaID = await db.GetPersonaIDAsync(name);
 
-            if (personaID != null)
+            if (personaID == null)
             {
-                helper.SavePersonaID(name, personaID.Value);
-            }
-            else
-            {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                personaID = await client.GetPersonaID(name);
+
+                if (personaID != null)
                 {
-                    Title = $"No player found",
-                    Color = new Color((uint)settings.ErrorColor),
-                    ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png"
-                });
-                return;
+                    await db.SavePersonaIDAsync(name, personaID.Value);
+                }
+                else
+                {
+                    await ReplyAsync("", embed: new EmbedBuilder()
+                    {
+                        Title = $"No player found",
+                        Color = new Color((uint)settings.ErrorColor),
+                        ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png"
+                    });
+                    return;
+                }
             }
 
             DetailedStats stats = await client.GetDetailedStatsAsync(platform, personaID.Value);
@@ -84,6 +90,11 @@ namespace iTool.DiscordBot.Modules
                         $"- Time played: {Math.Round(stats.GeneralStats.TimePlayed.TotalHours, 2)} hours";
             })
             );
+        }
+
+        public void Dispose()
+        {
+            db.Dispose();
         }
     }
 }

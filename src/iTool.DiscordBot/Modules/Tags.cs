@@ -1,17 +1,23 @@
 using Discord;
 using Discord.Commands;
-using LiteDB;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Tags : ModuleBase
+    public class Tags : ModuleBase<SocketCommandContext>, IDisposable
     {
-        Settings settings;
+        Color color;
+        TagDatabase db;
 
-        public Tags(Settings settings) => this.settings = settings;
+        public Tags(Settings settings)
+        {
+            this.color = new Color((uint)settings.Color);
+            db = new TagDatabase();
+            db.Database.EnsureCreated();
+        }
 
         [Command("tag create")]
         [Alias("createtag")]
@@ -19,31 +25,7 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task CreateTag(string name, [Remainder]string text)
         {
-            Directory.CreateDirectory(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id);
-
-            using (LiteDatabase db = new LiteDatabase(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id + Path.DirectorySeparatorChar + "tags.db"))
-            {
-                LiteCollection<Tag> col = db.GetCollection<Tag>("tags");
-
-                if (!col.EnsureIndex(x => x.Title, true))
-                {
-                    await ReplyAsync("", embed: new EmbedBuilder()
-                    {
-                        Title = "Failed to create tag",
-                        Color = new Color((uint)settings.ErrorColor),
-                        Description = "A tag with that name already exists",
-                    });
-                    return;
-                }
-
-                col.Insert(new Tag()
-                {
-                    Author = Context.User.Id,
-                    Title = name.ToLower(),
-                    Text = text,
-                    Attachment = Context.Message.Attachments.FirstOrDefault()?.Url,
-                });
-            }
+            await db.CreateTagAsync(Context, name, text, Context.Message.Attachments.FirstOrDefault()?.Url);
 
             await Tag(name);
         }
@@ -53,24 +35,17 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task Tag(string name)
         {
-            if (!File.Exists(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id + Path.DirectorySeparatorChar + "tags.db"))
-            { return; }
+            Tag tag = await db.GetTagAsync(Context.Guild.Id, name);
 
-            using (LiteDatabase db = new LiteDatabase(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id + Path.DirectorySeparatorChar + "tags.db"))
+            if (tag == null) return;
+
+            await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Tag tag = db.GetCollection<Tag>("tags").Find(x => x.Title == name).FirstOrDefault();
-
-                if (tag == null)
-                { return; }
-
-                await ReplyAsync("", embed: new EmbedBuilder()
-                {
-                    Title = tag.Title,
-                    Color = new Color((uint)settings.Color),
-                    Description = tag.Text,
-                    ImageUrl = tag.Attachment
-                });
-            }
+                Title = tag.Name,
+                Color = color,
+                Description = tag.Text,
+                ImageUrl = tag.Attachment
+            });
         }
 
         [Command("tag delete")]
@@ -79,49 +54,34 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task TagDelete(string name)
         {
-            if (!File.Exists(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id + Path.DirectorySeparatorChar + "tags.db"))
-            { return; }
+            await db.DeleteTagAsync(Context, name);
 
-            using (LiteDatabase db = new LiteDatabase(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id + Path.DirectorySeparatorChar + "tags.db"))
-            {
-                LiteCollection<Tag> col = db.GetCollection<Tag>("tags");
-                int? id = col.Find(x => x.Title == name
-                                && (x.Author == Context.User.Id || Context.User.Id == Context.Guild.OwnerId))
-                            .FirstOrDefault()?.Id;
-
-                if (id == null)
-                { return; }
-
-                col.Delete(id);
-            }
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Delete tag {name}",
-                Color = new Color((uint)settings.Color),
+                Color = color,
                 Description = $"Successfully deleted tag {name}",
             });
         }
 
-        [Command("tag list")]
-        [Alias("tags list", "listtags")]
+        [Command("tags")]
+        [Alias("tag list", "tags list", "listtags")]
         [Summary("Lists all tags")]
         [RequireContext(ContextType.Guild)]
         public async Task TagList()
         {
-            if (!File.Exists(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id + Path.DirectorySeparatorChar + "tags.db"))
-            { return; }
-
-            using (LiteDatabase db = new LiteDatabase(Common.GuildsDir + Path.DirectorySeparatorChar + Context.Guild.Id + Path.DirectorySeparatorChar + "tags.db"))
+            await ReplyAsync("", embed: new EmbedBuilder()
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
-                {
-                    Title = $"List tags",
-                    Color = new Color((uint)settings.Color),
-                    Description = string.Join(" ,", db.GetCollection<Tag>("tags")
-                                                    .FindAll()
-                                                    .Select(x => x.Title)),
-                });
-            }
+                Title = $"Tags",
+                Color = color,
+                Description = string.Join(" ,", db.GetTags(Context.Guild.Id)
+                                                .Select(x => x.Name)),
+            });
+        }
+
+        public void Dispose()
+        {
+            db.Dispose();
         }
     }
 }

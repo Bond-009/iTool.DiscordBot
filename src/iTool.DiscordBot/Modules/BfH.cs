@@ -2,24 +2,24 @@ using Battlelog;
 using Battlelog.BfH;
 using Discord;
 using Discord.Commands;
-using LiteDB;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class BfH : ModuleBase
+    public class BfH : ModuleBase, IDisposable
     {
         BfHClient client;
-        BattlelogService helper;
+        BfPlayerDatabase db;
         Settings settings;
 
-        public BfH(BfHClient bfhClient, BattlelogService battlelogService, Settings settings)
+        public BfH(BfHClient bfhClient, Settings settings)
         {
             this.client = bfhClient;
-            this.helper = battlelogService;
             this.settings = settings;
+            db = new BfPlayerDatabase();
+            db.Database.EnsureCreated();
         }
 
         [Command("bfhstats")]
@@ -28,21 +28,26 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            long? personaID = helper.GetPersonaID(name) ?? await client.GetPersonaID(name);
+            long? personaID = await db.GetPersonaIDAsync(name);
 
-            if (personaID != null)
+            if (personaID == null)
             {
-                helper.SavePersonaID(name, personaID.Value);
-            }
-            else 
-            {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                personaID = await client.GetPersonaID(name);
+
+                if (personaID != null)
                 {
-                    Title = $"No player found",
-                    Color = new Color((uint)settings.ErrorColor),
-                    ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
-                });
-                return;
+                    await db.SavePersonaIDAsync(name, personaID.Value);
+                }
+                else
+                {
+                    await ReplyAsync("", embed: new EmbedBuilder()
+                    {
+                        Title = $"No player found",
+                        Color = new Color((uint)settings.ErrorColor),
+                        ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
+                    });
+                    return;
+                }
             }
 
             DetailedStats stats = await client.GetDetailedStatsAsync(platform, personaID.Value);
@@ -86,6 +91,11 @@ namespace iTool.DiscordBot.Modules
                         $"- Time played: {Math.Round(stats.GeneralStats.TimePlayed.TotalHours, 2)} hours";
             })
             );
+        }
+
+        public void Dispose()
+        {
+            db.Dispose();
         }
     }
 }

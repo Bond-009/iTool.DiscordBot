@@ -14,10 +14,10 @@ namespace iTool.DiscordBot.Steam
 
         [XmlArray("stats")]
         [XmlArrayItem("stat")]
-        public List<Stat> Stats { get; set; } = new List<Stat>();
+        public IEnumerable<Stat> Stats { get; set; }
 
         [XmlArray("achievements")]
         [XmlArrayItem("achievement")]
-        public List<Achievement> Achievements { get; set; } = new List<Achievement>();
+        public IEnumerable<Achievement> Achievements { get; set; }
     }
 }
