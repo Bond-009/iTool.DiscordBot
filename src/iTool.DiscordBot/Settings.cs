@@ -26,12 +26,12 @@ namespace iTool.DiscordBot
         public bool CaseSensitiveCommands { get; set; }
         public RunMode DefaultRunMode { get; set; } = RunMode.Sync;
         public bool AntiSwear { get; set; }
-        public TemperatureScale TemperatureScale { get; set; }
+        public Unit Units { get; set; }
 
         [YamlIgnore]
-        public List<ulong> BlacklistedUsers { get; set; } = new List<ulong>();
+        public List<ulong> BlacklistedUsers { get; set; }
         [YamlIgnore]
-        public List<ulong> TrustedUsers { get; set; } = new List<ulong>();
+        public List<ulong> TrustedUsers { get; set; }
 
         public static Settings Load()
         {
@@ -42,9 +42,9 @@ namespace iTool.DiscordBot
                 Save(new Settings());
             }
 
-            Settings settings  = new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile));
-            settings.BlacklistedUsers.AddRange(Utils.LoadListFromFile(Common.BlackListFile).Select(ulong.Parse));
-            settings.TrustedUsers.AddRange(Utils.LoadListFromFile(Common.TrustedListFile).Select(ulong.Parse));
+            Settings settings = new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile));
+            settings.BlacklistedUsers = Utils.LoadListFromFile(Common.BlackListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
+            settings.TrustedUsers = Utils.LoadListFromFile(Common.TrustedListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
             return settings;
         }
 

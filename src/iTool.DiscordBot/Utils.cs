@@ -18,16 +18,16 @@ namespace iTool.DiscordBot
 
         public static double GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2);
 
-        public static List<string> LoadListFromFile(string path)
+        public static IEnumerable<string> LoadListFromFile(string path)
         {
             if (File.Exists(path))
             {
                 return File.ReadAllText(path)
                         .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
                         .Where(s => !string.IsNullOrWhiteSpace(s))
-                        .Distinct().ToList();
+                        .Distinct();
             }
-            return new List<string>();
+            return null;
         }
     }
 }

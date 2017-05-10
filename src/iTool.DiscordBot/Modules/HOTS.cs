@@ -8,12 +8,12 @@ namespace iTool.DiscordBot.Modules
 {
     public class HOTS : ModuleBase
     {
-        HOTSLogsClient client;
+        static HOTSLogsClient client;
         Settings settings;
 
-        public HOTS(HOTSLogsClient hotsClient, Settings settings)
+        public HOTS(Settings settings)
         {
-            this.client = hotsClient;
+            if (client == null) client = new HOTSLogsClient();
             this.settings = settings;
         }
 

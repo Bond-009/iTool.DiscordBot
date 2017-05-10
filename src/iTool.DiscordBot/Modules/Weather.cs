@@ -2,22 +2,25 @@
 using Discord.Commands;
 using OpenWeather;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
     public class Weather : ModuleBase
     {
-        OpenWeatherClient client;
+        static OpenWeatherClient client;
         Settings settings;
-        public Weather(OpenWeatherClient client, Settings settings)
+        public Weather(Settings settings)
         {
             if (string.IsNullOrEmpty(settings.OpenWeatherMapKey))
             {
                 throw new Exception("No OpenWeatherMapKey found.");
             }
 
-            this.client = client;
+            if (client == null)
+            { client = new OpenWeatherClient(settings.OpenWeatherMapKey, settings.Units); }
+
             this.settings = settings;
         }
 
@@ -25,26 +28,13 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the weather")]
         public async Task GetWeather(string city, string countryCode = null)
         {
-            WeatherInfo weather = await client.GetWeatherAsync(city, countryCode);
-            switch (settings.TemperatureScale)
-            {
-                case TemperatureScale.Kelvin:
-                    weather.Temperature = weather.Temperature.ToKelvin();
-                    break;
-                case TemperatureScale.Fahrenheit:
-                    weather.Temperature = weather.Temperature.ToFahrenheit();
-                    break;
-                case TemperatureScale.Celsius:
-                default:
-                    weather.Temperature = weather.Temperature.ToCelsius();
-                    break;
-            }
+            WeatherData weather = await client.GetWeatherAsync(city, countryCode);
 
-            EmbedBuilder b = new EmbedBuilder()
+            await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Title = weather.City.Name + " " + weather.City.Country,
+                Title = weather.Name + " " + weather.Sys.Country,
                 Color = new Color((uint)settings.Color),
-                ThumbnailUrl = client.GetIconURL(weather.Weather.Icon),
+                ThumbnailUrl = client.GetIconURL(weather.Weather.FirstOrDefault()?.Icon),
                 Footer = new EmbedFooterBuilder()
                     {
                         Text = "Powered by openweathermap.org",
@@ -54,35 +44,49 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Temperature";
-                f.Value = $"- Max: {weather.Temperature.Max} {weather.Temperature.Unit}" + Environment.NewLine +
-                            $"- Gem: {weather.Temperature.Value} {weather.Temperature.Unit}" + Environment.NewLine +
-                            $"- Min: {weather.Temperature.Min} {weather.Temperature.Unit}";
-            });
-
-            if (weather.Precipitation.Value != 0)
-            {
-                b.AddField(f =>
-                {
-                    f.IsInline = true;
-                    f.Name = "Precipitation";
-                    f.Value = weather.Precipitation.Value + weather.Precipitation.Unit;
-                });
-            }
-
-            b.AddField(f =>
+                f.Value = $"- Max: {weather.Main.MaximumTemperature} {GetTemperatureUnit(settings.Units)}" + Environment.NewLine +
+                            $"- Gem: {weather.Main.Temperature} {GetTemperatureUnit(settings.Units)}" + Environment.NewLine +
+                            $"- Min: {weather.Main.MinimumTemperature} {GetTemperatureUnit(settings.Units)}";
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Humidity";
-                f.Value = weather.Humidity.Value + weather.Humidity.Unit;
-            });
-            b.AddField(f =>
+                f.Value = weather.Main.Humidity + "%";
+            })
+            .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Wind";
-                f.Value = weather.Wind.Speed.Name + Environment.NewLine +
-                            weather.Wind.Speed.Value + "m/s";
-            });
-            await ReplyAsync("", embed: b);
+                f.Value = weather.Wind.Speed + " " + GetSpeedUnit(settings.Units);
+            }));
+        }
+
+        static string GetTemperatureUnit(Unit units)
+        {
+            switch(units)
+            {
+                case Unit.Imperial:
+                    return "°F";
+                case Unit.Metric:
+                    return "°C";
+                case Unit.Standard:
+                default:
+                    return "kelvin";
+            }
+        }
+
+        static string GetSpeedUnit(Unit units)
+        {
+            switch(units)
+            {
+                case Unit.Imperial:
+                    return "mi/h";
+                case Unit.Metric:
+                case Unit.Standard:
+                default:
+                    return "m/s";
+            }
         }
     }
 }

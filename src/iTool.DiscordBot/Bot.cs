@@ -49,8 +49,6 @@ namespace iTool.DiscordBot
                 .AddSingleton(new Battlelog.Bf4.Bf4Client())
                 .AddSingleton(new Battlelog.BfH.BfHClient())
                 .AddSingleton(new BattlelogService())
-                .AddSingleton(new HOTSLogs.HOTSLogsClient())
-                .AddSingleton(new OpenWeather.OpenWeatherClient(settings.OpenWeatherMapKey))
                 .AddSingleton(settings)
                 .AddSingleton(new Steam.SteamAPI(settings.SteamKey))
                 .BuildServiceProvider();
@@ -78,8 +76,6 @@ namespace iTool.DiscordBot
             serviceProvider.GetService<Battlelog.Bf4.Bf4Client>().Dispose();
             serviceProvider.GetService<Battlelog.BfH.BfHClient>().Dispose();
             serviceProvider.GetService<BattlelogService>().Dispose();
-            serviceProvider.GetService<HOTSLogs.HOTSLogsClient>().Dispose();
-            serviceProvider.GetService<OpenWeather.OpenWeatherClient>().Dispose();;
             serviceProvider.GetService<Steam.SteamAPI>().Dispose();
 
             Settings.Save(settings);

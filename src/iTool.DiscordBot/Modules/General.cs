@@ -26,14 +26,13 @@ namespace iTool.DiscordBot.Modules
         {
             if (moduleName == null)
             {
-                IEnumerable<ModuleInfo> modules = cmdService.Modules
-                                                    .OrderBy(x => x.Name);
-
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Modules",
                     Color = new Color((uint)settings.Color),
-                    Description = string.Join(", ", modules.Select(x => x.Name)),
+                    Description = string.Join(", ", cmdService.Modules
+                                                    .OrderBy(x => x.Name)
+                                                    .Select(x => x.Name)),
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
                 return;
@@ -146,7 +145,7 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Color = new Color((uint)settings.Color)
+                Color = new Color((uint)settings.Color),
             }
             .AddField(f =>
             {
@@ -182,7 +181,13 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Leave()
         {
-            await ReplyAsync("Leaving...");
+            await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Title = "Leaving",
+                Color = new Color((uint)settings.Color),
+                Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
+                Description = "Leaving, click the title to invite me back in."
+            });
             await Context.Guild.LeaveAsync();
         }
 
@@ -196,7 +201,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("ping")]
-        [Summary("Gets the estimated round-trip latency, in milliseconds, to the gateway server")]
+        [Summary("Returns the estimated round-trip latency, in milliseconds, to the gateway server")]
         public async Task Ping()
             => await ReplyAsync("", embed: new EmbedBuilder()
                 {

@@ -14,7 +14,7 @@ Just a Discord bot
 | invite | | | Returns the OAuth2 Invite URL of the bot |
 | leave | | GuildPermission.ManageGuild | Instructs the bot to leave the guild |
 | setgame | | **Trusted user** | Sets the bots game |
-| ping | | | Gets the estimated round-trip latency, in milliseconds, to the gateway server |
+| ping | | | Returns the estimated round-trip latency, in milliseconds, to the gateway server |
 | userinfo | user | | Returns info about the user |
 | serverinfo | server, guild, guildinfo | | Returns info about the guild |
 
