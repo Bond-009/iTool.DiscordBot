@@ -1,34 +1,48 @@
-using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace iTool.DiscordBot.Steam
 {
     public class PlayerSummary : Player
     {
-        [XmlElementAttribute("communityvisibilitystate")]
+        public ulong SteamID { get; set; }
+        [JsonProperty("communityvisibilitystate")]
+        [JsonRequired]
         public CommunityVisibilityState CommunityVisibilityState { get; set; }
-        [XmlElement("profilestate")]
+        [JsonProperty("profilestate")]
+        [JsonRequired]
         public int ProfileState { get; set; }
-        [XmlElement("personaname")]
+        [JsonProperty("personaname")]
+        [JsonRequired]
         public string PersonaName { get; set; }
-        //[XmlElement("lastlogoff")]
+        //[JsonProperty("lastlogoff")]
+        //[JsonRequired]
         //public DateTime LastLogOff { get; set; }
-        [XmlElement("profileurl")]
+        [JsonProperty("profileurl")]
+        [JsonRequired]
         public string ProfileURL { get; set; }
-        [XmlElement("avatar")]
+        [JsonProperty("avatar")]
+        [JsonRequired]
         public string Avatar { get; set; }
-        [XmlElement("avatarmedium")]
+        [JsonProperty("avatarmedium")]
+        [JsonRequired]
         public string AvatarMedium { get; set; }
-        [XmlElement("avatarfull")]
+        [JsonProperty("avatarfull")]
+        [JsonRequired]
         public string AvatarFull { get; set; }
-        [XmlElement("personastate")]
+        [JsonProperty("personastate")]
+        [JsonRequired]
         public PersonaState PersonaState { get; set; }
-        [XmlElement("primaryclanid")]
+        [JsonProperty("primaryclanid")]
+        [JsonRequired]
         public ulong PrimaryClanID { get; set; }
-        //[XmlElement("timecreated")]
+        //[JsonProperty("timecreated")]
+        //[JsonRequired]
         //public DateTime TimeCreated { get; set; }
-        [XmlElement("personastateflags")]
+        [JsonProperty("personastateflags")]
+        [JsonRequired]
         public int PersonaStateFlags { get; set; }
-        [XmlElement("loccountrycode")]
+        [JsonProperty("loccountrycode")]
+        [JsonRequired]
         public string LocCountryCode { get; set; }
     }
 }

@@ -1,13 +1,15 @@
-using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace iTool.DiscordBot.Steam
 {
     public class Achievement
     {
-        [XmlElement("name")]
+        [JsonProperty("name")]
+        [JsonRequired]
         public string Name { get; set; }
 
-        [XmlElement("achieved")]
+        [JsonProperty("achieved")]
+        [JsonRequired]
         public int Achieved { get; set; }
     }
 }

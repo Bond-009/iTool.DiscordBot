@@ -1,8 +1,9 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace iTool.DiscordBot.Steam
 {
@@ -17,50 +18,49 @@ namespace iTool.DiscordBot.Steam
             httpClient.BaseAddress = new Uri("https://api.steampowered.com");
         }
 
-        public async Task<PlayerList<PlayerBan>> GetPlayerBans(ulong[] steamIDs)
+        public async Task<IEnumerable<PlayerBan>> GetPlayerBans(ulong[] steamIDs)
         {
-            using (Stream stream = await httpClient.GetStreamAsync(
-                $"/ISteamUser/GetPlayerBans/v1/?key={key}&steamids={string.Join(",", steamIDs)}&format=xml"))
-            {
-                return (PlayerList<PlayerBan>)new XmlSerializer(typeof(PlayerList<PlayerBan>)).Deserialize(stream);
-            }
+            return await await Task.Factory.StartNew(async () =>
+                JsonConvert.DeserializeObject<PlayerList<PlayerBan>>(
+                    await httpClient.GetStringAsync(
+                        $"/ISteamUser/GetPlayerBans/v1/?key={key}&steamids={string.Join(",", steamIDs)}"
+            )).Players);
         }
 
-        public async Task<PlayerList<PlayerSummary>> GetPlayerSummaries(ulong[] steamIDs)
+        public async Task<IEnumerable<PlayerSummary>> GetPlayerSummaries(ulong[] steamIDs)
         {
-            using (Stream stream = await httpClient.GetStreamAsync(
-                $"/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={string.Join(",", steamIDs)}&format=xml"))
-            {
-                return (PlayerList<PlayerSummary>)new XmlSerializer(typeof(PlayerList<PlayerSummary>)).Deserialize(stream);
-            }
+            return await await Task.Factory.StartNew(async () =>
+                JsonConvert.DeserializeObject<SteamResponse<PlayerList<PlayerSummary>>>(
+                    await httpClient.GetStringAsync(
+                        $"/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={string.Join(",", steamIDs)}"
+            )).Data.Players);
         }
 
         public async Task<UserStatsForGame> GetUserStatsForGame(int gameID, ulong steamID)
         {
-            using (Stream stream = await httpClient.GetStreamAsync(
-                $"/ISteamUserStats/GetUserStatsForGame/v0002/?key={key}&appid={gameID}&steamid={steamID}&format=xml"))
-            {
-                return (UserStatsForGame)new XmlSerializer(typeof(UserStatsForGame)).Deserialize(stream);
-            }
+            return await await Task.Factory.StartNew(async () =>
+                JsonConvert.DeserializeObject<UserStatsForGameResponse>(
+                    await httpClient.GetStringAsync(
+                        $"/ISteamUserStats/GetUserStatsForGame/v0002/?key={key}&appid={gameID}&steamid={steamID}"
+            )).Data);
         }
 
         public async Task<ulong> ResolveVanityURL(string playername)
         {
+            VanityURL vanityurl = await await Task.Factory.StartNew(async () =>
+                JsonConvert.DeserializeObject<VanityURlResponse>(
+                    await httpClient.GetStringAsync(
+                        $"/ISteamUser/ResolveVanityURL/v0001/?key={key}&vanityurl={playername}"
+            )).Data);
 
-            using (Stream stream = await httpClient.GetStreamAsync(
-                $"/ISteamUser/ResolveVanityURL/v0001/?key={key}&vanityurl={playername}&format=xml"))
+            switch (vanityurl.Success)
             {
-                VanityURL vanityurl = (VanityURL)new XmlSerializer(typeof(VanityURL)).Deserialize(stream);
-
-                switch (vanityurl.Success)
-                {
-                    case 1:
-                        return vanityurl.SteamID64.Value;
-                    case 42:
-                        throw new Exception("No player found.");
-                    default:
-                        throw new Exception();
-                }
+                case 1:
+                    return vanityurl.SteamID64.Value;
+                case 42:
+                    throw new Exception("No player found.");
+                default:
+                    throw new Exception();
             }
         }
 

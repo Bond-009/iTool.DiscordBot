@@ -33,6 +33,9 @@ namespace iTool.DiscordBot
         [YamlIgnore]
         public List<ulong> TrustedUsers { get; set; }
 
+        public Color GetColor() => new Color((uint)Color);
+        public Color GetErrorColor() => new Color((uint)ErrorColor);
+
         public static Settings Load()
         {
             if (!File.Exists(Common.SettingsFile))

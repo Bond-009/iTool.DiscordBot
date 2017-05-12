@@ -42,7 +42,8 @@ namespace iTool.DiscordBot.Modules
                     await ReplyAsync("", embed: new EmbedBuilder()
                     {
                         Title = $"No player found",
-                        Color = new Color((uint)settings.ErrorColor),
+                        Color = settings.GetErrorColor(),
+                        Description = "No player was found with that name.",
                         ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png"
                     });
                     return;
@@ -54,7 +55,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Battlefield 3 stats for {name}",
-                Color = new Color((uint)settings.Color),
+                Color = settings.GetColor(),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png",
             }
             .AddField(f =>

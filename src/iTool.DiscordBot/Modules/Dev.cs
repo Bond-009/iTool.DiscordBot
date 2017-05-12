@@ -25,11 +25,11 @@ namespace iTool.DiscordBot.Modules
         public async Task GC()
         {
             System.GC.Collect();
-
+            // TODO: Replace emoji
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "GC",
-                Color = new Color((uint)settings.Color),
+                Color = settings.GetColor(),
                 Description = ":thumbsup:"
             });
         }
@@ -51,7 +51,7 @@ namespace iTool.DiscordBot.Modules
             IUserMessage msg = await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Evaluation",
-                Color = new Color((uint)settings.Color),
+                Color = settings.GetColor(),
                 Description = "Evaluating..."
             });
 
@@ -89,7 +89,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Evaluation",
                     Description = result?.ToString() ?? "Success, nothing got returned",
-                    Color = new Color((uint)settings.Color)
+                    Color = settings.GetColor()
                 }.Build());
             }
             catch (Exception ex)
@@ -98,7 +98,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Evaluation Failure",
                     Description = $"**{ex.GetType()}**: {ex.Message}",
-                    Color = new Color((uint)settings.ErrorColor)
+                    Color = settings.GetErrorColor()
                 }.Build());
             }
         }

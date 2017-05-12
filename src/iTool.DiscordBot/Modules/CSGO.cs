@@ -10,7 +10,7 @@ namespace iTool.DiscordBot.Modules
 {
     public class CSGO : ModuleBase
     {
-        Color color;
+        Settings settings;
         SteamAPI client;
 
         public CSGO(Settings settings, SteamAPI steamapi)
@@ -20,7 +20,7 @@ namespace iTool.DiscordBot.Modules
                 throw new Exception("No SteamKey found.");
             }
 
-            this.color = new Color((uint)settings.Color);
+            this.settings = settings;
             this.client = steamapi;
         }
 
@@ -36,7 +36,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"CS:GO stats for {name}",
-                Color = color
+                Color = settings.GetColor()
             }
             .AddField(f =>
             {
@@ -88,7 +88,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Last match CS:GO stats for {name}",
-                Color = color,
+                Color = settings.GetColor(),
             }
             .AddField(f =>
             {

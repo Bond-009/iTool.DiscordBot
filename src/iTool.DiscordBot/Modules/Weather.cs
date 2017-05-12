@@ -11,6 +11,7 @@ namespace iTool.DiscordBot.Modules
     {
         static OpenWeatherClient client;
         Settings settings;
+
         public Weather(Settings settings)
         {
             if (string.IsNullOrEmpty(settings.OpenWeatherMapKey))
@@ -33,7 +34,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = weather.Name + " " + weather.Sys.Country,
-                Color = new Color((uint)settings.Color),
+                Color = settings.GetColor(),
                 ThumbnailUrl = client.GetIconURL(weather.Weather.FirstOrDefault()?.Icon),
                 Footer = new EmbedFooterBuilder()
                     {

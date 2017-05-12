@@ -34,7 +34,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Blacklist",
-                    Color = new Color((uint)settings.ErrorColor),
+                    Color = settings.GetErrorColor(),
                     Description = $"Failed to blacklist {string.Join(", ", users.ToList())}."
                 });
             }
@@ -43,7 +43,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Blacklist",
-                    Color = new Color((uint)settings.Color),
+                    Color = settings.GetColor(),
                     Description = $"Successfully blacklisted {string.Join(", ", blacklistedUsers)}."
                 });
             }
@@ -69,7 +69,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Remove blacklist",
-                    Color = new Color((uint)settings.ErrorColor),
+                    Color = settings.GetErrorColor(),
                     Description = $"Failed to remove blacklist for {string.Join(", ", users.ToList())}."
                 });
             }
@@ -78,7 +78,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Remove blacklist",
-                    Color = new Color((uint)settings.Color),
+                    Color = settings.GetColor(),
                     Description = $"Successfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
                 });
             }
@@ -100,7 +100,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Trust",
-                Color = new Color((uint)settings.Color),
+                Color = settings.GetColor(),
                 Description = $"Successfully added {string.Join(", ", users.ToList())} to the list of trusted users."
             });
         }

@@ -1,13 +1,12 @@
 using System.Collections.Generic;
-using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace iTool.DiscordBot.Steam
 {
-    [XmlRoot("response")]
-    public class PlayerList<T> where T : Player
+    internal class PlayerList<T> where T : Player
     {
-        [XmlArray("players")]
-        [XmlArrayItem("player")]
+        [JsonProperty("players")]
+        [JsonRequired]
         public IEnumerable<T> Players { get; set; }
     }
 }

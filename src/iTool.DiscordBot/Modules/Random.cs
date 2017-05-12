@@ -21,7 +21,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Random",
-                Color = new Color((uint)settings.Color),
+                Color = settings.GetColor(),
                 Description = new System.Random().Next(num1, num2).ToString()
             });
         }
@@ -37,7 +37,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Cat",
-                    Color = new Color((uint)settings.Color),
+                    Color = settings.GetColor(),
                     ImageUrl = (string)o["file"]
                 });
             }
@@ -59,8 +59,8 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Dog",
-                    Color = new Color((uint)settings.Color),
-                    ImageUrl =  link
+                    Color = settings.GetColor(),
+                    ImageUrl = link
                 });
             }
         }

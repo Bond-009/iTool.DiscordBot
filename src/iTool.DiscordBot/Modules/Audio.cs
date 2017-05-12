@@ -6,32 +6,37 @@ namespace iTool.DiscordBot.Modules
 {
     public class Audio : ModuleBase
     {
-        AudioService AudioService;
+        AudioService audioService;
+        AudioFileService fileService;
 
-        public Audio(AudioService audioService) => this.AudioService = audioService;
+        public Audio(AudioService audioService, AudioFileService fileService)
+        {
+            this.audioService = audioService;
+            this.fileService = fileService;
+        }
 
         [Command("join", RunMode = RunMode.Async)]
         [Summary("Joins the voice channel")]
         [RequireContext(ContextType.Guild)]
         public async Task Join()
-            => await AudioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
+            => await audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
 
         [Command("stop", RunMode = RunMode.Async)]
         [Summary("Stops the audio playback and leaves the voice channel")]
         [RequireContext(ContextType.Guild)]
         public async Task Stop()
-            => await AudioService.LeaveAudio(Context.Guild);
+            => await audioService.LeaveAudio(Context.Guild);
 
         [Command("play", RunMode = RunMode.Async)]
         [Summary("Plays an audio file")]
         [RequireContext(ContextType.Guild)]
         public async Task Play([Remainder] string song)
         {
-            string path = AudioManager.GetSong(song);
+            string path = fileService.GetSong(song);
             if (path == null) { return; }
-            await AudioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
-            await AudioService.SendAudioAsync(Context.Guild, path);
-            await AudioService.LeaveAudio(Context.Guild);
+            await audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
+            await audioService.SendAudioAsync(Context.Guild, path);
+            await audioService.LeaveAudio(Context.Guild);
         }
     }
 }

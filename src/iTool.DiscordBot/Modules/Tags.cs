@@ -9,12 +9,12 @@ namespace iTool.DiscordBot.Modules
 {
     public class Tags : ModuleBase<SocketCommandContext>, IDisposable
     {
-        Color color;
+        Settings settings;
         TagDatabase db;
 
         public Tags(Settings settings)
         {
-            this.color = new Color((uint)settings.Color);
+            this.settings = settings;
             db = new TagDatabase();
             db.Database.EnsureCreated();
         }
@@ -42,7 +42,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = tag.Name,
-                Color = color,
+                Color = settings.GetColor(),
                 Description = tag.Text,
                 ImageUrl = tag.Attachment
             });
@@ -59,7 +59,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Delete tag {name}",
-                Color = color,
+                Color = settings.GetColor(),
                 Description = $"Successfully deleted tag {name}",
             });
         }
@@ -73,7 +73,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Tags",
-                Color = color,
+                Color = settings.GetColor(),
                 Description = string.Join(" ,", db.GetTags(Context.Guild.Id)
                                                 .Select(x => x.Name)),
             });

@@ -9,12 +9,12 @@ namespace iTool.DiscordBot.Modules
     public class HOTS : ModuleBase
     {
         static HOTSLogsClient client;
-        Color color;
+        Settings settings;
 
         public HOTS(Settings settings)
         {
             if (client == null) client = new HOTSLogsClient();
-            this.color = new Color((uint)settings.Color);
+            this.settings = settings;
         }
 
         [Command("hotsstats")]
@@ -22,11 +22,21 @@ namespace iTool.DiscordBot.Modules
         public async Task HOTSStats(Region region, string battleTag)
         {
             Player player = await client.GetPlayerSummary(region, battleTag);
+            if (player == null)
+            {
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = $"No player found",
+                    Color = settings.GetErrorColor(),
+                    Description = "No player was found matching those criteria."
+                });
+                return;
+            }
 
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = color,
+                Color = settings.GetColor(),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
                 Footer = new EmbedFooterBuilder()
@@ -66,11 +76,21 @@ namespace iTool.DiscordBot.Modules
         public async Task HOTSStats(int playerID)
         {
             Player player = await client.GetPlayerSummary(playerID);
+            if (player == null)
+            {
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = $"No player found",
+                    Color = settings.GetErrorColor(),
+                    Description = "No player was found matching those criteria."
+                });
+                return;
+            }
 
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = color,
+                Color = settings.GetColor(),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }

@@ -1,10 +1,11 @@
-using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace iTool.DiscordBot.Steam
 {
-    public class Player
+    internal interface Player
     {
-        [XmlElement("steamid")]
-        public ulong SteamID { get; set; }
+        [JsonProperty("steamid")]
+        [JsonRequired]
+        ulong SteamID { get; set; }
     }
 }

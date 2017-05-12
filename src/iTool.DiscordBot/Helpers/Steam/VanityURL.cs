@@ -1,14 +1,21 @@
-using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace iTool.DiscordBot.Steam
 {
-    [XmlRoot("response")]
+    public class VanityURlResponse : SteamResponse<VanityURL>
+    {
+        [JsonProperty("response")]
+        [JsonRequired]
+        public override VanityURL Data { get; set; }
+    }
+
     public class VanityURL
     {
-        [XmlElement("steamid", IsNullable = true)]
+        [JsonProperty("steamid")]
         public ulong? SteamID64 { get; set; }
 
-        [XmlElement("success")]
+        [JsonProperty("success")]
+        [JsonRequired]
         public int Success { get; set; }
     }
 }

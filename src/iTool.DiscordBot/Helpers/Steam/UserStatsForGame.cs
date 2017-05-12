@@ -1,23 +1,31 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace iTool.DiscordBot.Steam
 {
-    [XmlRoot("playerstats")]
+    public class UserStatsForGameResponse : SteamResponse<UserStatsForGame>
+    {
+        [JsonProperty("playerstats")]
+        [JsonRequired]
+        public override UserStatsForGame Data { get; set; }
+    }
+
     public class UserStatsForGame
     {
-        [XmlElement("steamID")]
+        [JsonProperty("steamID")]
+        [JsonRequired]
         public ulong SteamID { get; set; }
 
-        [XmlElement("gameName")]
+        [JsonProperty("gameName")]
+        [JsonRequired]
         public string GameName { get; set; }
 
-        [XmlArray("stats")]
-        [XmlArrayItem("stat")]
+        [JsonProperty("stats")]
+        [JsonRequired]
         public IEnumerable<Stat> Stats { get; set; }
 
-        [XmlArray("achievements")]
-        [XmlArrayItem("achievement")]
+        [JsonProperty("achievements")]
+        [JsonRequired]
         public IEnumerable<Achievement> Achievements { get; set; }
     }
 }

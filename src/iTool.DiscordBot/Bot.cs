@@ -45,6 +45,7 @@ namespace iTool.DiscordBot
 
             serviceProvider = new ServiceCollection()
                 .AddSingleton(new AudioService())
+                .AddSingleton(new AudioFileService())
                 .AddSingleton(new Battlelog.Bf3.Bf3Client())
                 .AddSingleton(new Battlelog.Bf4.Bf4Client())
                 .AddSingleton(new Battlelog.BfH.BfHClient())

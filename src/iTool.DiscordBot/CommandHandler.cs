@@ -93,7 +93,7 @@ namespace iTool.DiscordBot
                 await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Error",
-                    Color = new Color((uint)settings.ErrorColor),
+                    Color = settings.GetErrorColor(),
                     Description = result.ErrorReason
                 });
             }
