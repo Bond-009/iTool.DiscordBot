@@ -16,10 +16,10 @@
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc3-00742" />
     <PackageReference Include="HOTSLogs.Net" Version="0.1.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.2" />
     <PackageReference Include="OpenWeather.Net" Version="0.7.4" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-    <PackageReference Include="YamlDotNet" Version="4.1.1-netstandard0398" />
+    <PackageReference Include="YamlDotNet" Version="4.2.0" />
   </ItemGroup>
 
 </Project>

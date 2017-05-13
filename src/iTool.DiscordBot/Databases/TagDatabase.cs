@@ -50,7 +50,7 @@ namespace iTool.DiscordBot
                 throw new ArgumentException($"The tag `{name}` does not exist.");
 
             var user = context.User as SocketGuildUser;
-            if (tag.AuthorID != user.Id && !user.GuildPermissions.ManageMessages)
+            if (tag.AuthorID != user.Id && !user.GuildPermissions.ManageMessages)
                 throw new UnauthorizedAccessException($"You are not the owner of the tag `{name}`.");
 
             Tags.Remove(tag);

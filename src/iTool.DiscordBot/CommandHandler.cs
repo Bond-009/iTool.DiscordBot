@@ -103,7 +103,7 @@ namespace iTool.DiscordBot
         {
             while (derivedType != null && derivedType != typeof(object))
             {
-                var currentType = derivedType.GetTypeInfo().IsGenericType ? derivedType.GetGenericTypeDefinition() : derivedType;
+                Type currentType = derivedType.GetTypeInfo().IsGenericType ? derivedType.GetGenericTypeDefinition() : derivedType;
                 if (baseType == currentType)
                 {
                     return true;
