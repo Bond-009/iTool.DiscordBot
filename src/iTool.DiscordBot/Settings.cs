@@ -26,6 +26,7 @@ namespace iTool.DiscordBot
         public bool CaseSensitiveCommands { get; set; }
         public RunMode DefaultRunMode { get; set; } = RunMode.Sync;
         public bool AntiSwear { get; set; }
+        public bool GuildSpecificSettings { get; set; } = true;
         public Unit Units { get; set; }
 
         [YamlIgnore]

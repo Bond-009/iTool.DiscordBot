@@ -22,9 +22,9 @@ namespace iTool.DiscordBot.Modules
         [Alias("collectgarbage")]
         [Summary("Forces the GC to clean up resources")]
         [RequireTrustedUser]
-        public async Task GC()
+        public async Task CollectGarbage ()
         {
-            System.GC.Collect();
+            GC.Collect();
             // TODO: Replace emoji
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -48,7 +48,7 @@ namespace iTool.DiscordBot.Modules
 
             string code = input.Substring(index1, index2 - index1);
 
-            IUserMessage msg = await ReplyAsync("", embed: new EmbedBuilder()
+            Task<IUserMessage> msg = ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Evaluation",
                 Color = settings.GetColor(),
@@ -85,7 +85,7 @@ namespace iTool.DiscordBot.Modules
                     }
                 );
 
-                await msg.ModifyAsync(x => x.Embed = new EmbedBuilder
+                await (await msg).ModifyAsync(x => x.Embed = new EmbedBuilder
                 {
                     Title = "Evaluation",
                     Description = result?.ToString() ?? "Success, nothing got returned",
@@ -94,7 +94,7 @@ namespace iTool.DiscordBot.Modules
             }
             catch (Exception ex)
             {
-                await msg.ModifyAsync(x => x.Embed = new EmbedBuilder
+                await (await msg).ModifyAsync(x => x.Embed = new EmbedBuilder
                 {
                     Title = "Evaluation Failure",
                     Description = $"**{ex.GetType()}**: {ex.Message}",

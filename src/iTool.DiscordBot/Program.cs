@@ -6,7 +6,7 @@ namespace iTool.DiscordBot
 {
     public static class Program
     {
-        static CancellationTokenSource tokenSource = new CancellationTokenSource();
+        static readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         public static void Main(string[] args) => MainAsync(args).GetAwaiter().GetResult();
         public static async Task MainAsync(string[] args)

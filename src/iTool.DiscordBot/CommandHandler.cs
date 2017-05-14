@@ -74,9 +74,19 @@ namespace iTool.DiscordBot
             // Mark where the prefix ends and the command begins
             int argPos = 0;
 
+            string prefix = settings.Prefix;
+            if (settings.GuildSpecificSettings
+                && (message.Channel as IGuildChannel)?.Guild != null)
+            {
+                using (GuildSettingsDatabase db = new GuildSettingsDatabase())
+                {
+                    prefix = (await db.GetSettingsAsync((message.Channel as IGuildChannel).Guild.Id)).Prefix;
+                }
+            }
+
             // Determine if the message has a valid prefix, adjust argPos
             if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos)
-                || message.HasStringPrefix(settings.Prefix, ref argPos)))
+                || message.HasStringPrefix(prefix, ref argPos)))
             { return; }
 
             // Execute the Command, store the result

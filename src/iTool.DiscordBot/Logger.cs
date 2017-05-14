@@ -3,13 +3,14 @@ using Serilog;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
 {
     public static class Logger
     {
-        static ILogger logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(Path.Combine(AppContext.BaseDirectory, "logs", "log-{Date}.log"))
+        static readonly ILogger logger = new LoggerConfiguration()
+                .WriteTo.RollingFile(Path.Combine(AppContext.BaseDirectory, "logs", "log_{Date}.log"))
                 .CreateLogger();
         public static LogSeverity LogLevel { get; internal set; } = LogSeverity.Verbose;
 
@@ -22,7 +23,10 @@ namespace iTool.DiscordBot
             {
                 case LogSeverity.Critical:
                 case LogSeverity.Error:
-                    logger.Error($"{msg.Source}: {msg.Message}");
+                    if (msg.Exception == null)
+                        logger.Error($"{msg.Source}: {msg.Message}");
+                    else
+                        logger.Error(msg.Exception, $"{msg.Source}: {msg.Message}");
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 case LogSeverity.Warning:
@@ -43,7 +47,18 @@ namespace iTool.DiscordBot
 
             Console.ResetColor();
 
+            if (msg.Exception != null) Crash(new Crash(msg.Source, msg.Exception));
+
             return Task.CompletedTask;
+        }
+
+        static void Crash(Crash crash)
+        {
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "crashes"));
+            File.WriteAllText(
+                Path.Combine(AppContext.BaseDirectory, "crashes", $"crash_{DateTime.UtcNow.ToString("dd-MM-yyyy_HH-mm-ss")}.txt"),
+                new Serializer().Serialize(crash)
+            );
         }
     }
 }
