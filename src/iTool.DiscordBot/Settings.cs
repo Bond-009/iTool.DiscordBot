@@ -27,7 +27,7 @@ namespace iTool.DiscordBot
         public RunMode DefaultRunMode { get; set; } = RunMode.Sync;
         public bool AntiSwear { get; set; }
         public bool GuildSpecificSettings { get; set; } = true;
-        public Unit Units { get; set; }
+        public Unit Units { get; set; } = Unit.Metric;
 
         [YamlIgnore]
         public List<ulong> BlacklistedUsers { get; set; }

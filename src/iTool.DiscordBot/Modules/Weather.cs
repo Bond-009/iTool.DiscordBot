@@ -13,16 +13,16 @@ namespace iTool.DiscordBot.Modules
         Settings settings;
 
         public Weather(Settings settings)
+            => this.settings = settings;
+
+        protected override void BeforeExecute()
         {
             if (string.IsNullOrEmpty(settings.OpenWeatherMapKey))
             {
                 throw new Exception("No OpenWeatherMapKey found.");
             }
-
             if (client == null)
             { client = new OpenWeatherClient(settings.OpenWeatherMapKey, settings.Units); }
-
-            this.settings = settings;
         }
 
         [Command("weather")]

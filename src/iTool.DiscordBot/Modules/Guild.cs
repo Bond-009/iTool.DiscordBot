@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Guild : ModuleBase
+    public class Guild : ModuleBase, IDisposable
     {
         GuildSettingsDatabase db;
         Settings settings;

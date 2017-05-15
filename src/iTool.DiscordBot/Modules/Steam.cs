@@ -15,13 +15,16 @@ namespace iTool.DiscordBot.Modules
 
         public Steam(Settings settings, SteamAPI steamapi)
         {
+            this.settings = settings;
+            this.client = steamapi;
+        }
+
+        protected override void BeforeExecute()
+        {
             if (string.IsNullOrEmpty(settings.SteamKey))
             {
                 throw new Exception("No SteamKey found.");
             }
-
-            this.settings = settings;
-            this.client = steamapi;
         }
 
         [Command("vanityurl")]

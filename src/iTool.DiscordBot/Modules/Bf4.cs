@@ -9,16 +9,18 @@ namespace iTool.DiscordBot.Modules
 {
     public class Bf4 : ModuleBase, IDisposable
     {
-        Bf4Client client;
+        static Bf4Client client;
         BfPlayerDatabase db;
         Settings settings;
 
-        public Bf4(Bf4Client bfhClient, Settings settings)
+        public Bf4(Settings settings)
         {
-            this.client = bfhClient;
             this.settings = settings;
             db = new BfPlayerDatabase();
             db.Database.EnsureCreated();
+
+            if (client == null)
+            { client = new Bf4Client(); }
         }
 
         [Command("bf4stats")]
