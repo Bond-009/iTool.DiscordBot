@@ -39,6 +39,7 @@ namespace iTool.DiscordBot.Modules
         }
 
         [Command("prefix")]
+        [Alias("setprefix", "prefix set")]
         [Summary("Sets the current prefix")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Prefix(string prefix)

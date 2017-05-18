@@ -80,7 +80,7 @@ namespace iTool.DiscordBot
             {
                 using (GuildSettingsDatabase db = new GuildSettingsDatabase())
                 {
-                    prefix = (await db.GetSettingsAsync((message.Channel as IGuildChannel).Guild.Id)).Prefix;
+                    prefix = (await db.GetSettingsAsync((message.Channel as IGuildChannel).Guild.Id))?.Prefix ?? settings.Prefix;
                 }
             }
 

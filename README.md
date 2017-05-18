@@ -74,6 +74,13 @@ Just a Discord bot
 | gc | collectgarbage | **Thrusted user** | Forces the GC to clean up resources |
 | eval | cseval, csharp, evaluate | **Thrusted user** | Evaluates C# code |
 
+## Guild commands
+
+| Command | Aliases | Permission | Description |
+| ------- | ------- | ---------- | ----------- |
+| prefix | | | Returns the current prefix |
+| prefix | setprefix, prefix set | | Sets the current prefix |
+
 ## HOTS commands
 
 | Command | Aliases | Permission | Description |
