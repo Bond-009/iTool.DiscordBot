@@ -45,8 +45,8 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Temperature";
-                f.Value = $"- Max: {weather.Main.MaximumTemperature} {GetTemperatureUnit(settings.Units)}" + Environment.NewLine +
-                            $"- Gem: {weather.Main.Temperature} {GetTemperatureUnit(settings.Units)}" + Environment.NewLine +
+                f.Value = $"- Max: {weather.Main.MaximumTemperature} {GetTemperatureUnit(settings.Units)}\n" +
+                            $"- Gem: {weather.Main.Temperature} {GetTemperatureUnit(settings.Units)}\n" +
                             $"- Min: {weather.Main.MinimumTemperature} {GetTemperatureUnit(settings.Units)}";
             })
             .AddField(f =>

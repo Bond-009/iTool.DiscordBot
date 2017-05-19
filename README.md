@@ -2,7 +2,9 @@
 
 [![travis-ci Build Status](https://api.travis-ci.org/Bond-009/iTool.DiscordBot.svg?branch=master)](https://travis-ci.org/Bond-009/iTool.DiscordBot)
 
-Just a Discord bot
+i-Tool bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more!
+
+[Bonds Discord Guild](https://discord.gg/thKXwJb) (prop still empty)
 
 ## Commands
 

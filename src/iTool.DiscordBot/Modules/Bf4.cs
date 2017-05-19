@@ -64,32 +64,32 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Rank";
-                f.Value = $"- Rank: {stats.GeneralStats.Rank}" + Environment.NewLine +
-                        $"- Score per minute: {stats.GeneralStats.ScorePerMinute}" + Environment.NewLine +
+                f.Value = $"- Rank: {stats.GeneralStats.Rank}\n" +
+                        $"- Score per minute: {stats.GeneralStats.ScorePerMinute}\n" +
                         $"- Total score: {stats.GeneralStats.Score}";
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Win / loss";
-                f.Value = $"- W/L ratio: {Math.Round((double)stats.GeneralStats.Wins / stats.GeneralStats.Losses, 2)}%" + Environment.NewLine +
-                        $"- Wins: {stats.GeneralStats.Wins}" + Environment.NewLine +
+                f.Value = $"- W/L ratio: {Math.Round((double)stats.GeneralStats.Wins / stats.GeneralStats.Losses, 2)}%\n" +
+                        $"- Wins: {stats.GeneralStats.Wins}\n" +
                         $"- Losses: {stats.GeneralStats.Losses}";
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "K/D";
-                f.Value = $"- K/D ratio: {stats.GeneralStats.KDRatio}" + Environment.NewLine +
-                        $"- Kills: {stats.GeneralStats.Kills}" + Environment.NewLine +
+                f.Value = $"- K/D ratio: {stats.GeneralStats.KDRatio}\n" +
+                        $"- Kills: {stats.GeneralStats.Kills}\n" +
                         $"- Deaths: {stats.GeneralStats.Deaths}";
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Misc";
-                f.Value = $"- Accuracy: {Math.Round(stats.GeneralStats.Accuracy, 2)}%" + Environment.NewLine +
-                        $"- Dogtags Taken: {stats.GeneralStats.DogtagsTaken}" + Environment.NewLine +
+                f.Value = $"- Accuracy: {Math.Round(stats.GeneralStats.Accuracy, 2)}%\n" +
+                        $"- Dogtags Taken: {stats.GeneralStats.DogtagsTaken}\n" +
                         $"- Time played: {Math.Round(stats.GeneralStats.TimePlayed.TotalHours, 2)} hours";
             })
             );

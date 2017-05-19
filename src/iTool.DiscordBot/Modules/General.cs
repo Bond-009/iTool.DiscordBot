@@ -75,7 +75,7 @@ namespace iTool.DiscordBot.Modules
         [Command("cmdinfo")]
         [Alias("commandinfo")]
         [Summary("Returns info about the command")]
-        public async Task CMDInfo(string cmdName)
+        public async Task CommandInfo(string cmdName)
         {
             CommandInfo cmd = cmdService.Commands
                                 .FirstOrDefault(x => x.Aliases.Contains(cmdName));
@@ -141,27 +141,39 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the bot")]
         public async Task Info()
         {
-            IUser owner = (await Context.Client.GetApplicationInfoAsync()).Owner;
+            IApplication app = await Context.Client.GetApplicationInfoAsync();
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Color = settings.GetColor(),
+                Description = $"{app.Name} bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more! Coded by Bond_009#0253.",
+                Author = new EmbedAuthorBuilder()
+                {
+                    Name = app.Name,
+                    IconUrl = app.IconUrl
+                }
             }
             .AddField(f =>
             {
                 f.Name = "Info";
-                f.Value = $"- Owner: {owner} (ID {owner.Id})" + Environment.NewLine +
+                f.Value = $"- Owner: {app.Owner} (ID {app.Owner.Id})\n" +
                             $"- Library: Discord.Net ({DiscordConfig.Version})\n" +
-                            $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}" + Environment.NewLine +
+                            $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}\n" +
                             $"- Uptime: {Utils.GetUptime().ToString(@"d\d\ hh\:mm\:ss")}";
             })
             .AddField(f =>
             {
                 f.Name = "Stats";
-                f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB" + Environment.NewLine +
-                            $"- Guilds: {Context.Client.Guilds.Count}" + Environment.NewLine +
-                            $"- Channels: {Context.Client.Guilds.Sum(g => g.Channels.Count)}" + Environment.NewLine +
+                f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB\n" +
+                            $"- Guilds: {Context.Client.Guilds.Count}\n" +
+                            $"- Channels: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
                             $"- Users: {Context.Client.Guilds.Sum(g => g.MemberCount)}";
+            })
+            .AddField(f =>
+            {
+                f.Name = "Links";
+                f.Value = "[GitHub](https://github.com/Bond-009/iTool.DiscordBot)\n" +
+                            "[Bonds Discord Guild](https://discord.gg/thKXwJb)";
             }));
         }
 
@@ -172,7 +184,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Invite",
                     Color = settings.GetColor(),
-                    Description = "A user with the `MANAGE_SERVER` permission can invite with this link: " + Environment.NewLine +
+                    Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
                                 $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
                 });
 
@@ -267,10 +279,10 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = "Voice status";
-                    f.Value = $"- Deafened: {gUser.IsDeafened}" + Environment.NewLine +
-                        $"- Musted: {gUser.IsMuted}" + Environment.NewLine +
-                        $"- SelfDeafened: {gUser.IsSelfDeafened}" + Environment.NewLine +
-                        $"- SelfMuted: {gUser.IsSelfMuted}" + Environment.NewLine +
+                    f.Value = $"- Deafened: {gUser.IsDeafened}\n" +
+                        $"- Musted: {gUser.IsMuted}\n" +
+                        $"- SelfDeafened: {gUser.IsSelfDeafened}\n" +
+                        $"- SelfMuted: {gUser.IsSelfMuted}\n" +
                         $"- Suppressed: {gUser.IsSuppressed}";
                 });
             }
@@ -278,7 +290,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Bot/Webhook";
-                f.Value = $"- Bot: {user.IsBot}" + Environment.NewLine +
+                f.Value = $"- Bot: {user.IsBot}\n" +
                     $"- Webhook: {user.IsWebhook}";
             })
             .AddField(f =>

@@ -63,8 +63,8 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = ranking.GameMode;
-                    f.Value = $"- LeagueID: {ranking.LeagueID}" + Environment.NewLine +
-                        $"- LeagueRank: {ranking.LeagueRank}" + Environment.NewLine +
+                    f.Value = $"- LeagueID: {ranking.LeagueID}\n" +
+                        $"- LeagueRank: {ranking.LeagueRank}\n" +
                         $"- CurrentMMR: {ranking.CurrentMMR}";
                 });
             }
@@ -113,8 +113,8 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = ranking.GameMode;
-                    f.Value = $"- LeagueID: {ranking.LeagueID}" + Environment.NewLine +
-                        $"- LeagueRank: {ranking.LeagueRank}" + Environment.NewLine +
+                    f.Value = $"- LeagueID: {ranking.LeagueID}\n" +
+                        $"- LeagueRank: {ranking.LeagueRank}\n" +
                         $"- CurrentMMR: {ranking.CurrentMMR}";
                 });
             }
