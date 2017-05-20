@@ -104,5 +104,25 @@ namespace iTool.DiscordBot.Modules
                 Description = $"Successfully added {string.Join(", ", users.ToList())} to the list of trusted users."
             });
         }
+
+        [Command("untrust")]
+        [Summary("Removes the user from the list of trusted users")]
+        [RequireOwner]
+        public async Task UnTrust(params IUser[] users)
+        {
+            foreach (IUser user in users)
+            {
+                if (settings.TrustedUsers.Contains(user.Id))
+                {
+                    settings.TrustedUsers.Remove(user.Id);
+                }
+            }
+            await ReplyAsync("", embed: new EmbedBuilder()
+            {
+                Title = "UnTrust",
+                Color = settings.GetColor(),
+                Description = $"Successfully removed {string.Join(", ", users.ToList())} from the list of trusted users."
+            });
+        }
     }
 }

@@ -61,6 +61,7 @@ i-Tool bot is a general purpose bot that has moderation commands, can check your
 | blacklist | | | Adds the user to the blacklist |
 | rmblacklist | | | Removes the user from the blacklist |
 | trust | | | Adds the user to the list of trusted users |
+| untrust | | | Removes the user from the list of trusted users |
 
 ## CS:GO commands
 
