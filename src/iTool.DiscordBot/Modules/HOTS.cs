@@ -63,9 +63,9 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = ranking.GameMode;
-                    f.Value = $"- LeagueID: {ranking.LeagueID}\n" +
-                        $"- LeagueRank: {ranking.LeagueRank}\n" +
-                        $"- CurrentMMR: {ranking.CurrentMMR}";
+                    f.Value = $"**LeagueID**: {ranking.LeagueID}\n" +
+                        $"- **LeagueRank**: {ranking.LeagueRank}\n" +
+                        $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
             await ReplyAsync("", embed: b);
@@ -113,9 +113,9 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = ranking.GameMode;
-                    f.Value = $"- LeagueID: {ranking.LeagueID}\n" +
-                        $"- LeagueRank: {ranking.LeagueRank}\n" +
-                        $"- CurrentMMR: {ranking.CurrentMMR}";
+                    f.Value = $"- **LeagueID**: {ranking.LeagueID}\n" +
+                        $"- **LeagueRank**: {ranking.LeagueRank}\n" +
+                        $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
             await ReplyAsync("", embed: b);

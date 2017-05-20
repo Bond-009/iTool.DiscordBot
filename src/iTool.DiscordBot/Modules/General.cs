@@ -156,18 +156,18 @@ namespace iTool.DiscordBot.Modules
             .AddField(f =>
             {
                 f.Name = "Info";
-                f.Value = $"- Owner: {app.Owner} (ID {app.Owner.Id})\n" +
-                            $"- Library: Discord.Net ({DiscordConfig.Version})\n" +
-                            $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}\n" +
-                            $"- Uptime: {Utils.GetUptime().ToString(@"d\d\ hh\:mm\:ss")}";
+                f.Value = $"- **Owner**: {app.Owner} (ID {app.Owner.Id})\n" +
+                            $"- **Library**: Discord.Net ({DiscordConfig.Version})\n" +
+                            $"- **Runtime**: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}\n" +
+                            $"- **Uptime**: {Utils.GetUptime().ToString(@"d\d\ hh\:mm\:ss")}";
             })
             .AddField(f =>
             {
                 f.Name = "Stats";
-                f.Value = $"- Heap Size: {Utils.GetHeapSize()} MB\n" +
-                            $"- Guilds: {Context.Client.Guilds.Count}\n" +
-                            $"- Channels: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
-                            $"- Users: {Context.Client.Guilds.Sum(g => g.MemberCount)}";
+                f.Value = $"- **Heap Size**: {Utils.GetHeapSize()} MB\n" +
+                            $"- **Guilds**: {Context.Client.Guilds.Count}\n" +
+                            $"- **Channels**: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
+                            $"- **Users**: {Context.Client.Guilds.Sum(g => g.MemberCount)}";
             })
             .AddField(f =>
             {
@@ -279,19 +279,19 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = "Voice status";
-                    f.Value = $"- Deafened: {gUser.IsDeafened}\n" +
-                        $"- Musted: {gUser.IsMuted}\n" +
-                        $"- SelfDeafened: {gUser.IsSelfDeafened}\n" +
-                        $"- SelfMuted: {gUser.IsSelfMuted}\n" +
-                        $"- Suppressed: {gUser.IsSuppressed}";
+                    f.Value = $"- **Deafened**: {gUser.IsDeafened}\n" +
+                        $"- **Musted**: {gUser.IsMuted}\n" +
+                        $"- **SelfDeafened**: {gUser.IsSelfDeafened}\n" +
+                        $"- **SelfMuted**: {gUser.IsSelfMuted}\n" +
+                        $"- **Suppressed**: {gUser.IsSuppressed}";
                 });
             }
             b.AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Bot/Webhook";
-                f.Value = $"- Bot: {user.IsBot}\n" +
-                    $"- Webhook: {user.IsWebhook}";
+                f.Value = $"- **Bot**: {user.IsBot}\n" +
+                    $"- **Webhook**: {user.IsWebhook}";
             })
             .AddField(f =>
             {
