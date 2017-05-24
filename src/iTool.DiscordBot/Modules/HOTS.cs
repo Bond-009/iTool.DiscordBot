@@ -1,7 +1,6 @@
 using Discord;
 using Discord.Commands;
 using HOTSLogs;
-using System;
 using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules

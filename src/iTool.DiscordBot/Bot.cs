@@ -13,7 +13,6 @@ namespace iTool.DiscordBot
     public class Bot
     {
         DiscordSocketClient discordClient;
-        IServiceProvider serviceProvider;
         Settings settings = Settings.Load();
 
         public async Task<bool> Start()
@@ -43,7 +42,7 @@ namespace iTool.DiscordBot
             await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
             await discordClient.StartAsync();
 
-            serviceProvider = new ServiceCollection()
+            IServiceProvider serviceProvider = new ServiceCollection()
                 .AddSingleton(new AudioService())
                 .AddSingleton(new AudioFileService())
                 .AddSingleton(settings)
@@ -68,8 +67,6 @@ namespace iTool.DiscordBot
         {
             await discordClient.LogoutAsync();
             discordClient.Dispose();
-
-            serviceProvider.GetService<Steam.SteamAPI>().Dispose();
 
             Settings.Save(settings);
         }

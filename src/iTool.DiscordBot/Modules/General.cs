@@ -188,6 +188,7 @@ namespace iTool.DiscordBot.Modules
                                 $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
                 });
 
+        // TODO: Improve embed
         [Command("leave")]
         [Summary("Instructs the bot to leave the guild")]
         [RequireUserPermission(GuildPermission.ManageGuild)]
@@ -227,10 +228,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the user")]
         public async Task UserInfo(SocketUser user = null)
         {
-            if (user == null)
-            {
-                user = Context.User;
-            }
+            if (user == null) user = Context.User;
 
             SocketGuildUser gUser = user as SocketGuildUser;
 

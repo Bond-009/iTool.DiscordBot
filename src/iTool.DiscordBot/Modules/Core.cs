@@ -35,7 +35,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Blacklist",
                     Color = settings.GetErrorColor(),
-                    Description = $"Failed to blacklist {string.Join(", ", users.ToList())}."
+                    Description = $"Failed to blacklist {string.Join(", ", (object[])users)}."
                 });
             }
             else
@@ -70,7 +70,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Remove blacklist",
                     Color = settings.GetErrorColor(),
-                    Description = $"Failed to remove blacklist for {string.Join(", ", users.ToList())}."
+                    Description = $"Failed to remove blacklist for {string.Join(", ", (object[])users)}."
                 });
             }
             else
@@ -101,7 +101,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = "Trust",
                 Color = settings.GetColor(),
-                Description = $"Successfully added {string.Join(", ", users.ToList())} to the list of trusted users."
+                Description = $"Successfully added {string.Join(", ", (object[])users)} to the list of trusted users."
             });
         }
 
@@ -121,7 +121,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = "UnTrust",
                 Color = settings.GetColor(),
-                Description = $"Successfully removed {string.Join(", ", users.ToList())} from the list of trusted users."
+                Description = $"Successfully removed {string.Join(", ", (object[])users)} from the list of trusted users."
             });
         }
     }

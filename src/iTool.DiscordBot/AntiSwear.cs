@@ -19,6 +19,7 @@ namespace iTool.DiscordBot
                 discordClient.MessageReceived += CheckForBannedWords;
             }
         }
+
         private async Task CheckForBannedWords(SocketMessage arg)
         {
             if (bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))

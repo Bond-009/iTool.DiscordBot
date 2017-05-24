@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace iTool.DiscordBot
 {
     public class BfPlayer : DbEntity
