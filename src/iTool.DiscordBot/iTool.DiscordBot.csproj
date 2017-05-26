@@ -12,9 +12,9 @@
     <PackageReference Include="Battlelog.Net.Bf3" Version="0.1.2" />
     <PackageReference Include="Battlelog.Net.Bf4" Version="0.1.2" />
     <PackageReference Include="Battlelog.Net.BfH" Version="0.1.2" />
-    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc3-00744" />
-    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc3-00744" />
-    <PackageReference Include="HOTSLogs.Net" Version="0.1.2" />
+    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc3-00745" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc3-00745" />
+    <PackageReference Include="HOTSLogs.Net" Version="0.1.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.2" />
     <PackageReference Include="OpenWeather.Net" Version="0.7.4" />

@@ -19,31 +19,22 @@ namespace iTool.DiscordBot.Steam
         }
 
         public async Task<IEnumerable<PlayerBan>> GetPlayerBans(ulong[] steamIDs)
-        {
-            return await await Task.Factory.StartNew(async () =>
-                JsonConvert.DeserializeObject<PlayerList<PlayerBan>>(
+            => JsonConvert.DeserializeObject<PlayerList<PlayerBan>>(
                     await httpClient.GetStringAsync(
                         $"/ISteamUser/GetPlayerBans/v1/?key={key}&steamids={string.Join(",", steamIDs)}"
-            )).Players);
-        }
+                )).Players;
 
         public async Task<IEnumerable<PlayerSummary>> GetPlayerSummaries(ulong[] steamIDs)
-        {
-            return await await Task.Factory.StartNew(async () =>
-                JsonConvert.DeserializeObject<SteamResponse<PlayerList<PlayerSummary>>>(
+            => JsonConvert.DeserializeObject<SteamResponse<PlayerList<PlayerSummary>>>(
                     await httpClient.GetStringAsync(
                         $"/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={string.Join(",", steamIDs)}"
-            )).Data.Players);
-        }
+                    )).Data.Players;
 
         public async Task<UserStatsForGame> GetUserStatsForGame(int gameID, ulong steamID)
-        {
-            return await await Task.Factory.StartNew(async () =>
-                JsonConvert.DeserializeObject<UserStatsForGameResponse>(
+            => JsonConvert.DeserializeObject<UserStatsForGameResponse>(
                     await httpClient.GetStringAsync(
                         $"/ISteamUserStats/GetUserStatsForGame/v0002/?key={key}&appid={gameID}&steamid={steamID}"
-            )).Data);
-        }
+                    )).Data;
 
         public async Task<ulong> ResolveVanityURL(string playername)
         {
