@@ -1,17 +1,17 @@
-using Discord;
-using Discord.Commands;
-using iTool.DiscordBot.Steam;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using iTool.DiscordBot.Steam;
 
 namespace iTool.DiscordBot.Modules
 {
     public class CSGO : ModuleBase
     {
-        Settings settings;
-        SteamAPI client;
+        private Settings _settings;
+        private readonly SteamAPI _client;
 
         public CSGO(Settings settings, SteamAPI steamapi)
         {
@@ -20,8 +20,8 @@ namespace iTool.DiscordBot.Modules
                 throw new Exception("No SteamKey found.");
             }
 
-            this.settings = settings;
-            this.client = steamapi;
+            _settings = settings;
+            _client = steamapi;
         }
 
         [Command("csgostats")]
@@ -30,13 +30,13 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await client.GetUserStatsForGame(730, await client.ResolveVanityURL(name))).Stats
+            Dictionary<string, int> dict = (await _client.GetUserStatsForGame(730, await _client.ResolveVanityURL(name))).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"CS:GO stats for {name}",
-                Color = settings.GetColor()
+                Color = _settings.GetColor()
             }
             .AddField(f =>
             {
@@ -82,13 +82,13 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await client.GetUserStatsForGame(730, await client.ResolveVanityURL(name))).Stats
+            Dictionary<string, int> dict = (await _client.GetUserStatsForGame(730, await _client.ResolveVanityURL(name))).Stats
                                                 .ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Last match CS:GO stats for {name}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
             }
             .AddField(f =>
             {

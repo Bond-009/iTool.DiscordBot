@@ -1,8 +1,8 @@
-using Discord;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
 using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
@@ -10,6 +10,8 @@ namespace iTool.DiscordBot
     // TODO: Rework
     public class AudioFileService
     {
+		private IEnumerable<AudioFile> _audioFiles;
+
         public AudioFileService()
         {
             if (!File.Exists(Common.AudioIndexFile))
@@ -19,7 +21,7 @@ namespace iTool.DiscordBot
 
             try
             {
-                audioFiles = new Deserializer().Deserialize<IEnumerable<AudioFile>>(File.ReadAllText(Common.AudioIndexFile));
+                _audioFiles = new Deserializer().Deserialize<IEnumerable<AudioFile>>(File.ReadAllText(Common.AudioIndexFile));
             }
             catch (Exception ex)
             {
@@ -27,11 +29,9 @@ namespace iTool.DiscordBot
             }
         }
 
-        private IEnumerable<AudioFile> audioFiles;
-
         public string GetSong(string name)
         {
-            string path = Path.Combine(Common.AudioDir, audioFiles.FirstOrDefault(x => x.Names.Contains(name))?.FileName);
+            string path = Path.Combine(Common.AudioDir, _audioFiles.FirstOrDefault(x => x.Names.Contains(name))?.FileName);
             if (!File.Exists(path)) return null;
             return path;
         }

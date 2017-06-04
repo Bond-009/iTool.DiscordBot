@@ -1,22 +1,20 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
     public class Dev : ModuleBase
     {
-        Settings settings;
+        private Settings _settings;
 
-        public Dev(Settings settings) => this.settings = settings;
+        public Dev(Settings settings) => _settings = settings;
 
         [Command("gc")]
         [Alias("collectgarbage")]
@@ -29,7 +27,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "GC",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Description = ":thumbsup:"
             });
         }
@@ -51,7 +49,7 @@ namespace iTool.DiscordBot.Modules
             Task<IUserMessage> msg = ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Evaluation",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Description = "Evaluating..."
             });
 
@@ -89,7 +87,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Evaluation",
                     Description = result?.ToString() ?? "Success, nothing got returned",
-                    Color = settings.GetColor()
+                    Color = _settings.GetColor()
                 }.Build());
             }
             catch (Exception ex)
@@ -98,7 +96,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Evaluation Failure",
                     Description = $"**{ex.GetType()}**: {ex.Message}",
-                    Color = settings.GetErrorColor()
+                    Color = _settings.GetErrorColor()
                 }.Build());
             }
         }

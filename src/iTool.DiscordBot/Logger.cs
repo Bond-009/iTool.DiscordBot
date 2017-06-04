@@ -1,15 +1,15 @@
-using Discord;
-using Serilog;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Discord;
+using Serilog;
 using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
 {
     public static class Logger
     {
-        static readonly ILogger logger = new LoggerConfiguration()
+        private static readonly ILogger _logger = new LoggerConfiguration()
                 .WriteTo.RollingFile(Path.Combine(AppContext.BaseDirectory, "logs", "log_{Date}.log"))
                 .CreateLogger();
         public static LogSeverity LogLevel { get; internal set; } = LogSeverity.Verbose;
@@ -24,21 +24,21 @@ namespace iTool.DiscordBot
                 case LogSeverity.Critical:
                 case LogSeverity.Error:
                     if (msg.Exception == null)
-                        logger.Error($"{msg.Source}: {msg.Message}");
+                        _logger.Error($"{msg.Source}: {msg.Message}");
                     else
-                        logger.Error(msg.Exception, $"{msg.Source}: {msg.Message}");
+                        _logger.Error(msg.Exception, $"{msg.Source}: {msg.Message}");
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 case LogSeverity.Warning:
-                    logger.Warning($"{msg.Source}: {msg.Message}");
+                    _logger.Warning($"{msg.Source}: {msg.Message}");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
                 case LogSeverity.Info:
-                    logger.Information($"{msg.Source}: {msg.Message}");
+                    _logger.Information($"{msg.Source}: {msg.Message}");
                     break;
                 case LogSeverity.Verbose:
                 case LogSeverity.Debug:
-                    logger.Debug($"{msg.Source}: {msg.Message}");
+                    _logger.Debug($"{msg.Source}: {msg.Message}");
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
             }
@@ -52,7 +52,7 @@ namespace iTool.DiscordBot
             return Task.CompletedTask;
         }
 
-        static void Crash(Crash crash)
+        private static void Crash(Crash crash)
         {
             Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "crashes"));
             File.WriteAllText(

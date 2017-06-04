@@ -1,27 +1,27 @@
+using System;
+using System.Threading.Tasks;
 using Battlelog;
 using Battlelog.Bf3;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Bf3 : ModuleBase
+    public class Bf3 : ModuleBase, IDisposable
     {
-        static Bf3Client client;
-        BfPlayerDatabase db;
-        Settings settings;
+        private static Bf3Client _client;
+        private readonly BfPlayerDatabase _db;
+        private Settings _settings;
 
         public Bf3(Settings settings)
         {
-            this.settings = settings;
+            _settings = settings;
 
-            db = new BfPlayerDatabase();
-            db.Database.EnsureCreated();
+            _db = new BfPlayerDatabase();
+            _db.Database.EnsureCreated();
 
-            if (client == null)
-            { client = new Bf3Client(); }
+            if (_client == null)
+            { _client = new Bf3Client(); }
         }
 
         [Command("bf3stats")]
@@ -30,22 +30,22 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            long? personaID = await db.GetPersonaIDAsync(name);
+            long? personaID = await _db.GetPersonaIDAsync(name);
 
             if (personaID == null)
             {
-                personaID = await client.GetPersonaID(name);
+                personaID = await _client.GetPersonaID(name);
 
                 if (personaID != null)
                 {
-                    await db.SavePersonaIDAsync(name, personaID.Value);
+                    await _db.SavePersonaIDAsync(name, personaID.Value);
                 }
                 else
                 {
                     await ReplyAsync("", embed: new EmbedBuilder()
                     {
                         Title = $"No player found",
-                        Color = settings.GetErrorColor(),
+                        Color = _settings.GetErrorColor(),
                         Description = "No player was found with that name.",
                         ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png"
                     });
@@ -53,12 +53,12 @@ namespace iTool.DiscordBot.Modules
                 }
             }
 
-            Stats stats = await client.GetStatsAsync(platform, personaID.Value);
+            Stats stats = await _client.GetStatsAsync(platform, personaID.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Battlefield 3 stats for {name}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png",
             }
             .AddField(f =>
@@ -98,7 +98,7 @@ namespace iTool.DiscordBot.Modules
 
         public void Dispose()
         {
-            db.Dispose();
+            _db.Dispose();
         }
     }
 }

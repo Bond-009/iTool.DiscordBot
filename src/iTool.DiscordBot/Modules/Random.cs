@@ -1,27 +1,27 @@
-﻿using Discord;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
     public class Random : ModuleBase
     {
-        Settings settings;
+        private Settings _settings;
 
-        public Random(Settings settings) => this.settings = settings;
+        public Random(Settings settings) => _settings = settings;
 
         [Command("random")]
         [Summary("Returns a random number between")]
-        public async Task Cat(int num1, int num2)
+        public async Task Rand(int num1, int num2)
         {
             if (num1 > num2) return;
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Random",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Description = new System.Random().Next(num1, num2).ToString()
             });
         }
@@ -37,7 +37,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Cat",
-                    Color = settings.GetColor(),
+                    Color = _settings.GetColor(),
                     ImageUrl = (string)o["file"]
                 });
             }
@@ -59,7 +59,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Dog",
-                    Color = settings.GetColor(),
+                    Color = _settings.GetColor(),
                     ImageUrl = link
                 });
             }

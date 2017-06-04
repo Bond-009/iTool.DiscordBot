@@ -7,9 +7,9 @@ namespace iTool.DiscordBot
     {
         public static readonly string SettingsDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "settings";
         public static readonly string SettingsFile = SettingsDir + Path.DirectorySeparatorChar + "settings.yaml";
-        public static readonly string ModuleFile = Common.SettingsDir + Path.DirectorySeparatorChar + "modules.yaml";
-        public static readonly string BlackListFile = Common.SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt";
-        public static readonly string TrustedListFile = Common.SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt";
+        public static readonly string ModuleFile = SettingsDir + Path.DirectorySeparatorChar + "modules.yaml";
+        public static readonly string BlackListFile = SettingsDir + Path.DirectorySeparatorChar + "blacklisted_users.txt";
+        public static readonly string TrustedListFile = SettingsDir + Path.DirectorySeparatorChar + "trusted_users.txt";
 
         public static readonly string DataDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "data";
         public static readonly string AudioDir = DataDir + Path.DirectorySeparatorChar + "audio";

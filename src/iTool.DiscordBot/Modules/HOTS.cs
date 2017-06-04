@@ -1,32 +1,32 @@
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using HOTSLogs;
-using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
     public class HOTS : ModuleBase
     {
-        static HOTSLogsClient client;
-        Settings settings;
+        private static HOTSLogsClient _client;
+        private Settings _settings;
 
         public HOTS(Settings settings)
         {
-            if (client == null) client = new HOTSLogsClient();
-            this.settings = settings;
+            if (_client == null) _client = new HOTSLogsClient();
+            _settings = settings;
         }
 
         [Command("hotsstats")]
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(Region region, string battleTag)
         {
-            Player player = await client.GetPlayerSummary(region, battleTag);
+            Player player = await _client.GetPlayerSummary(region, battleTag);
             if (player == null)
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"No player found",
-                    Color = settings.GetErrorColor(),
+                    Color = _settings.GetErrorColor(),
                     Description = "No player was found matching those criteria."
                 });
                 return;
@@ -35,7 +35,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
                 Footer = new EmbedFooterBuilder()
@@ -74,13 +74,13 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(int playerID)
         {
-            Player player = await client.GetPlayerSummary(playerID);
+            Player player = await _client.GetPlayerSummary(playerID);
             if (player == null)
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = $"No player found",
-                    Color = settings.GetErrorColor(),
+                    Color = _settings.GetErrorColor(),
                     Description = "No player was found matching those criteria."
                 });
                 return;
@@ -89,7 +89,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"HOTS player summary for {player.Name}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }

@@ -1,23 +1,22 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 
 namespace iTool.DiscordBot.Modules
 {
     public class General : ModuleBase<SocketCommandContext>
     {
-        CommandService cmdService;
-        Settings settings;
+        private readonly CommandService _cmdService;
+        private Settings _settings;
 
         public General(CommandService service, Settings settings)
         {
-            this.cmdService = service;
-            this.settings = settings;
+            _cmdService = service;
+            _settings = settings;
         }
 
         [Command("help")]
@@ -29,8 +28,8 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Modules",
-                    Color = settings.GetColor(),
-                    Description = string.Join(", ", cmdService.Modules
+                    Color = _settings.GetColor(),
+                    Description = string.Join(", ", _cmdService.Modules
                                                     .OrderBy(x => x.Name)
                                                     .Select(x => x.Name)),
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
@@ -38,7 +37,7 @@ namespace iTool.DiscordBot.Modules
                 return;
             }
 
-            IReadOnlyList<CommandInfo> cmds = cmdService.Modules
+            IReadOnlyList<CommandInfo> cmds = _cmdService.Modules
                                                 .FirstOrDefault(x => x.Name.ToLower() == moduleName.ToLower())
                                                 ?.Commands;
             if (cmds.IsNullOrEmpty())
@@ -46,7 +45,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Help",
-                    Color = settings.GetColor(),
+                    Color = _settings.GetColor(),
                     Description = $"No module named {moduleName} found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -56,7 +55,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Module commands",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Description = $"All commands from the {moduleName} module.",
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
@@ -77,7 +76,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the command")]
         public async Task CommandInfo(string cmdName)
         {
-            CommandInfo cmd = cmdService.Commands
+            CommandInfo cmd = _cmdService.Commands
                                 .FirstOrDefault(x => x.Aliases.Contains(cmdName));
 
             if (cmd == null)
@@ -85,7 +84,7 @@ namespace iTool.DiscordBot.Modules
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Command info",
-                    Color = settings.GetColor(),
+                    Color = _settings.GetColor(),
                     Description = "No command found",
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
@@ -95,7 +94,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = "Command info",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Url = "https://github.com/Bond-009/iTool.DiscordBot"
             }
             .AddField(f =>
@@ -145,7 +144,7 @@ namespace iTool.DiscordBot.Modules
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Description = $"{app.Name} bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more! Coded by Bond_009#0253.",
                 Author = new EmbedAuthorBuilder()
                 {
@@ -183,7 +182,7 @@ namespace iTool.DiscordBot.Modules
             => await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Invite",
-                    Color = settings.GetColor(),
+                    Color = _settings.GetColor(),
                     Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
                                 $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
                 });
@@ -197,7 +196,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Leaving",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
                 Description = "Leaving, click the title to invite me back in."
             });
@@ -209,7 +208,7 @@ namespace iTool.DiscordBot.Modules
         [RequireTrustedUser]
         public async Task SetGame([Remainder] string input)
         {
-            settings.Game = input;
+            _settings.Game = input;
             await Context.Client.SetGameAsync(input);
         }
 
@@ -219,7 +218,7 @@ namespace iTool.DiscordBot.Modules
             => await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Ping",
-                    Color = settings.GetColor(),
+                    Color = _settings.GetColor(),
                     Description = $"Latency: {Context.Client.Latency}ms"
                 });
 
@@ -235,7 +234,7 @@ namespace iTool.DiscordBot.Modules
             EmbedBuilder b = new EmbedBuilder()
             {
                 Title = $"Info about {user}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
             }
             .AddField(f =>
@@ -318,7 +317,7 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Info about {Context.Guild}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 ThumbnailUrl = Context.Guild.IconUrl
             }
             .AddField(f =>

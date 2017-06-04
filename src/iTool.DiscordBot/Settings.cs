@@ -1,9 +1,9 @@
-﻿using Discord;
-using Discord.Commands;
-using OpenWeather;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Discord;
+using Discord.Commands;
+using OpenWeather;
 using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot

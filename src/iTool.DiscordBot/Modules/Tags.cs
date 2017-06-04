@@ -1,22 +1,22 @@
-using Discord;
-using Discord.Commands;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
     public class Tags : ModuleBase<SocketCommandContext>, IDisposable
     {
-        Settings settings;
-        TagDatabase db;
+        private Settings _settings;
+        private readonly TagDatabase _db;
 
         public Tags(Settings settings)
         {
-            this.settings = settings;
-            db = new TagDatabase();
-            db.Database.EnsureCreated();
+            _settings = settings;
+
+            _db = new TagDatabase();
+            _db.Database.EnsureCreated();
         }
 
         [Command("tag create")]
@@ -25,7 +25,7 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task CreateTag(string name, [Remainder]string text)
         {
-            await db.CreateTagAsync(Context, name, text, Context.Message.Attachments.FirstOrDefault()?.Url);
+            await _db.CreateTagAsync(Context, name, text, Context.Message.Attachments.FirstOrDefault()?.Url);
 
             await Tag(name);
         }
@@ -35,14 +35,14 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task Tag(string name)
         {
-            Tag tag = await db.GetTagAsync(Context.Guild.Id, name);
+            Tag tag = await _db.GetTagAsync(Context.Guild.Id, name);
 
             if (tag == null) return;
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = tag.Name,
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Description = tag.Text,
                 ImageUrl = tag.Attachment
             });
@@ -54,12 +54,12 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task TagDelete(string name)
         {
-            await db.DeleteTagAsync(Context, name);
+            await _db.DeleteTagAsync(Context, name);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Delete tag {name}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 Description = $"Successfully deleted tag {name}",
             });
         }
@@ -73,15 +73,15 @@ namespace iTool.DiscordBot.Modules
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Tags",
-                Color = settings.GetColor(),
-                Description = string.Join(" ,", db.GetTags(Context.Guild.Id)
+                Color = _settings.GetColor(),
+                Description = string.Join(" ,", _db.GetTags(Context.Guild.Id)
                                                 .Select(x => x.Name)),
             });
         }
 
         public void Dispose()
         {
-            db.Dispose();
+            _db.Dispose();
         }
     }
 }

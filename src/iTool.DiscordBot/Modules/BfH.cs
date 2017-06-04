@@ -1,27 +1,26 @@
+using System;
+using System.Threading.Tasks;
 using Battlelog;
 using Battlelog.BfH;
 using Discord;
 using Discord.Commands;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
     public class BfH : ModuleBase, IDisposable
     {
-        static BfHClient client;
-        BfPlayerDatabase db;
-        Settings settings;
+        private static BfHClient _client;
+        private readonly BfPlayerDatabase _db;
+        private Settings _settings;
 
         public BfH(Settings settings)
         {
-            this.settings = settings;
-            db = new BfPlayerDatabase();
-            db.Database.EnsureCreated();
+            _settings = settings;
+            _db = new BfPlayerDatabase();
+            _db.Database.EnsureCreated();
 
-            if (client == null)
-            { client = new BfHClient(); }
+            if (_client == null)
+            { _client = new BfHClient(); }
         }
 
         [Command("bfhstats")]
@@ -30,22 +29,22 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            long? personaID = await db.GetPersonaIDAsync(name);
+            long? personaID = await _db.GetPersonaIDAsync(name);
 
             if (personaID == null)
             {
-                personaID = await client.GetPersonaID(name);
+                personaID = await _client.GetPersonaID(name);
 
                 if (personaID != null)
                 {
-                    await db.SavePersonaIDAsync(name, personaID.Value);
+                    await _db.SavePersonaIDAsync(name, personaID.Value);
                 }
                 else
                 {
                     await ReplyAsync("", embed: new EmbedBuilder()
                     {
                         Title = $"No player found",
-                        Color = settings.GetErrorColor(),
+                        Color = _settings.GetErrorColor(),
                         Description = "No player was found with that name.",
                         ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
                     });
@@ -53,12 +52,12 @@ namespace iTool.DiscordBot.Modules
                 }
             }
 
-            DetailedStats stats = await client.GetDetailedStatsAsync(platform, personaID.Value);
+            DetailedStats stats = await _client.GetDetailedStatsAsync(platform, personaID.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Battlefield Hardline stats for {name}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png",
             }
             .AddField(f =>
@@ -98,7 +97,7 @@ namespace iTool.DiscordBot.Modules
 
         public void Dispose()
         {
-            db.Dispose();
+            _db.Dispose();
         }
     }
 }

@@ -1,27 +1,26 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using iTool.DiscordBot.Steam;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace iTool.DiscordBot.Modules
 {
     public class Steam : ModuleBase
     {
-        Settings settings;
-        SteamAPI client;
+        private Settings _settings;
+        private readonly SteamAPI _client;
 
         public Steam(Settings settings, SteamAPI steamapi)
         {
-            this.settings = settings;
-            this.client = steamapi;
+            _settings = settings;
+            _client = steamapi;
         }
 
         protected override void BeforeExecute()
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
+            if (string.IsNullOrEmpty(_settings.SteamKey))
             {
                 throw new Exception("No SteamKey found.");
             }
@@ -34,7 +33,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync((await client.ResolveVanityURL(name)).ToString());
+            await ReplyAsync((await _client.ResolveVanityURL(name)).ToString());
         }
 
         [Command("steam")]
@@ -43,12 +42,12 @@ namespace iTool.DiscordBot.Modules
         public async Task PlayerSummaries(string name = null)
         {
             if (name == null) { name = Context.User.Username; }
-            PlayerSummary player = (await client.GetPlayerSummaries(new [] {(await client.ResolveVanityURL(name))})).First();
+            PlayerSummary player = (await _client.GetPlayerSummaries(new [] {(await _client.ResolveVanityURL(name))})).First();
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Player summary fot {player.PersonaName}",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
                 ThumbnailUrl = player.AvatarMedium,
                 Url = player.ProfileURL
             }
@@ -79,12 +78,12 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            PlayerBan players = (await client.GetPlayerBans(new [] {(await client.ResolveVanityURL(name))})).First();
+            PlayerBan players = (await _client.GetPlayerBans(new [] {(await _client.ResolveVanityURL(name))})).First();
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Community, VAC, and Economy ban statuses",
-                Color = settings.GetColor(),
+                Color = _settings.GetColor(),
             }
             .AddField(f =>
             {
@@ -136,7 +135,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync("https://steamcommunity.com/profiles/" + (await client.ResolveVanityURL(name)).ToString());
+            await ReplyAsync("https://steamcommunity.com/profiles/" + (await _client.ResolveVanityURL(name)).ToString());
         }
     }
 }

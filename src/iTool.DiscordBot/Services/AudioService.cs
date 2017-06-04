@@ -1,26 +1,26 @@
-using Discord;
-using Discord.Audio;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Audio;
 
 namespace iTool.DiscordBot
 {
     public class AudioService
     {
-        private readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
+        private readonly ConcurrentDictionary<ulong, IAudioClient> _connectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
         {
-            if (ConnectedChannels.TryGetValue(guild.Id, out IAudioClient client)
+            if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client)
                 || target.Guild.Id != guild.Id)
             {
                 return;
             }
 
-            if (ConnectedChannels.TryAdd(guild.Id, await target.ConnectAsync()))
+            if (_connectedChannels.TryAdd(guild.Id, await target.ConnectAsync()))
             {
                 await Logger.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Connected to voice on {guild.Name}."));
             }
@@ -28,7 +28,7 @@ namespace iTool.DiscordBot
 
         public async Task LeaveAudio(IGuild guild)
         {
-            if (ConnectedChannels.TryRemove(guild.Id, out IAudioClient client))
+            if (_connectedChannels.TryRemove(guild.Id, out IAudioClient client))
             {
                 await client.StopAsync();
                 await Logger.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Disconnected from voice on {guild.Name}."));
@@ -43,7 +43,7 @@ namespace iTool.DiscordBot
                 return;
             }
 
-            if (ConnectedChannels.TryGetValue(guild.Id, out IAudioClient client))
+            if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client))
             {
                 await Logger.Log(new LogMessage(LogSeverity.Debug, nameof(AudioService), $"Starting playback of {path} in {guild.Name}"));
                 Stream output = CreateStream(path).StandardOutput.BaseStream;

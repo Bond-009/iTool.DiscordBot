@@ -1,63 +1,60 @@
+using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace iTool.DiscordBot
 {
     public class Bot
     {
-        DiscordSocketClient discordClient;
-        Settings settings = Settings.Load();
+        private DiscordSocketClient _discordClient;
+        private Settings _settings = Settings.Load();
 
         public async Task<bool> Start()
         {
-            Logger.LogLevel = settings.LogLevel;
+            Logger.LogLevel = _settings.LogLevel;
 
-            if (string.IsNullOrEmpty(settings.DiscordToken))
+            if (string.IsNullOrEmpty(_settings.DiscordToken))
             {
                 Console.WriteLine("No token");
                 return false;
             }
 
-            discordClient = new DiscordSocketClient(new DiscordSocketConfig()
+            _discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
-                AlwaysDownloadUsers = settings.AlwaysDownloadUsers,
-                ConnectionTimeout = settings.ConnectionTimeout,
-                DefaultRetryMode = settings.DefaultRetryMode,
-                LogLevel = settings.LogLevel,
-                MessageCacheSize = settings.MessageCacheSize
+                AlwaysDownloadUsers = _settings.AlwaysDownloadUsers,
+                ConnectionTimeout = _settings.ConnectionTimeout,
+                DefaultRetryMode = _settings.DefaultRetryMode,
+                LogLevel = _settings.LogLevel,
+                MessageCacheSize = _settings.MessageCacheSize
             });
 
-            discordClient.Log += Logger.Log;
-            discordClient.Ready += DiscordClient_Ready;
-            discordClient.MessageReceived += async msg
+            _discordClient.Log += Logger.Log;
+            _discordClient.Ready += DiscordClient_Ready;
+            _discordClient.MessageReceived += async msg
                 => await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), msg.Author.Username + ": " + msg.Content));
 
-            await discordClient.LoginAsync(TokenType.Bot, settings.DiscordToken);
-            await discordClient.StartAsync();
+            await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken);
+            await _discordClient.StartAsync();
 
             IServiceProvider serviceProvider = new ServiceCollection()
                 .AddSingleton(new AudioService())
                 .AddSingleton(new AudioFileService())
-                .AddSingleton(settings)
-                .AddSingleton(new Steam.SteamAPI(settings.SteamKey))
+                .AddSingleton(_settings)
+                .AddSingleton(new Steam.SteamAPI(_settings.SteamKey))
                 .BuildServiceProvider();
 
-            await new CommandHandler(serviceProvider, discordClient, new CommandServiceConfig()
+            await new CommandHandler(serviceProvider, _discordClient, new CommandServiceConfig()
             {
-                CaseSensitiveCommands = settings.CaseSensitiveCommands,
-                DefaultRunMode = settings.DefaultRunMode
+                CaseSensitiveCommands = _settings.CaseSensitiveCommands,
+                DefaultRunMode = _settings.DefaultRunMode
             }).LoadModules();
 
-            if (settings.AntiSwear)
+            if (_settings.AntiSwear)
             {
-                new AntiSwear(discordClient);
+                new AntiSwear(_discordClient);
             }
 
             return true;
@@ -65,19 +62,19 @@ namespace iTool.DiscordBot
 
         public async Task Stop()
         {
-            await discordClient.LogoutAsync();
-            discordClient.Dispose();
+            await _discordClient.LogoutAsync();
+            _discordClient.Dispose();
 
-            Settings.Save(settings);
+            Settings.Save(_settings);
         }
 
         private async Task DiscordClient_Ready()
         {
-            Console.Title = discordClient.CurrentUser.ToString();
+            Console.Title = _discordClient.CurrentUser.ToString();
 
-            if (!settings.Game.IsNullOrEmpty())
+            if (!_settings.Game.IsNullOrEmpty())
             {
-                await discordClient.SetGameAsync(settings.Game);
+                await _discordClient.SetGameAsync(_settings.Game);
             }
         }
     }

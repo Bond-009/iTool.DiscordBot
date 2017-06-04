@@ -1,41 +1,41 @@
-﻿using Discord;
-using Discord.Commands;
-using OpenWeather;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using OpenWeather;
 
 namespace iTool.DiscordBot.Modules
 {
     public class Weather : ModuleBase
     {
-        static OpenWeatherClient client;
-        Settings settings;
+        private static OpenWeatherClient _client;
+        private Settings _settings;
 
         public Weather(Settings settings)
-            => this.settings = settings;
+            => _settings = settings;
 
         protected override void BeforeExecute()
         {
-            if (string.IsNullOrEmpty(settings.OpenWeatherMapKey))
+            if (string.IsNullOrEmpty(_settings.OpenWeatherMapKey))
             {
                 throw new Exception("No OpenWeatherMapKey found.");
             }
-            if (client == null)
-            { client = new OpenWeatherClient(settings.OpenWeatherMapKey, settings.Units); }
+            if (_client == null)
+            { _client = new OpenWeatherClient(_settings.OpenWeatherMapKey, _settings.Units); }
         }
 
         [Command("weather")]
         [Summary("Returns info about the weather")]
         public async Task GetWeather(string city, string countryCode = null)
         {
-            WeatherData weather = await client.GetWeatherAsync(city, countryCode);
+            WeatherData weather = await _client.GetWeatherAsync(city, countryCode);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = weather.Name + " " + weather.Sys.Country,
-                Color = settings.GetColor(),
-                ThumbnailUrl = client.GetIconURL(weather.Weather.FirstOrDefault()?.Icon),
+                Color = _settings.GetColor(),
+                ThumbnailUrl = _client.GetIconURL(weather.Weather.FirstOrDefault()?.Icon),
                 Footer = new EmbedFooterBuilder()
                     {
                         Text = "Powered by openweathermap.org",
@@ -45,9 +45,9 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Temperature";
-                f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {GetTemperatureUnit(settings.Units)}\n" +
-                            $"- **Gem**: {weather.Main.Temperature} {GetTemperatureUnit(settings.Units)}\n" +
-                            $"- **Min**: {weather.Main.MinimumTemperature} {GetTemperatureUnit(settings.Units)}";
+                f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {GetTemperatureUnit(_settings.Units)}\n" +
+                            $"- **Gem**: {weather.Main.Temperature} {GetTemperatureUnit(_settings.Units)}\n" +
+                            $"- **Min**: {weather.Main.MinimumTemperature} {GetTemperatureUnit(_settings.Units)}";
             })
             .AddField(f =>
             {
@@ -59,11 +59,11 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Wind";
-                f.Value = weather.Wind.Speed + " " + GetSpeedUnit(settings.Units);
+                f.Value = weather.Wind.Speed + " " + GetSpeedUnit(_settings.Units);
             }));
         }
 
-        static string GetTemperatureUnit(Unit units)
+        private static string GetTemperatureUnit(Unit units)
         {
             switch(units)
             {
@@ -77,7 +77,7 @@ namespace iTool.DiscordBot.Modules
             }
         }
 
-        static string GetSpeedUnit(Unit units)
+        private string GetSpeedUnit(Unit units)
         {
             switch(units)
             {
