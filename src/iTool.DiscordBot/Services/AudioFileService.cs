@@ -16,7 +16,7 @@ namespace iTool.DiscordBot
         {
             if (!File.Exists(Common.AudioIndexFile))
             {
-                ResetAudioIndex();
+                CreateAudioIndex();
             }
 
             try
@@ -36,7 +36,7 @@ namespace iTool.DiscordBot
             return path;
         }
 
-        public static void ResetAudioIndex()
+        public static void CreateAudioIndex()
         {
             Directory.CreateDirectory(Common.AudioDir);
 

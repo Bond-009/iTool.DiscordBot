@@ -14,6 +14,7 @@ namespace iTool.DiscordBot
         public static readonly string DataDir = AppContext.BaseDirectory + Path.DirectorySeparatorChar + "data";
         public static readonly string AudioDir = DataDir + Path.DirectorySeparatorChar + "audio";
         public static readonly string AudioIndexFile = AudioDir + Path.DirectorySeparatorChar + "audioindex.yaml";
-        public static readonly string GuildsDir = DataDir + Path.DirectorySeparatorChar + "guilds";
+
+        public static readonly string TempDir = Path.GetTempPath() + Path.DirectorySeparatorChar + "itoolbot";
     }
 }
