@@ -20,6 +20,7 @@
     <PackageReference Include="OpenWeather.Net" Version="0.7.4" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <PackageReference Include="YamlDotNet" Version="4.2.1" />
+    <PackageReference Include="YoutubeExplode" Version="3.1.0" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,17 @@
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Audio;
+using YoutubeExplode;
+using YoutubeExplode.Models;
+using YoutubeExplode.Models.MediaStreams;
 
 namespace iTool.DiscordBot
 {
@@ -12,17 +19,18 @@ namespace iTool.DiscordBot
     {
         private readonly ConcurrentDictionary<ulong, IAudioClient> _connectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
 
-        public async Task JoinAudio(IGuild guild, IVoiceChannel target)
+        public AudioService() => Directory.CreateDirectory(Common.TempDir);
+
+        public async Task JoinAudio(IVoiceChannel voiceChannel)
         {
-            if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client)
-                || target.Guild.Id != guild.Id)
+            if (_connectedChannels.TryGetValue(voiceChannel.Guild.Id, out IAudioClient client))
             {
                 return;
             }
 
-            if (_connectedChannels.TryAdd(guild.Id, await target.ConnectAsync()))
+            if (_connectedChannels.TryAdd(voiceChannel.Guild.Id, await voiceChannel.ConnectAsync()))
             {
-                await Logger.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Connected to voice on {guild.Name}."));
+                await Logger.Log(new LogMessage(LogSeverity.Info, nameof(AudioService), $"Connected to voice on {voiceChannel.Guild.Name}."));
             }
         }
 
@@ -46,29 +54,52 @@ namespace iTool.DiscordBot
             if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client))
             {
                 await Logger.Log(new LogMessage(LogSeverity.Debug, nameof(AudioService), $"Starting playback of {path} in {guild.Name}"));
-                Stream output = CreateStream(path).StandardOutput.BaseStream;
-                AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music);
-                await output.CopyToAsync(stream);
-                await stream.FlushAsync().ConfigureAwait(false);
+
+                using (Stream output = CreateStream(path).StandardOutput.BaseStream)
+                using (AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music))
+                {
+                    await output.CopyToAsync(stream);
+                }
+            }
+        }
+
+        public async Task SendYTVideoAsync(IGuild guild, IMessageChannel channel, string videoID)
+        {
+            if (videoID.Length != 11) return;
+
+            YoutubeClient client = new YoutubeClient();
+
+            VideoInfo info = await client.GetVideoInfoAsync(videoID);
+
+            AudioStreamInfo streamInfo = info.AudioStreams.OrderBy(x => x.Bitrate).Last();
+
+            Regex RGX = new Regex("[^a-zA-Z0-9 -]");
+            string Title = RGX.Replace(info.Title, "");
+
+            string path = Common.TempDir + Path.DirectorySeparatorChar + $"{guild.Id}{Title}.{streamInfo.Container.GetFileExtension()}";
+
+            try
+            {
+                using (var input = await client.GetMediaStreamAsync(streamInfo))
+                using (var file = File.Create(path))
+                {
+                    await input.CopyToAsync(file);
+                }
+                await SendAudioAsync(guild, path);
+            }
+            finally
+            {
+                File.Delete(path);
             }
         }
 
         private Process CreateStream(string path)
-        {
-            string filename;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            => Process.Start(new ProcessStartInfo()
             {
-                filename = "ffmpeg.exe";
-            }
-            else { filename = "ffmpeg"; }
-            
-            return Process.Start(new ProcessStartInfo()
-            {
-                FileName = filename,
+                FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ffmpeg.exe" : "ffmpeg",
                 Arguments = $"-hide_banner -loglevel panic -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
                 UseShellExecute = false,
                 RedirectStandardOutput = true
             });
-        }
     }
 }
