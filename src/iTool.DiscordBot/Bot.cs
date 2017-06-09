@@ -54,7 +54,7 @@ namespace iTool.DiscordBot
 
             if (_settings.AntiSwear)
             {
-                new AntiSwear(_discordClient);
+                new AntiSwear(_discordClient).AddHandler();
             }
 
             return true;
