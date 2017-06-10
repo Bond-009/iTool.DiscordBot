@@ -20,14 +20,14 @@ namespace iTool.DiscordBot
 
         public void AddHandler()
         {
-			if (!_bannedWords.IsNullOrEmpty())
-			{
-				_discordClient.MessageReceived += CheckForBannedWords;
-			}
+            if (!_bannedWords.IsNullOrEmpty())
+            {
+                _discordClient.MessageReceived += CheckForBannedWords;
+            }
         }
 
-		public void RemoveHandler()
-			=> _discordClient.MessageReceived -= CheckForBannedWords;
+        public void RemoveHandler()
+            => _discordClient.MessageReceived -= CheckForBannedWords;
 
         private async Task CheckForBannedWords(SocketMessage arg)
         {

@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace iTool.DiscordBot
 {
     public static class Utils
     {
-        public static bool IsNullOrEmpty<T>(this List<T> list) => list == null || !list.Any();
+        public static bool IsNullOrEmpty<T>(this List<T> list)
+            => list == null || !list.Any();
 
-        public static bool IsNullOrEmpty<T>(this IReadOnlyList<T> list) => list == null || !list.Any();
+        public static bool IsNullOrEmpty<T>(this IReadOnlyList<T> list)
+            => list == null || !list.Any();
 
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable) => enumerable == null || !enumerable.Any();
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
+            => enumerable == null || !enumerable.Any();
 
         public static TimeSpan GetUptime() => DateTime.Now - Process.GetCurrentProcess().StartTime;
 
@@ -26,6 +30,21 @@ namespace iTool.DiscordBot
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
                     .Distinct();
+        }
+
+        public static bool IsSubclassOfRawGeneric(this Type derivedType, Type baseType)
+        {
+            while (derivedType != null && derivedType != typeof(object))
+            {
+                Type currentType = derivedType.GetTypeInfo().IsGenericType ? derivedType.GetGenericTypeDefinition() : derivedType;
+                if (baseType == currentType)
+                {
+                    return true;
+                }
+
+                derivedType = derivedType.GetTypeInfo().BaseType;
+            }
+            return false;
         }
     }
 }

@@ -8,7 +8,6 @@ namespace iTool.DiscordBot
         public ulong GuildID { get; set; }
         public string Prefix { get; set; }
         public ulong? WelcomeChannel { get; set; }
-        public bool WelcomeMembers { get; set; }
-        public string WelcomeMessage { get; set; } = "Welcome {mention} to {server} server.";
+        public string WelcomeMessage { get; set; }
     }
 }

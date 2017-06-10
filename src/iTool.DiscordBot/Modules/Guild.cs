@@ -20,7 +20,6 @@ namespace iTool.DiscordBot.Modules
             _settings = settings;
 
             _db = new GuildSettingsDatabase();
-            _db.Database.EnsureCreated();
         }
 
         [Command("prefix")]
