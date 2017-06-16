@@ -10,6 +10,7 @@ namespace iTool.DiscordBot.Steam
     {
         private readonly HttpClient _httpClient = new HttpClient();
         private string _key;
+        private bool _disposed = false;
 
         public SteamAPI(string apiKey)
         {
@@ -55,8 +56,24 @@ namespace iTool.DiscordBot.Steam
 
         public void Dispose()
         {
-            _key = null;
-            _httpClient.Dispose();
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(!_disposed)
+            {
+                if(disposing)
+                {
+                    _httpClient.Dispose();
+                }
+
+                _key = null;
+
+                _disposed = true;
+            }
         }
     }
 }

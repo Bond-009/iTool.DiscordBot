@@ -30,8 +30,9 @@ namespace iTool.DiscordBot.Modules
                     Title = "Modules",
                     Color = _settings.GetColor(),
                     Description = string.Join(", ", _cmdService.Modules
-                                                    .OrderBy(x => x.Name)
-                                                    .Select(x => x.Name)),
+                                                    .Select(x => x.Name)
+                                                    .OrderBy(x => x)
+                                                    ),
                     Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
                 return;
@@ -243,7 +244,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Username";
                 f.Value = user.Username;
             });
-            if (gUser != null && gUser.Nickname != null)
+            if (gUser?.Nickname != null)
             {
                 b.AddField(f =>
                 {
@@ -296,7 +297,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Created at";
                 f.Value = user.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             });
-            if (gUser != null && gUser.JoinedAt != null)
+            if (gUser?.JoinedAt != null)
             {
                 b.AddField(f =>
                 {

@@ -2,9 +2,9 @@
 
 To build i-Tool.DiscordBot you need the [.Net Core SDK](https://github.com/dotnet/core/blob/master/release-notes/download-archives/1.1.1-download.md)
 
-If you are using Unix you build by running the `./build.sh` script
+If you are using Unix you can build by running the `./build.sh` script.
 
-On Windows you need to run: `dotnet restore && dotnet build -c Release`
+On Windows you need to execute this command: `dotnet restore && dotnet build -c Release`
 
 ## Self-contained
 

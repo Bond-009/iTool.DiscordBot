@@ -5,22 +5,13 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
+    [RequireGuildSpecificSettings]
     public class Guild : ModuleBase, IDisposable
     {
-        private readonly GuildSettingsDatabase _db;
+        private readonly GuildSettingsDatabase _db = new GuildSettingsDatabase();
         private Settings _settings;
 
-        public Guild(Settings settings)
-        {
-            if (!settings.GuildSpecificSettings)
-            {
-                throw new Exception("The owner of this bot needs to enable guild specific settings for this module.");
-            }
-
-            _settings = settings;
-
-            _db = new GuildSettingsDatabase();
-        }
+        public Guild(Settings settings) => _settings = settings;
 
         [Command("prefix")]
         [Summary("Returns the current prefix")]

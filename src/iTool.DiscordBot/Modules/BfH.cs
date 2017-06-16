@@ -10,13 +10,13 @@ namespace iTool.DiscordBot.Modules
     public class BfH : ModuleBase, IDisposable
     {
         private static BfHClient _client;
-        private readonly BfPlayerDatabase _db;
+        private readonly BfPlayerDatabase _db = new BfPlayerDatabase();
         private Settings _settings;
 
         public BfH(Settings settings)
         {
             _settings = settings;
-            _db = new BfPlayerDatabase();
+
             _db.Database.EnsureCreated();
 
             if (_client == null)

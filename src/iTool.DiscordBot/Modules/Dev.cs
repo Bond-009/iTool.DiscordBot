@@ -78,8 +78,8 @@ namespace iTool.DiscordBot.Modules
                 object result = await CSharpScript.EvaluateAsync(code, options, globals:
                     new RoslynGlobals()
                     {
-                        Client = Context.Client as DiscordSocketClient,
-                        Channel = Context.Channel as SocketTextChannel
+                        Client =  (DiscordSocketClient)Context.Client,
+                        Channel = (SocketTextChannel)Context.Channel
                     }
                 );
 

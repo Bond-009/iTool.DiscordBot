@@ -19,7 +19,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Joins the voice channel")]
         [RequireContext(ContextType.Guild)]
         public async Task Join()
-            => await _audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
+            => await _audioService.JoinAudio(Context.Guild, ((IGuildUser)Context.User).VoiceChannel);
 
         [Command("stop", RunMode = RunMode.Async)]
         [Summary("Stops the audio playback and leaves the voice channel")]
@@ -34,7 +34,7 @@ namespace iTool.DiscordBot.Modules
         {
             string path = _fileService.GetSong(song);
             if (path == null) { return; }
-            await _audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
+            await _audioService.JoinAudio(Context.Guild, ((IGuildUser)Context.User).VoiceChannel);
             await _audioService.SendAudioAsync(Context.Guild, path);
             await _audioService.LeaveAudio(Context.Guild);
         }

@@ -44,7 +44,7 @@ namespace iTool.DiscordBot
             }
 
             Console.WriteLine(msg.ToString());
-
+            
             Console.ResetColor();
 
             if (msg.Exception != null) Crash(new Crash(msg.Source, msg.Exception));

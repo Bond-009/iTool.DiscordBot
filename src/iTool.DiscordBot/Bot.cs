@@ -134,11 +134,11 @@ namespace iTool.DiscordBot
 
             string prefix = _settings.Prefix;
             if (_settings.GuildSpecificSettings
-                && (message.Channel as IGuildChannel)?.Guild != null)
+                && message.Channel is IGuildChannel guildChannel)
             {
                 using (GuildSettingsDatabase db = new GuildSettingsDatabase())
                 {
-                    prefix = (await db.GetSettingsAsync((message.Channel as IGuildChannel).Guild.Id))?.Prefix ?? _settings.Prefix;
+                    prefix = (await db.GetSettingsAsync(guildChannel.Guild.Id))?.Prefix ?? _settings.Prefix;
                 }
             }
 
