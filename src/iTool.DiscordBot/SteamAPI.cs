@@ -8,7 +8,7 @@ namespace iTool.DiscordBot.Steam
 {
     public class SteamAPI : IDisposable
     {
-        private readonly HttpClient _httpClient = new HttpClient();
+        private HttpClient _httpClient = new HttpClient();
         private string _key;
         private bool _disposed = false;
 
@@ -68,6 +68,7 @@ namespace iTool.DiscordBot.Steam
                 if(disposing)
                 {
                     _httpClient.Dispose();
+                    _httpClient = null;
                 }
 
                 _key = null;

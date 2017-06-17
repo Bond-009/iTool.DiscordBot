@@ -31,7 +31,9 @@ namespace iTool.DiscordBot
 
         public string GetSong(string name)
         {
-            string path = Path.Combine(Common.AudioDir, _audioFiles.FirstOrDefault(x => x.Names.Contains(name))?.FileName);
+            string filename = _audioFiles.FirstOrDefault(x => x.Names.Contains(name))?.FileName;
+            if (string.IsNullOrEmpty(filename)) return null;
+            string path = Path.Combine(Common.AudioDir, filename);
             if (!File.Exists(path)) return null;
             return path;
         }
