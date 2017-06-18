@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Battlelog.Net" Version="0.1.2" />
-    <PackageReference Include="Battlelog.Net.Bf3" Version="0.1.2" />
-    <PackageReference Include="Battlelog.Net.Bf4" Version="0.1.2" />
-    <PackageReference Include="Battlelog.Net.BfH" Version="0.1.2" />
+    <PackageReference Include="Battlelog.Net" Version="0.1.3" />
+    <PackageReference Include="Battlelog.Net.Bf3" Version="0.1.3" />
+    <PackageReference Include="Battlelog.Net.Bf4" Version="0.1.3" />
+    <PackageReference Include="Battlelog.Net.BfH" Version="0.1.3" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc3-00755" />
     <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc3-00755" />
     <PackageReference Include="HOTSLogs.Net" Version="0.1.3" />

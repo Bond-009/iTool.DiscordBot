@@ -63,18 +63,17 @@ namespace iTool.DiscordBot.Steam
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!_disposed)
+            if (_disposed) return;
+
+            if (disposing)
             {
-                if(disposing)
-                {
-                    _httpClient.Dispose();
-                    _httpClient = null;
-                }
-
-                _key = null;
-
-                _disposed = true;
+                _httpClient.Dispose();
+                _httpClient = null;
             }
+
+            _key = null;
+
+            _disposed = true;
         }
     }
 }

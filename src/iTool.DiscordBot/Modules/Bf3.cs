@@ -25,7 +25,7 @@ namespace iTool.DiscordBot.Modules
 
         [Command("bf3stats")]
         [Summary("Returns the Battlefield 3 stats of the player")]
-        public async Task Bf4Stats(string name = null, Platform platform = Platform.PC)
+        public async Task Bf4Stats(string name = null, Platform platform = Platform.PC, string platformSpecificName = null)
         {
             if (name == null) { name = Context.User.Username; }
 
@@ -33,7 +33,7 @@ namespace iTool.DiscordBot.Modules
 
             if (personaID == null)
             {
-                personaID = await _client.GetPersonaID(name);
+                personaID = await _client.GetPersonaID(name, platform, platformSpecificName);
 
                 if (personaID != null)
                 {
@@ -52,7 +52,7 @@ namespace iTool.DiscordBot.Modules
                 }
             }
 
-            Stats stats = await _client.GetStatsAsync(platform, personaID.Value);
+            Stats stats = await _client.GetStatsAsync(personaID.Value, platform);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
