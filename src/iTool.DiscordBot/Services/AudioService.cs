@@ -63,16 +63,29 @@ namespace iTool.DiscordBot
             }
         }
 
-        public async Task SendYTVideoAsync(IGuild guild, IMessageChannel channel, string videoID)
+        public async Task SendYTVideoAsync(IGuild guild, string videoID)
         {
             if (videoID.Length != 11) return;
 
-            YoutubeClient client = new YoutubeClient();
+            YoutubeClient ytClient = new YoutubeClient();
 
-            VideoInfo info = await client.GetVideoInfoAsync(videoID);
+            VideoInfo info = await ytClient.GetVideoInfoAsync(videoID);
 
-            AudioStreamInfo streamInfo = info.AudioStreams.OrderBy(x => x.Bitrate).Last();
+            AudioStreamInfo streamInfo = info.AudioStreams.OrderBy(x => x.Bitrate <= 128 * 1024).Last(); // .OrderBy(x => x.Bitrate).Last();
 
+            if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client))
+            {
+                await Logger.Log(new LogMessage(LogSeverity.Debug, nameof(AudioService), $"Starting playback of {streamInfo.Url} in {guild.Name}"));
+
+                //using (MediaStream output = (await ytClient.GetMediaStreamAsync(streamInfo)))
+                //using (AudioOutStream stream = client.CreateOpusStream())
+                using (Stream output = CreateStreamFromUrl(streamInfo.Url).StandardOutput.BaseStream)
+                using (AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music))
+                {
+                    await output.CopyToAsync(stream);
+                }
+            }
+            /*
             Regex RGX = new Regex("[^a-zA-Z0-9 -]");
             string Title = RGX.Replace(info.Title, "");
 
@@ -91,7 +104,17 @@ namespace iTool.DiscordBot
             {
                 File.Delete(path);
             }
+            */
         }
+
+        private Process CreateStreamFromUrl(string path)
+            => Process.Start(new ProcessStartInfo()
+            {
+                FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ffmpeg.exe" : "ffmpeg",
+                Arguments = $"-hide_banner -loglevel panic -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 -i \"{path}\" -ac 2 -f s16le -ar 48000 pipe:1",
+                UseShellExecute = false,
+                RedirectStandardOutput = true
+            });
 
         private Process CreateStream(string path)
             => Process.Start(new ProcessStartInfo()

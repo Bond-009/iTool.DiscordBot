@@ -45,7 +45,7 @@ namespace iTool.DiscordBot.Modules
         public async Task YouTube([Remainder] string song)
         {
             await _audioService.JoinAudio((Context.User as IGuildUser).VoiceChannel);
-            await _audioService.SendYTVideoAsync(Context.Guild, Context.Channel, song);
+            await _audioService.SendYTVideoAsync(Context.Guild, song);
             await _audioService.LeaveAudio(Context.Guild);
         }
     }
