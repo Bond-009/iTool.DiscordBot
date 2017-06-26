@@ -29,12 +29,12 @@ namespace iTool.DiscordBot
         public void RemoveHandler()
             => _discordClient.MessageReceived -= CheckForBannedWords;
 
-        private async Task CheckForBannedWords(SocketMessage arg)
+        private async Task CheckForBannedWords(SocketMessage msg)
         {
-            if (_bannedWords.Any(Regex.Replace(arg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
+            if (_bannedWords.Any(Regex.Replace(msg.Content.ToLower(), "[^A-Za-z0-9]", "").Contains))
             {
-                await arg.DeleteAsync();
-                await arg.Channel.SendMessageAsync(arg.Author.Mention + ", please don't put such things in chat");
+                await msg.DeleteAsync();
+                await msg.Channel.SendMessageAsync(msg.Author.Mention + ", please don't put such things in chat");
             }
         }
     }

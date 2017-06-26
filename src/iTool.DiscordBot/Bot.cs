@@ -116,16 +116,16 @@ namespace iTool.DiscordBot
                         .Serialize(enabledmodules));
         }
 
-        private async Task HandleCommand(SocketMessage parameterMessage)
+        private async Task HandleCommand(SocketMessage rawMsg)
         {
             // Ignore system messages
-            if (!(parameterMessage is SocketUserMessage message)) return;
+            if (!(rawMsg is SocketUserMessage msg)) return;
             // Ignore bot messages
-            if (message.Author.IsBot || message.Author.IsWebhook) return;
+            if (msg.Author.IsBot || msg.Author.IsWebhook) return;
 
             // Ignore messages from blacklisted users
             if (!_settings.BlacklistedUsers.IsNullOrEmpty()
-                && _settings.BlacklistedUsers.Contains(message.Author.Id))
+                && _settings.BlacklistedUsers.Contains(msg.Author.Id))
             {
                 return;
             }
@@ -135,7 +135,7 @@ namespace iTool.DiscordBot
 
             string prefix = _settings.Prefix;
             if (_settings.GuildSpecificSettings
-                && message.Channel is IGuildChannel guildChannel)
+                && msg.Channel is IGuildChannel guildChannel)
             {
                 using (GuildSettingsDatabase db = new GuildSettingsDatabase())
                 {
@@ -144,12 +144,12 @@ namespace iTool.DiscordBot
             }
 
             // Determine if the message has a valid prefix, adjust argPos
-            if (!(message.HasMentionPrefix(_discordClient.CurrentUser, ref argPos)
-                || message.HasStringPrefix(prefix, ref argPos)))
+            if (!(msg.HasMentionPrefix(_discordClient.CurrentUser, ref argPos)
+                || msg.HasStringPrefix(prefix, ref argPos)))
             { return; }
 
             // Execute the Command, store the result
-            IResult result = await _commandService.ExecuteAsync(new SocketCommandContext(_discordClient, message), argPos, _serviceProvider);
+            IResult result = await _commandService.ExecuteAsync(new SocketCommandContext(_discordClient, msg), argPos, _serviceProvider);
 
             // If the command failed, notify the user
             if (!result.IsSuccess)
@@ -159,7 +159,7 @@ namespace iTool.DiscordBot
 
                 await Logger.Log(new LogMessage(LogSeverity.Error, nameof(Program), result.ErrorReason));
 
-                await message.Channel.SendMessageAsync("", embed: new EmbedBuilder()
+                await msg.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Error",
                     Color = _settings.GetErrorColor(),
