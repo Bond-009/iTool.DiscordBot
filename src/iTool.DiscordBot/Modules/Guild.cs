@@ -23,7 +23,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Current prefix",
                 Color = _settings.GetColor(),
-                Description = string.IsNullOrEmpty(guildSettings.Prefix) ? _settings.Prefix : guildSettings.Prefix,
+                Description = guildSettings.Prefix.IsNullOrEmpty() ? _settings.Prefix : guildSettings.Prefix,
             });
         }
 

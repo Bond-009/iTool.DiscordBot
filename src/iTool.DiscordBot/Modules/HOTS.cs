@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -36,8 +37,8 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"HOTS player summary for {player.Name}",
                 Color = _settings.GetColor(),
-                Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
-                ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
+                Url = new Uri($"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}"),
+                ThumbnailUrl = new Uri("https://eu.battle.net/heroes/static/images/logos/logo.png"),
                 Footer = new EmbedFooterBuilder()
                     {
                         Text = "Powered by hotslogs.com",
@@ -90,8 +91,8 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"HOTS player summary for {player.Name}",
                 Color = _settings.GetColor(),
-                Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
-                ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
+                Url = new Uri($"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}"),
+                ThumbnailUrl = new Uri("https://eu.battle.net/heroes/static/images/logos/logo.png")
             }
             .AddField(f =>
             {

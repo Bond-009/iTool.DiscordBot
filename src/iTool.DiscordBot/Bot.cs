@@ -23,7 +23,7 @@ namespace iTool.DiscordBot
         {
             Logger.LogLevel = _settings.LogLevel;
 
-            if (string.IsNullOrEmpty(_settings.DiscordToken))
+            if (_settings.DiscordToken.IsNullOrEmpty())
             {
                 Console.WriteLine("No token");
                 return false;
@@ -55,8 +55,8 @@ namespace iTool.DiscordBot
             await _discordClient.StartAsync();
 
             _serviceProvider = new ServiceCollection()
-                .AddSingleton(new AudioService())
-                .AddSingleton(new AudioFileService())
+                .AddSingleton<AudioService>()
+                .AddSingleton<AudioFileService>()
                 .AddSingleton(_settings)
                 .AddSingleton(new Steam.SteamAPI(_settings.SteamKey))
                 .BuildServiceProvider();
@@ -118,11 +118,12 @@ namespace iTool.DiscordBot
 
         private async Task HandleCommand(SocketMessage parameterMessage)
         {
-            // Don't handle the command if it is a system message
-            SocketUserMessage message = parameterMessage as SocketUserMessage;
-            if (message == null) { return; }
+            // Ignore system messages
+            if (!(parameterMessage is SocketUserMessage message)) return;
+            // Ignore bot messages
+            if (message.Author.IsBot || message.Author.IsWebhook) return;
 
-            // Check if the user is blacklisted. If so return
+            // Ignore messages from blacklisted users
             if (!_settings.BlacklistedUsers.IsNullOrEmpty()
                 && _settings.BlacklistedUsers.Contains(message.Author.Id))
             {
@@ -153,7 +154,7 @@ namespace iTool.DiscordBot
             // If the command failed, notify the user
             if (!result.IsSuccess)
             {
-                if (result is PreconditionResult || result is SearchResult)
+                if (result.Error == CommandError.UnknownCommand)
                 { return; }
 
                 await Logger.Log(new LogMessage(LogSeverity.Error, nameof(Program), result.ErrorReason));

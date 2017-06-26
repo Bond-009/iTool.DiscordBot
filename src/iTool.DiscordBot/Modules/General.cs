@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -33,7 +34,6 @@ namespace iTool.DiscordBot.Modules
                                                     .Select(x => x.Name)
                                                     .OrderBy(x => x)
                                                     ),
-                    Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
                 return;
             }
@@ -48,7 +48,6 @@ namespace iTool.DiscordBot.Modules
                     Title = "Help",
                     Color = _settings.GetColor(),
                     Description = $"No module named {moduleName} found",
-                    Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
                 return;
             }
@@ -58,7 +57,6 @@ namespace iTool.DiscordBot.Modules
                 Title = "Module commands",
                 Color = _settings.GetColor(),
                 Description = $"All commands from the {moduleName} module.",
-                Url = "https://github.com/Bond-009/iTool.DiscordBot"
             };
 
             foreach (CommandInfo cmd in cmds)
@@ -87,7 +85,6 @@ namespace iTool.DiscordBot.Modules
                     Title = "Command info",
                     Color = _settings.GetColor(),
                     Description = "No command found",
-                    Url = "https://github.com/Bond-009/iTool.DiscordBot"
                 });
                 return;
             }
@@ -96,7 +93,6 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = "Command info",
                 Color = _settings.GetColor(),
-                Url = "https://github.com/Bond-009/iTool.DiscordBot"
             }
             .AddField(f =>
             {
@@ -150,7 +146,7 @@ namespace iTool.DiscordBot.Modules
                 Author = new EmbedAuthorBuilder()
                 {
                     Name = app.Name,
-                    IconUrl = app.IconUrl
+                    IconUrl = new Uri(app.IconUrl)
                 }
             }
             .AddField(f =>
@@ -198,7 +194,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = "Leaving",
                 Color = _settings.GetColor(),
-                Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
+                Url = new Uri($"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot"),
                 Description = "Leaving, click the title to invite me back in."
             });
             await Context.Guild.LeaveAsync();
@@ -236,7 +232,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Info about {user}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
+                ThumbnailUrl = new Uri(user.GetAvatarUrl(ImageFormat.Auto))
             }
             .AddField(f =>
             {
@@ -319,7 +315,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Info about {Context.Guild}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = Context.Guild.IconUrl
+                ThumbnailUrl = new Uri(Context.Guild.IconUrl)
             }
             .AddField(f =>
             {

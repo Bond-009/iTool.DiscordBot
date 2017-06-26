@@ -46,7 +46,7 @@ namespace iTool.DiscordBot.Modules
                         Title = $"No player found",
                         Color = _settings.GetErrorColor(),
                         Description = "No player was found with that name.",
-                        ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png"
+                        ThumbnailUrl = new Uri("https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png")
                     });
                     return;
                 }
@@ -58,7 +58,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Battlefield Hardline stats for {name}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = "https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png",
+                ThumbnailUrl = new Uri("https://eaassets-a.akamaihd.net/battlelog/bb/bfh/logos/bfh-logo-670296c4.png")
             }
             .AddField(f =>
             {

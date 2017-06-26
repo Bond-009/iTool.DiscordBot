@@ -15,7 +15,7 @@ namespace iTool.DiscordBot.Modules
 
         public CSGO(Settings settings, SteamAPI steamapi)
         {
-            if (string.IsNullOrEmpty(settings.SteamKey))
+            if (settings.SteamKey.IsNullOrEmpty())
             {
                 throw new Exception("No SteamKey found.");
             }

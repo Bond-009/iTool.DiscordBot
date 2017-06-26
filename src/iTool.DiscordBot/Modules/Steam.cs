@@ -20,7 +20,7 @@ namespace iTool.DiscordBot.Modules
 
         protected override void BeforeExecute()
         {
-            if (string.IsNullOrEmpty(_settings.SteamKey))
+            if (_settings.SteamKey.IsNullOrEmpty())
             {
                 throw new Exception("No SteamKey found.");
             }
@@ -48,8 +48,8 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Player summary fot {player.PersonaName}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = player.AvatarMedium,
-                Url = player.ProfileURL
+                ThumbnailUrl = new Uri(player.AvatarMedium),
+                Url = new Uri(player.ProfileURL)
             }
             .AddField(f =>
             {

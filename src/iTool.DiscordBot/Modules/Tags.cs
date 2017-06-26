@@ -44,7 +44,7 @@ namespace iTool.DiscordBot.Modules
                 Title = tag.Name,
                 Color = _settings.GetColor(),
                 Description = tag.Text,
-                ImageUrl = tag.Attachment
+                ImageUrl = new Uri(tag.Attachment)
             });
         }
 

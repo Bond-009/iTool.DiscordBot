@@ -11,7 +11,7 @@ namespace iTool.DiscordBot.Modules
 
         public Core(Settings settings) => _settings = settings;
 
-        [Command("blacklist")]
+        [Command("blacklist", RunMode = RunMode.Sync)]
         [Summary("Adds the user to the blacklist")]
         [RequireTrustedUser]
         public async Task Blacklist(params IUser[] users)
@@ -48,7 +48,7 @@ namespace iTool.DiscordBot.Modules
             }
         }
 
-        [Command("rmblacklist")]
+        [Command("rmblacklist", RunMode = RunMode.Sync)]
         [Summary("Removes the user from the blacklist")]
         [RequireTrustedUser]
         public async Task RmBlacklist(params IUser[] users)
@@ -83,7 +83,7 @@ namespace iTool.DiscordBot.Modules
             }
         }
 
-        [Command("trust")]
+        [Command("trust", RunMode = RunMode.Sync)]
         [Summary("Adds the user to the list of trusted users")]
         [RequireOwner]
         public async Task Trust(params IUser[] users)
@@ -104,7 +104,7 @@ namespace iTool.DiscordBot.Modules
             });
         }
 
-        [Command("untrust")]
+        [Command("untrust", RunMode = RunMode.Sync)]
         [Summary("Removes the user from the list of trusted users")]
         [RequireOwner]
         public async Task UnTrust(params IUser[] users)

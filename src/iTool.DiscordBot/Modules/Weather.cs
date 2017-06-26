@@ -17,7 +17,7 @@ namespace iTool.DiscordBot.Modules
 
         protected override void BeforeExecute()
         {
-            if (string.IsNullOrEmpty(_settings.OpenWeatherMapKey))
+            if (_settings.OpenWeatherMapKey.IsNullOrEmpty())
             {
                 throw new Exception("No OpenWeatherMapKey found.");
             }
@@ -31,11 +31,13 @@ namespace iTool.DiscordBot.Modules
         {
             WeatherData weather = await _client.GetWeatherAsync(city, countryCode);
 
+            OpenWeather.Weather baseweather = weather.Weather.FirstOrDefault();
+
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = weather.Name + " " + weather.Sys.Country,
                 Color = _settings.GetColor(),
-                ThumbnailUrl = _client.GetIconURL(weather.Weather.FirstOrDefault()?.Icon),
+                ThumbnailUrl = baseweather.Icon == null ? null : new Uri(baseweather.Icon),
                 Footer = new EmbedFooterBuilder()
                     {
                         Text = "Powered by openweathermap.org",

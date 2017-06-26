@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -38,7 +39,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Cat",
                     Color = _settings.GetColor(),
-                    ImageUrl = (string)o["file"]
+                    ImageUrl = new Uri((string)o["file"])
                 });
             }
         }
@@ -60,7 +61,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Dog",
                     Color = _settings.GetColor(),
-                    ImageUrl = link
+                    ImageUrl = new Uri(link)
                 });
             }
         }
