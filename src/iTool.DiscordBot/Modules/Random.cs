@@ -39,7 +39,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Cat",
                     Color = _settings.GetColor(),
-                    ImageUrl = new Uri((string)o["file"])
+                    ImageUrl = (string)o["file"]
                 });
             }
         }
@@ -61,7 +61,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     Title = "Dog",
                     Color = _settings.GetColor(),
-                    ImageUrl = new Uri(link)
+                    ImageUrl = link
                 });
             }
         }

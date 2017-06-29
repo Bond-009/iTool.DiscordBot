@@ -18,7 +18,7 @@ namespace iTool.DiscordBot.Modules
             _client = steamapi;
         }
 
-        protected override void BeforeExecute()
+        protected override void BeforeExecute(CommandInfo command)
         {
             if (_settings.SteamKey.IsNullOrEmpty())
             {
@@ -48,8 +48,8 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Player summary fot {player.PersonaName}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = new Uri(player.AvatarMedium),
-                Url = new Uri(player.ProfileURL)
+                ThumbnailUrl = player.AvatarMedium,
+                Url = player.ProfileURL
             }
             .AddField(f =>
             {

@@ -15,7 +15,7 @@ namespace iTool.DiscordBot.Modules
         public Weather(Settings settings)
             => _settings = settings;
 
-        protected override void BeforeExecute()
+        protected override void BeforeExecute(CommandInfo command)
         {
             if (_settings.OpenWeatherMapKey.IsNullOrEmpty())
             {
@@ -37,7 +37,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = weather.Name + " " + weather.Sys.Country,
                 Color = _settings.GetColor(),
-                ThumbnailUrl = baseweather.Icon == null ? null : new Uri(baseweather.Icon),
+                ThumbnailUrl = baseweather.Icon,
                 Footer = new EmbedFooterBuilder()
                     {
                         Text = "Powered by openweathermap.org",
@@ -47,9 +47,9 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Temperature";
-                f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {GetTemperatureUnit(_settings.Units)}\n" +
-                            $"- **Gem**: {weather.Main.Temperature} {GetTemperatureUnit(_settings.Units)}\n" +
-                            $"- **Min**: {weather.Main.MinimumTemperature} {GetTemperatureUnit(_settings.Units)}";
+                f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {getTemperatureUnit(_settings.Units)}\n" +
+                            $"- **Gem**: {weather.Main.Temperature} {getTemperatureUnit(_settings.Units)}\n" +
+                            $"- **Min**: {weather.Main.MinimumTemperature} {getTemperatureUnit(_settings.Units)}";
             })
             .AddField(f =>
             {
@@ -61,11 +61,11 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Wind";
-                f.Value = weather.Wind.Speed + " " + GetSpeedUnit(_settings.Units);
+                f.Value = weather.Wind.Speed + " " + getSpeedUnit(_settings.Units);
             }));
         }
 
-        private static string GetTemperatureUnit(Unit units)
+        private static string getTemperatureUnit(Unit units)
         {
             switch(units)
             {
@@ -79,7 +79,7 @@ namespace iTool.DiscordBot.Modules
             }
         }
 
-        private string GetSpeedUnit(Unit units)
+        private string getSpeedUnit(Unit units)
         {
             switch(units)
             {

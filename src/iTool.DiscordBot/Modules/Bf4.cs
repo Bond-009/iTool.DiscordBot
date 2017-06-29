@@ -46,7 +46,7 @@ namespace iTool.DiscordBot.Modules
                         Title = $"No player found",
                         Color = _settings.GetErrorColor(),
                         Description = "No player was found with that name.",
-                        ThumbnailUrl = new Uri("https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png")
+                        ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png"
                     });
                     return;
                 }
@@ -58,7 +58,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Battlefield 4 stats for {name}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = new Uri("https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png")
+                ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png"
             }
             .AddField(f =>
             {

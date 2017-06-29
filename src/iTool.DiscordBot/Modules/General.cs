@@ -146,7 +146,7 @@ namespace iTool.DiscordBot.Modules
                 Author = new EmbedAuthorBuilder()
                 {
                     Name = app.Name,
-                    IconUrl = new Uri(app.IconUrl)
+                    IconUrl = app.IconUrl
                 }
             }
             .AddField(f =>
@@ -194,7 +194,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = "Leaving",
                 Color = _settings.GetColor(),
-                Url = new Uri($"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot"),
+                Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
                 Description = "Leaving, click the title to invite me back in."
             });
             await Context.Guild.LeaveAsync();
@@ -232,7 +232,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Info about {user}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = new Uri(user.GetAvatarUrl(ImageFormat.Auto))
+                ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
             }
             .AddField(f =>
             {
@@ -315,7 +315,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Info about {Context.Guild}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = new Uri(Context.Guild.IconUrl)
+                ThumbnailUrl = Context.Guild.IconUrl
             }
             .AddField(f =>
             {

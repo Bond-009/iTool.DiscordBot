@@ -47,7 +47,7 @@ namespace iTool.DiscordBot
             });
 
             _discordClient.Log += Logger.Log;
-            _discordClient.Ready += DiscordClient_Ready;
+            _discordClient.Ready += discordClientReady;
             _discordClient.MessageReceived += async msg
                 => await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), msg.Author.Username + ": " + msg.Content));
 
@@ -68,9 +68,9 @@ namespace iTool.DiscordBot
             });
             _commandService.Log += Logger.Log;
 
-            _discordClient.MessageReceived += HandleCommand;
+            _discordClient.MessageReceived += handleCommand;
 
-            await LoadModules();
+            await loadModules();
 
             if (_settings.AntiSwear)
             {
@@ -88,7 +88,7 @@ namespace iTool.DiscordBot
             Settings.Save(_settings);
         }
 
-        private async Task LoadModules()
+        private async Task loadModules()
         {
             Dictionary<string, bool> enabledmodules = new Dictionary<string, bool>();
 
@@ -116,7 +116,7 @@ namespace iTool.DiscordBot
                         .Serialize(enabledmodules));
         }
 
-        private async Task HandleCommand(SocketMessage rawMsg)
+        private async Task handleCommand(SocketMessage rawMsg)
         {
             // Ignore system messages
             if (!(rawMsg is SocketUserMessage msg)) return;
@@ -168,7 +168,7 @@ namespace iTool.DiscordBot
             }
         }
 
-        private async Task DiscordClient_Ready()
+        private async Task discordClientReady()
         {
             Console.Title = _discordClient.CurrentUser.ToString();
 
