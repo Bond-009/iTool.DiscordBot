@@ -3,27 +3,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using iTool.DiscordBot.Steam;
+using Steam.Models.SteamCommunity;
+using SteamWebAPI2.Interfaces;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Steam : ModuleBase
+    public class SteamModule : ModuleBase
     {
         private Settings _settings;
-        private readonly SteamAPI _client;
+        private readonly ISteamUser _steamUser;
 
-        public Steam(Settings settings, SteamAPI steamapi)
+        public SteamModule(Settings settings)
         {
-            _settings = settings;
-            _client = steamapi;
-        }
-
-        protected override void BeforeExecute(CommandInfo command)
-        {
-            if (_settings.SteamKey.IsNullOrEmpty())
+            if (settings.SteamKey.IsNullOrEmpty())
             {
                 throw new Exception("No SteamKey found.");
             }
+
+            _settings = settings;
+            _steamUser = new SteamUser(settings.SteamKey);
         }
 
         [Command("vanityurl")]
@@ -33,41 +31,42 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync((await _client.ResolveVanityURL(name)).ToString());
+            await ReplyAsync((await _steamUser.ResolveVanityUrlAsync(name)).ToString());
         }
 
         [Command("steam")]
-        [Alias("getplayersummaries", "playersummaries")]
         [Summary("Returns basic steam profile information")]
         public async Task PlayerSummaries(string name = null)
         {
             if (name == null) { name = Context.User.Username; }
-            PlayerSummary player = (await _client.GetPlayerSummaries(new [] {(await _client.ResolveVanityURL(name))})).First();
+            PlayerSummaryModel player = (await _steamUser.GetPlayerSummaryAsync(
+                                        (await _steamUser.ResolveVanityUrlAsync(name)).Data)
+                                    ).Data;
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
-                Title = $"Player summary fot {player.PersonaName}",
+                Title = $"Player summary for {player.Nickname}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = player.AvatarMedium,
-                Url = player.ProfileURL
+                ThumbnailUrl = player.AvatarMediumUrl,
+                Url = player.ProfileUrl
             }
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "SteamID";
-                f.Value = player.SteamID;
+                f.Value = player.SteamId;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
-                f.Name = "Persona name";
-                f.Value = player.PersonaName;
+                f.Name = "Nickname";
+                f.Value = player.Nickname;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Persona state";
-                f.Value = player.PersonaState.ToString();
+                f.Value = (PersonaState)Enum.ToObject(typeof(PersonaState) , player.ProfileState);
             }));
         }
 
@@ -78,7 +77,9 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            PlayerBan players = (await _client.GetPlayerBans(new [] {(await _client.ResolveVanityURL(name))})).First();
+            PlayerBansModel players = (await _steamUser.GetPlayerBansAsync(
+                                            (await _steamUser.ResolveVanityUrlAsync(name)).Data)
+                                        ).Data.FirstOrDefault();
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -89,7 +90,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "SteamID";
-                f.Value = players.SteamID;
+                f.Value = players.SteamId;
             })
             .AddField(f =>
             {
@@ -135,7 +136,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync("https://steamcommunity.com/profiles/" + (await _client.ResolveVanityURL(name)).ToString());
+            await ReplyAsync("https://steamcommunity.com/profiles/" + (await _steamUser.ResolveVanityUrlAsync(name)).Data);
         }
     }
 }

@@ -6,7 +6,7 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Administration : ModuleBase
+    public class AdministrationModule : ModuleBase
     {
         [Command("delmsgs")]
         [Alias("purge", "clean")]

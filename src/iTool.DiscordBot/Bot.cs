@@ -51,14 +51,10 @@ namespace iTool.DiscordBot
             _discordClient.MessageReceived += async msg
                 => await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), msg.Author.Username + ": " + msg.Content));
 
-            await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken);
-            await _discordClient.StartAsync();
-
             _serviceProvider = new ServiceCollection()
                 .AddSingleton<AudioService>()
                 .AddSingleton<AudioFileService>()
                 .AddSingleton(_settings)
-                .AddSingleton(new Steam.SteamAPI(_settings.SteamKey))
                 .BuildServiceProvider();
 
             _commandService = new CommandService(new CommandServiceConfig()
@@ -76,6 +72,9 @@ namespace iTool.DiscordBot
             {
                 new AntiSwear(_discordClient).AddHandler();
             }
+
+            await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken);
+            await _discordClient.StartAsync();
 
             return true;
         }

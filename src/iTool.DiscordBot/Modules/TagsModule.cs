@@ -6,12 +6,12 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Tags : ModuleBase<SocketCommandContext>, IDisposable
+    public class TagsModule : ModuleBase<SocketCommandContext>, IDisposable
     {
         private Settings _settings;
         private readonly TagDatabase _db;
 
-        public Tags(Settings settings)
+        public TagsModule(Settings settings)
         {
             _settings = settings;
 

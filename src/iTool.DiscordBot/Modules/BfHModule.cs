@@ -7,13 +7,13 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class BfH : ModuleBase, IDisposable
+    public class BfHModule : ModuleBase, IDisposable
     {
         private static BfHClient _client;
         private readonly BfPlayerDatabase _db = new BfPlayerDatabase();
         private Settings _settings;
 
-        public BfH(Settings settings)
+        public BfHModule(Settings settings)
         {
             _settings = settings;
 

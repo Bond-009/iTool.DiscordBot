@@ -4,12 +4,12 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Audio : ModuleBase
+    public class AudioModule : ModuleBase
     {
         private AudioService _audioService;
         private AudioFileService _fileService;
 
-        public Audio(AudioService audioService, AudioFileService fileService)
+        public AudioModule(AudioService audioService, AudioFileService fileService)
         {
             _audioService = audioService;
             _fileService = fileService;

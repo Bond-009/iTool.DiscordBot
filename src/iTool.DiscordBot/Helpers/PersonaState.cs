@@ -1,6 +1,6 @@
-namespace iTool.DiscordBot.Steam
+namespace iTool.DiscordBot
 {
-    public enum PersonaState
+    public enum PersonaState : uint
     {
         Offline,
         Online,

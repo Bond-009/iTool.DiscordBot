@@ -4,7 +4,7 @@
 
 i-Tool bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more!
 
-[Bonds Discord Guild](https://discord.gg/thKXwJb) (prop still empty)
+[Bonds Discord Guild](https://discord.gg/thKXwJb) (probably still empty)
 
 ## Commands
 
@@ -90,19 +90,12 @@ i-Tool bot is a general purpose bot that has moderation commands, can check your
 | ------- | ------- | ---------- | ----------- |
 | hotsstats | | | Returns the HOTS stats of the player |
 
-## Random commands
-
-| Command | Aliases | Permission | Description |
-| ------- | ------- | ---------- | ----------- |
-| cat | | | Returns a random cat image |
-| dog | | | Returns a random dog image |
-
 ## Steam commands
 
 | Command | Aliases | Permission | Description |
 | ------- | ------- | ---------- | ----------- |
 | vanityurl | resolvevanityurl | | Returns the steamID64 of the player |
-| steam | getplayersummaries, playersummaries | | Returns basic steam profile information |
+| steam | | | Returns basic steam profile information |
 | playerbans | getplayerbans | | Returns Community, VAC, and Economy ban statuses for given players |
 | steamprofile | | | Returns the URL to the steam profile of the user |
 

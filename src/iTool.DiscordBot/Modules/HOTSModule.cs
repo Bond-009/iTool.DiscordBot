@@ -6,12 +6,12 @@ using HOTSLogs;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class HOTS : ModuleBase
+    public class HOTSModule : ModuleBase
     {
         private static HOTSLogsClient _client;
         private Settings _settings;
 
-        public HOTS(Settings settings)
+        public HOTSModule(Settings settings)
         {
             if (_client == null) _client = new HOTSLogsClient();
             _settings = settings;

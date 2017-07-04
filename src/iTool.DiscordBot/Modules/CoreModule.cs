@@ -5,11 +5,11 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Core : ModuleBase<SocketCommandContext>
+    public class CoreModule : ModuleBase<SocketCommandContext>
     {
         private Settings _settings;
 
-        public Core(Settings settings) => _settings = settings;
+        public CoreModule(Settings settings) => _settings = settings;
 
         [Command("blacklist", RunMode = RunMode.Sync)]
         [Summary("Adds the user to the blacklist")]

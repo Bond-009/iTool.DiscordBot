@@ -9,12 +9,12 @@ using Discord.WebSocket;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class General : ModuleBase<SocketCommandContext>
+    public class GeneralModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService _cmdService;
         private Settings _settings;
 
-        public General(CommandService service, Settings settings)
+        public GeneralModule(CommandService service, Settings settings)
         {
             _cmdService = service;
             _settings = settings;

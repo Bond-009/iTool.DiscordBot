@@ -10,11 +10,11 @@ using Microsoft.CodeAnalysis.Scripting;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Dev : ModuleBase
+    public class DevModule : ModuleBase
     {
         private Settings _settings;
 
-        public Dev(Settings settings) => _settings = settings;
+        public DevModule(Settings settings) => _settings = settings;
 
         [Command("gc")]
         [Alias("collectgarbage")]
@@ -23,12 +23,12 @@ namespace iTool.DiscordBot.Modules
         public async Task CollectGarbage ()
         {
             GC.Collect();
-            // TODO: Replace emoji
+
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "GC",
                 Color = _settings.GetColor(),
-                Description = ":thumbsup:"
+                Description = "👍"
             });
         }
 

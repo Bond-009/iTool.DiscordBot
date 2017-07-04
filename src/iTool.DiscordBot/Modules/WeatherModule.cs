@@ -7,15 +7,15 @@ using OpenWeather;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Weather : ModuleBase
+    public class WeatherModule : ModuleBase
     {
         private static OpenWeatherClient _client;
         private Settings _settings;
 
-        public Weather(Settings settings)
+        public WeatherModule(Settings settings)
             => _settings = settings;
 
-        protected override void BeforeExecute(CommandInfo command)
+        protected override void BeforeExecute()
         {
             if (_settings.OpenWeatherMapKey.IsNullOrEmpty())
             {

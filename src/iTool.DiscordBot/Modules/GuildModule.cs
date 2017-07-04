@@ -6,12 +6,12 @@ using Discord.Commands;
 namespace iTool.DiscordBot.Modules
 {
     [RequireGuildSpecificSettings]
-    public class Guild : ModuleBase, IDisposable
+    public class GuildModule : ModuleBase, IDisposable
     {
         private readonly GuildSettingsDatabase _db = new GuildSettingsDatabase();
         private Settings _settings;
 
-        public Guild(Settings settings) => _settings = settings;
+        public GuildModule(Settings settings) => _settings = settings;
 
         [Command("prefix")]
         [Summary("Returns the current prefix")]

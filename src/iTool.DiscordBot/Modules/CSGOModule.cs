@@ -4,16 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using iTool.DiscordBot.Steam;
+using SteamWebAPI2.Interfaces;
+using SteamWebAPI2.Models;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class CSGO : ModuleBase
+    public class CSGOModule : ModuleBase
     {
         private Settings _settings;
-        private readonly SteamAPI _client;
+        private readonly ISteamUser _steamUser;
+        private readonly ISteamUserStats _steamUserStats;
 
-        public CSGO(Settings settings, SteamAPI steamapi)
+        public CSGOModule(Settings settings)
         {
             if (settings.SteamKey.IsNullOrEmpty())
             {
@@ -21,7 +23,8 @@ namespace iTool.DiscordBot.Modules
             }
 
             _settings = settings;
-            _client = steamapi;
+            _steamUser = new SteamUser(settings.SteamKey);
+            _steamUserStats = new SteamUserStats(settings.SteamKey);
         }
 
         [Command("csgostats")]
@@ -30,8 +33,10 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await _client.GetUserStatsForGame(730, await _client.ResolveVanityURL(name))).Stats
-                                                .ToDictionary(x => x.Name, x => x.Value);
+            Dictionary<string, uint> dict = (await _steamUserStats.GetUserStatsForGameAsync(
+                                                (await _steamUser.ResolveVanityUrlAsync(name)).Data,
+                                                730)
+                                            ).Data.Stats.ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -82,8 +87,10 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, int> dict = (await _client.GetUserStatsForGame(730, await _client.ResolveVanityURL(name))).Stats
-                                                .ToDictionary(x => x.Name, x => x.Value);
+            Dictionary<string, uint> dict = (await _steamUserStats.GetUserStatsForGameAsync(
+                                                (await _steamUser.ResolveVanityUrlAsync(name)).Data,
+                                                730)
+                                            ).Data.Stats.ToDictionary(x => x.Name, x => x.Value);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
