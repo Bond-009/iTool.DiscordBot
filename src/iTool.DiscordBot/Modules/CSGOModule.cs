@@ -11,20 +11,15 @@ namespace iTool.DiscordBot.Modules
 {
     public class CSGOModule : ModuleBase
     {
-        private Settings _settings;
+        private readonly Settings _settings;
         private readonly ISteamUser _steamUser;
         private readonly ISteamUserStats _steamUserStats;
 
-        public CSGOModule(Settings settings)
+        public CSGOModule(Settings settings, ISteamUser steamUser, ISteamUserStats steamUserStats)
         {
-            if (settings.SteamKey.IsNullOrEmpty())
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             _settings = settings;
-            _steamUser = new SteamUser(settings.SteamKey);
-            _steamUserStats = new SteamUserStats(settings.SteamKey);
+            _steamUser = steamUser;
+            _steamUserStats = steamUserStats;
         }
 
         [Command("csgostats")]
@@ -59,25 +54,25 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "K/D";
-                f.Value = Math.Round((double)dict["total_kills"] / (double)dict["total_deaths"], 2).ToString();
+                f.Value = Math.Round((double)dict["total_kills"] / dict["total_deaths"], 2).ToString();
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Headshots";
-                f.Value = Math.Round(100 / (double)dict["total_kills"] * (double)dict["total_kills_headshot"], 2).ToString() + "%";
+                f.Value = Math.Round(100.0 / dict["total_kills"] * dict["total_kills_headshot"], 2) + "%";
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Accuracy";
-                f.Value = Math.Round(100 / (double)dict["total_shots_fired"] * (double)dict["total_shots_hit"], 2).ToString() + "%";
+                f.Value = Math.Round(100.0 / dict["total_shots_fired"] * dict["total_shots_hit"], 2) + "%";
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Playtime";
-                f.Value = (dict["total_time_played"] / 60 / 60).ToString() + " hours";
+                f.Value = (dict["total_time_played"] / 60 / 60) + " hours";
             }));
         }
 
@@ -113,7 +108,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "K/D";
-                f.Value = Math.Round((double)dict["last_match_kills"] / (double)dict["last_match_deaths"], 2).ToString();
+                f.Value = Math.Round((double)dict["last_match_kills"] / dict["last_match_deaths"], 2).ToString();
             })
             .AddField(f =>
             {

@@ -9,20 +9,13 @@ namespace iTool.DiscordBot.Modules
 {
     public class WeatherModule : ModuleBase
     {
-        private static OpenWeatherClient _client;
-        private Settings _settings;
+        private readonly OpenWeatherClient _client;
+        private readonly Settings _settings;
 
-        public WeatherModule(Settings settings)
-            => _settings = settings;
-
-        protected override void BeforeExecute()
+        public WeatherModule(Settings settings, OpenWeatherClient openweatherClient)
         {
-            if (_settings.OpenWeatherMapKey.IsNullOrEmpty())
-            {
-                throw new Exception("No OpenWeatherMapKey found.");
-            }
-            if (_client == null)
-            { _client = new OpenWeatherClient(_settings.OpenWeatherMapKey, _settings.Units); }
+            _settings = settings;
+            _client = openweatherClient;
         }
 
         [Command("weather")]
@@ -33,11 +26,13 @@ namespace iTool.DiscordBot.Modules
 
             OpenWeather.Weather baseweather = weather.Weather.FirstOrDefault();
 
+            string temperatureUnit = getTemperatureUnit(_settings.Units);
+
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = weather.Name + " " + weather.Sys.Country,
                 Color = _settings.GetColor(),
-                ThumbnailUrl = baseweather.Icon,
+                ThumbnailUrl = _client.GetIconURL(baseweather.Icon),
                 Footer = new EmbedFooterBuilder()
                     {
                         Text = "Powered by openweathermap.org",
@@ -47,9 +42,9 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Temperature";
-                f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {getTemperatureUnit(_settings.Units)}\n" +
-                            $"- **Gem**: {weather.Main.Temperature} {getTemperatureUnit(_settings.Units)}\n" +
-                            $"- **Min**: {weather.Main.MinimumTemperature} {getTemperatureUnit(_settings.Units)}";
+                f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {temperatureUnit}\n" +
+                            $"- **Gem**: {weather.Main.Temperature} {temperatureUnit}\n" +
+                            $"- **Min**: {weather.Main.MinimumTemperature} {temperatureUnit}";
             })
             .AddField(f =>
             {
@@ -79,7 +74,7 @@ namespace iTool.DiscordBot.Modules
             }
         }
 
-        private string getSpeedUnit(Unit units)
+        private static string getSpeedUnit(Unit units)
         {
             switch(units)
             {

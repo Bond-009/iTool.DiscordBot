@@ -7,7 +7,7 @@ namespace iTool.DiscordBot.Modules
 {
     public class CoreModule : ModuleBase<SocketCommandContext>
     {
-        private Settings _settings;
+        private readonly Settings _settings;
 
         public CoreModule(Settings settings) => _settings = settings;
 

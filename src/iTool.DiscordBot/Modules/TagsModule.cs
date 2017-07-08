@@ -8,7 +8,7 @@ namespace iTool.DiscordBot.Modules
 {
     public class TagsModule : ModuleBase<SocketCommandContext>, IDisposable
     {
-        private Settings _settings;
+        private readonly Settings _settings;
         private readonly TagDatabase _db;
 
         public TagsModule(Settings settings)

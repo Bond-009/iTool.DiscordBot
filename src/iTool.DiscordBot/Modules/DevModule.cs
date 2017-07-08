@@ -10,9 +10,9 @@ using Microsoft.CodeAnalysis.Scripting;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class DevModule : ModuleBase
+    public class DevModule : ModuleBase<SocketCommandContext>
     {
-        private Settings _settings;
+        private readonly Settings _settings;
 
         public DevModule(Settings settings) => _settings = settings;
 
@@ -78,8 +78,8 @@ namespace iTool.DiscordBot.Modules
                 object result = await CSharpScript.EvaluateAsync(code, options, globals:
                     new RoslynGlobals()
                     {
-                        Client =  (DiscordSocketClient)Context.Client,
-                        Channel = (SocketTextChannel)Context.Channel
+                        Client =  Context.Client,
+                        Channel = Context.Channel as SocketTextChannel
                     }
                 );
 

@@ -9,7 +9,7 @@ namespace iTool.DiscordBot.Modules
     public class HOTSModule : ModuleBase
     {
         private static HOTSLogsClient _client;
-        private Settings _settings;
+        private readonly Settings _settings;
 
         public HOTSModule(Settings settings)
         {

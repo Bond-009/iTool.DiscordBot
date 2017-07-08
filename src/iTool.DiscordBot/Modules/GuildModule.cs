@@ -9,7 +9,7 @@ namespace iTool.DiscordBot.Modules
     public class GuildModule : ModuleBase, IDisposable
     {
         private readonly GuildSettingsDatabase _db = new GuildSettingsDatabase();
-        private Settings _settings;
+        private readonly Settings _settings;
 
         public GuildModule(Settings settings) => _settings = settings;
 

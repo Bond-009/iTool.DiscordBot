@@ -11,7 +11,7 @@ namespace iTool.DiscordBot.Modules
     {
         private static Bf4Client _client;
         private readonly BfPlayerDatabase _db = new BfPlayerDatabase();
-        private Settings _settings;
+        private readonly Settings _settings;
 
         public Bf4Module(Settings settings)
         {

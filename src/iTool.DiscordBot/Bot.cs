@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using OpenWeather;
 using Microsoft.Extensions.DependencyInjection;
+using SteamWebAPI2.Interfaces;
 using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
@@ -51,11 +53,24 @@ namespace iTool.DiscordBot
             _discordClient.MessageReceived += async msg
                 => await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), msg.Author.Username + ": " + msg.Content));
 
-            _serviceProvider = new ServiceCollection()
+            
+            IServiceCollection serviceCollection = new ServiceCollection()
                 .AddSingleton<AudioService>()
                 .AddSingleton<AudioFileService>()
-                .AddSingleton(_settings)
-                .BuildServiceProvider();
+                .AddSingleton(_settings);
+            
+            if (!_settings.SteamKey.IsNullOrEmpty())
+            {
+                serviceCollection.AddSingleton<ISteamUser>(new SteamUser(_settings.SteamKey));
+                serviceCollection.AddSingleton<ISteamUserStats>(new SteamUserStats(_settings.SteamKey));
+            }
+
+            if (!_settings.OpenWeatherMapKey.IsNullOrEmpty())
+            {
+                serviceCollection.AddSingleton(new OpenWeatherClient(_settings.OpenWeatherMapKey, Unit.Metric));
+            }
+
+            _serviceProvider = serviceCollection.BuildServiceProvider();
 
             _commandService = new CommandService(new CommandServiceConfig()
             {
@@ -107,7 +122,7 @@ namespace iTool.DiscordBot
                 if (enabledmodules[type.Name])
                 {
                     await _commandService.AddModuleAsync(type);
-                    await Logger.Log(new LogMessage(LogSeverity.Info, nameof(Program), $"Loaded {type.Name} module"));
+                    await Logger.Log(new LogMessage(LogSeverity.Info, nameof(Program), $"Loaded {type.Name}"));
                 }
             }
             File.WriteAllText(Common.ModuleFile,

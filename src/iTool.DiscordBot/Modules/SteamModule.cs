@@ -10,18 +10,13 @@ namespace iTool.DiscordBot.Modules
 {
     public class SteamModule : ModuleBase
     {
-        private Settings _settings;
+        private readonly Settings _settings;
         private readonly ISteamUser _steamUser;
 
-        public SteamModule(Settings settings)
+        public SteamModule(Settings settings, ISteamUser steamUser)
         {
-            if (settings.SteamKey.IsNullOrEmpty())
-            {
-                throw new Exception("No SteamKey found.");
-            }
-
             _settings = settings;
-            _steamUser = new SteamUser(settings.SteamKey);
+            _steamUser = steamUser;
         }
 
         [Command("vanityurl")]
@@ -31,7 +26,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync((await _steamUser.ResolveVanityUrlAsync(name)).ToString());
+            await ReplyAsync(((await _steamUser.ResolveVanityUrlAsync(name)).Data).ToString());
         }
 
         [Command("steam")]
@@ -39,9 +34,10 @@ namespace iTool.DiscordBot.Modules
         public async Task PlayerSummaries(string name = null)
         {
             if (name == null) { name = Context.User.Username; }
+
             PlayerSummaryModel player = (await _steamUser.GetPlayerSummaryAsync(
-                                        (await _steamUser.ResolveVanityUrlAsync(name)).Data)
-                                    ).Data;
+                                            (await _steamUser.ResolveVanityUrlAsync(name)).Data)
+                                        ).Data;
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {

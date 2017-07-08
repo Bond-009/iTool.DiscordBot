@@ -12,7 +12,7 @@ namespace iTool.DiscordBot.Modules
     public class GeneralModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService _cmdService;
-        private Settings _settings;
+        private readonly Settings _settings;
 
         public GeneralModule(CommandService service, Settings settings)
         {
