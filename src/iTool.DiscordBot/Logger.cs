@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Serilog;
-using YamlDotNet.Serialization;
+using Newtonsoft.Json;
 
 namespace iTool.DiscordBot
 {
@@ -47,17 +47,17 @@ namespace iTool.DiscordBot
             
             Console.ResetColor();
 
-            if (msg.Exception != null) Crash(new Crash(msg.Source, msg.Exception));
+            if (msg.Exception != null) crash(new Crash(msg.Source, msg.Exception));
 
             return Task.CompletedTask;
         }
 
-        private static void Crash(Crash crash)
+        private static void crash(Crash crash)
         {
             Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "crashes"));
             File.WriteAllText(
                 Path.Combine(AppContext.BaseDirectory, "crashes", $"crash_{DateTime.UtcNow.ToString("dd-MM-yyyy_HH-mm-ss")}.txt"),
-                new Serializer().Serialize(crash)
+                JsonConvert.SerializeObject(crash)
             );
         }
     }

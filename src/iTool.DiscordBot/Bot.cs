@@ -59,13 +59,21 @@ namespace iTool.DiscordBot
                 .AddSingleton<AudioFileService>()
                 .AddSingleton(_settings);
             
-            if (!_settings.SteamKey.IsNullOrEmpty())
+            if (_settings.SteamKey.IsNullOrEmpty())
+            {
+                await Logger.Log(new LogMessage(LogSeverity.Warning, nameof(Program), "No steamkey found."));
+            }
+            else
             {
                 serviceCollection.AddSingleton<ISteamUser>(new SteamUser(_settings.SteamKey));
                 serviceCollection.AddSingleton<ISteamUserStats>(new SteamUserStats(_settings.SteamKey));
             }
 
-            if (!_settings.OpenWeatherMapKey.IsNullOrEmpty())
+            if (_settings.OpenWeatherMapKey.IsNullOrEmpty())
+            {
+                await Logger.Log(new LogMessage(LogSeverity.Warning, nameof(Program), "No steamkey found."));
+            }
+            else
             {
                 serviceCollection.AddSingleton(new OpenWeatherClient(_settings.OpenWeatherMapKey, Unit.Metric));
             }
