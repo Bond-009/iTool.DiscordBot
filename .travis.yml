@@ -3,7 +3,7 @@ dist: trusty
 sudo: false
 solution: iTool.DiscordBot.sln
 mono: none
-dotnet: 1.0.1
+dotnet: 2.0.0
 script:
   - ./build.sh --quiet verify
 notifications:
