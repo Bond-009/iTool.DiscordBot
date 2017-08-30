@@ -33,10 +33,8 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns basic steam profile information")]
         public async Task PlayerSummaries(string name = null)
         {
-            if (name == null) { name = Context.User.Username; }
-
             PlayerSummaryModel player = (await _steamUser.GetPlayerSummaryAsync(
-                                            (await _steamUser.ResolveVanityUrlAsync(name)).Data)
+                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username)).Data)
                                         ).Data;
 
             await ReplyAsync("", embed: new EmbedBuilder()
@@ -63,7 +61,8 @@ namespace iTool.DiscordBot.Modules
                 f.IsInline = true;
                 f.Name = "Persona state";
                 f.Value = (PersonaState)Enum.ToObject(typeof(PersonaState) , player.ProfileState);
-            }));
+            })
+            .Build());
         }
 
         [Command("playerbans")]
@@ -71,10 +70,8 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns Community, VAC, and Economy ban statuses for given players")]
         public async Task PlayerBans(string name = null)
         {
-            if (name == null) { name = Context.User.Username; }
-
-            PlayerBansModel players = (await _steamUser.GetPlayerBansAsync(
-                                            (await _steamUser.ResolveVanityUrlAsync(name)).Data)
+            PlayerBansModel player = (await _steamUser.GetPlayerBansAsync(
+                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username)).Data)
                                         ).Data.FirstOrDefault();
 
             await ReplyAsync("", embed: new EmbedBuilder()
@@ -86,53 +83,52 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "SteamID";
-                f.Value = players.SteamId;
+                f.Value = player.SteamId;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "CommunityBanned";
-                f.Value = players.CommunityBanned;
+                f.Value = player.CommunityBanned;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "VACBanned";
-                f.Value = players.VACBanned;
+                f.Value = player.VACBanned;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Number of VAC bans";
-                f.Value = players.NumberOfVACBans;
+                f.Value = player.NumberOfVACBans;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Days since last ban";
-                f.Value = players.DaysSinceLastBan;
+                f.Value = player.DaysSinceLastBan;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Number of game bans";
-                f.Value = players.NumberOfGameBans;
+                f.Value = player.NumberOfGameBans;
             })
             .AddField(f =>
             {
                 f.IsInline = true;
                 f.Name = "Economy ban";
-                f.Value = players.EconomyBan;
-            }));
+                f.Value = player.EconomyBan;
+            })
+            .Build());
         }
 
         [Command("steamprofile")]
         [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
-        {
-            if (name == null) { name = Context.User.Username; }
-
-            await ReplyAsync("https://steamcommunity.com/profiles/" + (await _steamUser.ResolveVanityUrlAsync(name)).Data);
-        }
+            => await ReplyAsync("https://steamcommunity.com/profiles/" + 
+                    (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username)).Data
+                );
     }
 }

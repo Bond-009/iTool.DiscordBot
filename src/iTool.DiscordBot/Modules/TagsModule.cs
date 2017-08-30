@@ -45,7 +45,7 @@ namespace iTool.DiscordBot.Modules
                 Color = _settings.GetColor(),
                 Description = tag.Text,
                 ImageUrl = tag.Attachment
-            });
+            }.Build());
         }
 
         [Command("tag delete")]
@@ -61,7 +61,7 @@ namespace iTool.DiscordBot.Modules
                 Title = $"Delete tag {name}",
                 Color = _settings.GetColor(),
                 Description = $"Successfully deleted tag {name}",
-            });
+            }.Build());
         }
 
         [Command("tags")]
@@ -76,7 +76,7 @@ namespace iTool.DiscordBot.Modules
                 Color = _settings.GetColor(),
                 Description = string.Join(" ,", _db.GetTags(Context.Guild.Id)
                                                 .Select(x => x.Name)),
-            });
+            }.Build());
         }
 
         public void Dispose()

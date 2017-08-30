@@ -73,7 +73,7 @@ namespace iTool.DiscordBot.Modules
                 f.IsInline = true;
                 f.Name = "Playtime";
                 f.Value = (dict["total_time_played"] / 60 / 60) + " hours";
-            }));
+            }).Build());
         }
 
         [Command("csgolastmatch")]
@@ -115,7 +115,8 @@ namespace iTool.DiscordBot.Modules
                 f.IsInline = true;
                 f.Name = "MVP";
                 f.Value = dict["last_match_mvps"].ToString();
-            }));
+            })
+            .Build());
         }
     }
 }

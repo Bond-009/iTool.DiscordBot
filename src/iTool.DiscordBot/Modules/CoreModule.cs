@@ -35,7 +35,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Blacklist",
                     Color = _settings.GetErrorColor(),
                     Description = $"Failed to blacklist {string.Join(", ", (object[])users)}."
-                });
+                }.Build());
             }
             else
             {
@@ -44,7 +44,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Blacklist",
                     Color = _settings.GetColor(),
                     Description = $"Successfully blacklisted {string.Join(", ", blacklistedUsers)}."
-                });
+                }.Build());
             }
         }
 
@@ -70,7 +70,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Remove blacklist",
                     Color = _settings.GetErrorColor(),
                     Description = $"Failed to remove blacklist for {string.Join(", ", (object[])users)}."
-                });
+                }.Build());
             }
             else
             {
@@ -79,7 +79,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Remove blacklist",
                     Color = _settings.GetColor(),
                     Description = $"Successfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
-                });
+                }.Build());
             }
         }
 
@@ -101,7 +101,7 @@ namespace iTool.DiscordBot.Modules
                 Title = "Trust",
                 Color = _settings.GetColor(),
                 Description = $"Successfully added {string.Join(", ", (object[])users)} to the list of trusted users."
-            });
+            }.Build());
         }
 
         [Command("untrust", RunMode = RunMode.Sync)]
@@ -121,7 +121,7 @@ namespace iTool.DiscordBot.Modules
                 Title = "UnTrust",
                 Color = _settings.GetColor(),
                 Description = $"Successfully removed {string.Join(", ", (object[])users)} from the list of trusted users."
-            });
+            }.Build());
         }
     }
 }

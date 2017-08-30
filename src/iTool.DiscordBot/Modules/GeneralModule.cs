@@ -31,10 +31,10 @@ namespace iTool.DiscordBot.Modules
                     Title = "Modules",
                     Color = _settings.GetColor(),
                     Description = string.Join(", ", _cmdService.Modules
-                                                    .Select(x => x.Name)
-                                                    .OrderBy(x => x)
-                                                    ),
-                });
+                                                        .Select(x => x.Name)
+                                                        .OrderBy(x => x)
+                                            ),
+                }.Build());
                 return;
             }
 
@@ -48,7 +48,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Help",
                     Color = _settings.GetColor(),
                     Description = $"No module named {moduleName} found",
-                });
+                }.Build());
                 return;
             }
 
@@ -67,7 +67,7 @@ namespace iTool.DiscordBot.Modules
                     f.Value = cmd.Summary ?? "No summary";
                 });
             }
-            await ReplyAsync("", embed: b);
+            await ReplyAsync("", embed: b.Build());
         }
 
         [Command("cmdinfo")]
@@ -85,7 +85,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Command info",
                     Color = _settings.GetColor(),
                     Description = "No command found",
-                });
+                }.Build());
                 return;
             }
 
@@ -129,7 +129,7 @@ namespace iTool.DiscordBot.Modules
                 });
             }
 
-            await ReplyAsync("", embed: b);
+            await ReplyAsync("", embed: b.Build());
         }
 
         [Command("info")]
@@ -170,7 +170,8 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Links";
                 f.Value = "[GitHub](https://github.com/Bond-009/iTool.DiscordBot)\n" +
                             "[Bonds Discord Guild](https://discord.gg/thKXwJb)";
-            }));
+            })
+            .Build());
         }
 
         [Command("invite")]
@@ -182,7 +183,7 @@ namespace iTool.DiscordBot.Modules
                     Color = _settings.GetColor(),
                     Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
                                 $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
-                });
+                }.Build());
 
         // TODO: Improve embed
         [Command("leave")]
@@ -196,7 +197,7 @@ namespace iTool.DiscordBot.Modules
                 Color = _settings.GetColor(),
                 Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
                 Description = "Leaving, click the title to invite me back in."
-            });
+            }.Build());
             await Context.Guild.LeaveAsync();
         }
 
@@ -217,7 +218,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Ping",
                     Color = _settings.GetColor(),
                     Description = $"Latency: {Context.Client.Latency}ms"
-                });
+                }.Build());
 
         [Command("userinfo")]
         [Alias("user")]
@@ -302,7 +303,7 @@ namespace iTool.DiscordBot.Modules
                     f.Value = gUser.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
                 });
             }
-            await ReplyAsync("", embed: b);
+            await ReplyAsync("", embed: b.Build());
         }
 
         [Command("serverinfo")]
@@ -352,7 +353,8 @@ namespace iTool.DiscordBot.Modules
                 f.IsInline = true;
                 f.Name = "Created at";
                 f.Value = Context.Guild.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
-            }));
+            })
+            .Build());
         }
     }
 }

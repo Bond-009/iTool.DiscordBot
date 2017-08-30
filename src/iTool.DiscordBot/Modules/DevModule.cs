@@ -29,7 +29,7 @@ namespace iTool.DiscordBot.Modules
                 Title = "GC",
                 Color = _settings.GetColor(),
                 Description = "👍"
-            });
+            }.Build());
         }
 
         [Command("eval", RunMode = RunMode.Async)]
@@ -51,7 +51,7 @@ namespace iTool.DiscordBot.Modules
                 Title = "Evaluation",
                 Color = _settings.GetColor(),
                 Description = "Evaluating..."
-            });
+            }.Build());
 
             try
             {

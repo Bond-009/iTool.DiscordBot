@@ -24,7 +24,7 @@ namespace iTool.DiscordBot.Modules
                 Title = $"Current prefix",
                 Color = _settings.GetColor(),
                 Description = guildSettings.Prefix.IsNullOrEmpty() ? _settings.Prefix : guildSettings.Prefix,
-            });
+            }.Build());
         }
 
         [Command("prefix")]
@@ -42,7 +42,7 @@ namespace iTool.DiscordBot.Modules
                 Title = $"Prefix",
                 Color = _settings.GetColor(),
                 Description = $"Changed to prefix for this server to {prefix}.",
-            });
+            }.Build());
         }
 
         public void Dispose()

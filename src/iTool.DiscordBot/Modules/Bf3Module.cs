@@ -47,7 +47,7 @@ namespace iTool.DiscordBot.Modules
                         Color = _settings.GetErrorColor(),
                         Description = "No player was found with that name.",
                         ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf3/bf3-logo-m.png"
-                    });
+                    }.Build());
                     return;
                 }
             }
@@ -92,7 +92,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **Dogtags Taken**: {stats.OverviewStats.DogtagsTaken}\n" +
                         $"- **Time played**: {Math.Round(stats.OverviewStats.TimePlayed.TotalHours, 2)} hours";
             })
-            );
+            .Build());
         }
 
         public void Dispose()

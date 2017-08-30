@@ -186,7 +186,7 @@ namespace iTool.DiscordBot
                     Title = "Error",
                     Color = _settings.GetErrorColor(),
                     Description = result.ErrorReason
-                });
+                }.Build());
             }
         }
 

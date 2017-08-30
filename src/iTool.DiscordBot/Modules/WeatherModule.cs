@@ -57,7 +57,8 @@ namespace iTool.DiscordBot.Modules
                 f.IsInline = true;
                 f.Name = "Wind";
                 f.Value = weather.Wind.Speed + " " + getSpeedUnit(_settings.Units);
-            }));
+            })
+            .Build());
         }
 
         private static string getTemperatureUnit(Unit units)

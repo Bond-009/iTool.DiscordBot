@@ -29,7 +29,7 @@ namespace iTool.DiscordBot.Modules
                     Title = $"No player found",
                     Color = _settings.GetErrorColor(),
                     Description = "No player was found matching those criteria."
-                });
+                }.Build());
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
-            await ReplyAsync("", embed: b);
+            await ReplyAsync("", embed: b.Build());
         }
 
         [Command("hotsstats")]
@@ -83,7 +83,7 @@ namespace iTool.DiscordBot.Modules
                     Title = $"No player found",
                     Color = _settings.GetErrorColor(),
                     Description = "No player was found matching those criteria."
-                });
+                }.Build());
                 return;
             }
 
@@ -118,7 +118,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
-            await ReplyAsync("", embed: b);
+            await ReplyAsync("", embed: b.Build());
         }
     }
 }
