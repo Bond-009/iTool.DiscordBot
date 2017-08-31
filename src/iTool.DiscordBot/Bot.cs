@@ -107,7 +107,7 @@ namespace iTool.DiscordBot
             await _discordClient.LogoutAsync();
             _discordClient.Dispose();
 
-            Settings.Save(_settings);
+            _settings.Save();
         }
 
         private async Task loadModules()

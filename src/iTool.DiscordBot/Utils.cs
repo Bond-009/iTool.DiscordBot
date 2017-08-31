@@ -9,12 +9,6 @@ namespace iTool.DiscordBot
 {
     public static class Utils
     {
-        public static bool IsNullOrEmpty<T>(this List<T> list)
-            => list == null || !list.Any();
-
-        public static bool IsNullOrEmpty<T>(this IReadOnlyList<T> list)
-            => list == null || !list.Any();
-
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
             => enumerable == null || !enumerable.Any();
 

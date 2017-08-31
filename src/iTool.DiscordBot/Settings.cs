@@ -36,30 +36,25 @@ namespace iTool.DiscordBot
         public Color GetColor() => new Color((uint)Color);
         public Color GetErrorColor() => new Color((uint)ErrorColor);
 
+        public void Save()
+        {
+            if (!BlacklistedUsers.IsNullOrEmpty())
+            { File.WriteAllLines(Common.BlackListFile, BlacklistedUsers.Select(x => x.ToString())); }
+
+            if (!TrustedUsers.IsNullOrEmpty())
+            { File.WriteAllLines(Common.TrustedListFile, TrustedUsers.Select(x => x.ToString())); }
+
+            File.WriteAllText(Common.SettingsFile, new SerializerBuilder().EmitDefaults().Build().Serialize(this));
+        }
+
         public static Settings Load()
         {
-            if (!File.Exists(Common.SettingsFile))
-            {
-                Directory.CreateDirectory(Common.SettingsDir);
+            Directory.CreateDirectory(Common.SettingsDir);
 
-                Save(new Settings());
-            }
-
-            Settings settings = new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile));
+            Settings settings = File.Exists(Common.SettingsFile) ? new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile)) : new Settings();
             settings.BlacklistedUsers = Utils.LoadListFromFile(Common.BlackListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
             settings.TrustedUsers = Utils.LoadListFromFile(Common.TrustedListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
             return settings;
-        }
-
-        public static void Save(Settings settings)
-        {
-            if (!settings.BlacklistedUsers.IsNullOrEmpty())
-            { File.WriteAllLines(Common.BlackListFile, settings.BlacklistedUsers.Select(x => x.ToString())); }
-
-            if (!settings.TrustedUsers.IsNullOrEmpty())
-            { File.WriteAllLines(Common.TrustedListFile, settings.TrustedUsers.Select(x => x.ToString())); }
-
-            File.WriteAllText(Common.SettingsFile, new SerializerBuilder().EmitDefaults().Build().Serialize(settings));
         }
     }
 }
