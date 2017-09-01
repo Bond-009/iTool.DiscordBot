@@ -8,9 +8,7 @@ namespace iTool.DiscordBot
     {
         private static readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
-        public static int Main(string[] args) => mainAsync(args).GetAwaiter().GetResult();
-
-        private static async Task<int> mainAsync(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             Console.CancelKeyPress += cancelKeyPress;
 
