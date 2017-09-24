@@ -152,12 +152,23 @@ namespace iTool.DiscordBot
                 return;
             }
 
+            // Ignore if the bot doesn't have the permission to send messages in the channel
+            IGuildChannel guildChannel = msg.Channel as IGuildChannel;
+
+            if (guildChannel != null)
+            {
+                IGuildUser guildUser = await guildChannel.Guild.GetCurrentUserAsync();
+                ChannelPermissions channelPermissions = guildUser.GetPermissions(guildChannel);
+                if (!channelPermissions.Has(ChannelPermission.SendMessages))
+                { return; }
+            }
+
             // Mark where the prefix ends and the command begins
             int argPos = 0;
 
             string prefix = _settings.Prefix;
             if (_settings.GuildSpecificSettings
-                && msg.Channel is IGuildChannel guildChannel)
+                && guildChannel != null)
             {
                 using (GuildSettingsDatabase db = new GuildSettingsDatabase())
                 {
@@ -174,11 +185,8 @@ namespace iTool.DiscordBot
             IResult result = await _commandService.ExecuteAsync(new SocketCommandContext(_discordClient, msg), argPos, _serviceProvider);
 
             // If the command failed, notify the user
-            if (!result.IsSuccess)
+            if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
             {
-                if (result.Error == CommandError.UnknownCommand)
-                { return; }
-
                 await Logger.Log(new LogMessage(LogSeverity.Error, nameof(Program), result.ErrorReason));
 
                 await msg.Channel.SendMessageAsync("", embed: new EmbedBuilder()

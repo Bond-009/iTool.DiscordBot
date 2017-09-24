@@ -16,8 +16,8 @@
     <PackageReference Include="Battlelog.Net.Bf3" Version="0.1.3" />
     <PackageReference Include="Battlelog.Net.Bf4" Version="0.1.3" />
     <PackageReference Include="Battlelog.Net.BfH" Version="0.1.3" />
-    <PackageReference Include="Discord.Net.Commands" Version="2.0.0-alpha-build-00828" />
-    <PackageReference Include="Discord.Net.WebSocket" Version="2.0.0-alpha-build-00828" />
+    <PackageReference Include="Discord.Net.Commands" Version="2.0.0-alpha-build-00829" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="2.0.0-alpha-build-00829" />
     <PackageReference Include="HOTSLogs.Net" Version="0.1.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.3.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
