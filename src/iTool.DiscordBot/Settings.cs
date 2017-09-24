@@ -4,6 +4,7 @@ using System.Linq;
 using Discord;
 using Discord.Commands;
 using OpenWeather;
+using Serilog.Events;
 using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
@@ -16,7 +17,7 @@ namespace iTool.DiscordBot
         public bool AlwaysDownloadUsers { get; set; }
         public int ConnectionTimeout { get; set; } = 30000;
         public RetryMode DefaultRetryMode { get; set; } = RetryMode.AlwaysRetry;
-        public LogSeverity LogLevel { get; set; } = LogSeverity.Info;
+        public LogEventLevel LogLevel { get; set; } = LogEventLevel.Information;
         public int MessageCacheSize { get; set; }
         public string Game { get; set; } = string.Empty;
         public string Prefix { get; set; } = "!";
@@ -50,8 +51,12 @@ namespace iTool.DiscordBot
         public static Settings Load()
         {
             Directory.CreateDirectory(Common.SettingsDir);
+            if (!File.Exists(Common.SettingsFile))
+            {
+                new Settings().Save();
+            }
 
-            Settings settings = File.Exists(Common.SettingsFile) ? new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile)) : new Settings();
+            Settings settings = new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile));
             settings.BlacklistedUsers = Utils.LoadListFromFile(Common.BlackListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
             settings.TrustedUsers = Utils.LoadListFromFile(Common.TrustedListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
             return settings;

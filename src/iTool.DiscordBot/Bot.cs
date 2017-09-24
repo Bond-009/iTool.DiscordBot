@@ -9,6 +9,10 @@ using Discord.Commands;
 using Discord.WebSocket;
 using OpenWeather;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+using Serilog.Extensions.Logging;
 using SteamWebAPI2.Interfaces;
 using YamlDotNet.Serialization;
 
@@ -19,12 +23,17 @@ namespace iTool.DiscordBot
         private CommandService _commandService;
         private DiscordSocketClient _discordClient;
         private IServiceProvider _serviceProvider;
-        private Settings _settings = Settings.Load();
+        private Settings _settings;
+        private Serilog.ILogger _logger;
+
+        public Bot(Settings settings, Serilog.ILogger logger)
+        {
+            _settings = settings;
+            _logger = logger;
+        }
 
         public async Task<bool> Start()
         {
-            Logger.LogLevel = _settings.LogLevel;
-
             if (_settings.DiscordToken.IsNullOrEmpty())
             {
                 Console.WriteLine("No token");
@@ -44,24 +53,24 @@ namespace iTool.DiscordBot
                 AlwaysDownloadUsers = _settings.AlwaysDownloadUsers,
                 ConnectionTimeout = _settings.ConnectionTimeout,
                 DefaultRetryMode = _settings.DefaultRetryMode,
-                LogLevel = _settings.LogLevel,
+                LogLevel = LogSeverity.Debug,
                 MessageCacheSize = _settings.MessageCacheSize
             });
 
-            _discordClient.Log += Logger.Log;
+            _discordClient.Log += log;
             _discordClient.Ready += discordClientReady;
-            _discordClient.MessageReceived += async msg
-                => await Logger.Log(new LogMessage(LogSeverity.Verbose, nameof(Bot), msg.Author.Username + ": " + msg.Content));
 
-            
             IServiceCollection serviceCollection = new ServiceCollection()
                 .AddSingleton<AudioService>()
                 .AddSingleton<AudioFileService>()
-                .AddSingleton(_settings);
+                .AddSingleton(_settings)
+                .AddLogging(builder => {
+                    builder.AddSerilog(_logger);
+                });
             
             if (_settings.SteamKey.IsNullOrEmpty())
             {
-                await Logger.Log(new LogMessage(LogSeverity.Warning, nameof(Program), "No steamkey found."));
+                _logger.Warning($"{nameof(Bot)}: No steamkey found.");
             }
             else
             {
@@ -71,7 +80,7 @@ namespace iTool.DiscordBot
 
             if (_settings.OpenWeatherMapKey.IsNullOrEmpty())
             {
-                await Logger.Log(new LogMessage(LogSeverity.Warning, nameof(Program), "No steamkey found."));
+                _logger.Warning($"{nameof(Bot)}: No OpenWeatherMap key found.");
             }
             else
             {
@@ -85,7 +94,7 @@ namespace iTool.DiscordBot
                 CaseSensitiveCommands = _settings.CaseSensitiveCommands,
                 DefaultRunMode = _settings.DefaultRunMode
             });
-            _commandService.Log += Logger.Log;
+            _commandService.Log += log;
 
             _discordClient.MessageReceived += handleCommand;
 
@@ -130,7 +139,7 @@ namespace iTool.DiscordBot
                 if (enabledmodules[type.Name])
                 {
                     await _commandService.AddModuleAsync(type);
-                    await Logger.Log(new LogMessage(LogSeverity.Info, nameof(Program), $"Loaded {type.Name}"));
+                    _logger.Information("Loaded {Name}", type.Name);
                 }
             }
             File.WriteAllText(Common.ModuleFile,
@@ -140,6 +149,8 @@ namespace iTool.DiscordBot
 
         private async Task handleCommand(SocketMessage rawMsg)
         {
+            _logger.Verbose($"{rawMsg.Author.Username}: {rawMsg.Content}");
+
             // Ignore system messages
             if (!(rawMsg is SocketUserMessage msg)) return;
             // Ignore bot messages
@@ -187,7 +198,7 @@ namespace iTool.DiscordBot
             // If the command failed, notify the user
             if (!result.IsSuccess && result.Error != CommandError.UnknownCommand)
             {
-                await Logger.Log(new LogMessage(LogSeverity.Error, nameof(Program), result.ErrorReason));
+                _logger.Error(result.ErrorReason);
 
                 await msg.Channel.SendMessageAsync("", embed: new EmbedBuilder()
                 {
@@ -206,6 +217,16 @@ namespace iTool.DiscordBot
             {
                 await _discordClient.SetGameAsync(_settings.Game);
             }
+        }
+
+        private Task log(LogMessage msg)
+        {
+            if (msg.Exception == null)
+                _logger.Write((LogEventLevel)(5 - (int)msg.Severity), $"{msg.Source}: {msg.Message}");
+            else
+                _logger.Error(msg.Exception, $"{msg.Source}: {msg.Message}");
+
+            return Task.CompletedTask;
         }
     }
 }

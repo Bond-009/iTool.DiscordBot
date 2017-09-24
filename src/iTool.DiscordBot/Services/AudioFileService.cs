@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Discord;
+using Serilog;
 using YamlDotNet.Serialization;
 
 namespace iTool.DiscordBot
@@ -11,6 +12,7 @@ namespace iTool.DiscordBot
     public class AudioFileService
     {
 		private IEnumerable<AudioFile> _audioFiles;
+        private ILogger _logger = Log.ForContext<AudioFileService>();
 
         public AudioFileService()
         {
@@ -25,7 +27,7 @@ namespace iTool.DiscordBot
             }
             catch (Exception ex)
             {
-                Logger.Log(new LogMessage(LogSeverity.Error, nameof(AudioFileService), ex.Message, ex));
+                 _logger.Error(ex, ex.Message);
             }
         }
 

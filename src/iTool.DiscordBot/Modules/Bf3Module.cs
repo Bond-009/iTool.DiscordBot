@@ -25,7 +25,7 @@ namespace iTool.DiscordBot.Modules
 
         [Command("bf3stats")]
         [Summary("Returns the Battlefield 3 stats of the player")]
-        public async Task Bf4Stats(string name = null, Platform platform = Platform.PC, string platformSpecificName = null)
+        public async Task Bf3Stats(string name = null, Platform platform = Platform.PC, string platformSpecificName = null)
         {
             if (name == null) { name = Context.User.Username; }
 

@@ -1,6 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Configuration;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace iTool.DiscordBot
 {
@@ -10,9 +16,20 @@ namespace iTool.DiscordBot
 
         public static async Task<int> Main(string[] args)
         {
+            Settings settings = Settings.Load();
+
+            Log.Logger = new LoggerConfiguration()
+                            .MinimumLevel.Is(settings.LogLevel)
+                            .WriteTo.Console(theme: AnsiConsoleTheme.Code, 
+                                outputTemplate: "{Timestamp:HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}")
+                            .WriteTo.Async(a => a.RollingFile(Path.Combine(AppContext.BaseDirectory, "logs", "log_{Date}.log"),
+                                buffered: true,
+                                outputTemplate: "{Timestamp:dd-MM-yyyy HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}"))
+                            .CreateLogger();
+
             Console.CancelKeyPress += cancelKeyPress;
 
-            Bot iToolBot = new Bot();
+            Bot iToolBot = new Bot(settings, Log.Logger);
             if (!await iToolBot.Start())
             {
                 if (!Console.IsInputRedirected) Console.ReadKey();
@@ -21,12 +38,14 @@ namespace iTool.DiscordBot
 
             if (!Console.IsInputRedirected)
             {
-                Task t = Task.Run(() => handleInput(), _tokenSource.Token);
+                Task task = Task.Run(() => handleInput(), _tokenSource.Token);
             }
 
             await Task.Delay(-1, _tokenSource.Token).ContinueWith(x => {});
 
             await iToolBot.Stop();
+
+            Log.CloseAndFlush();
 
             return 0;
         }
