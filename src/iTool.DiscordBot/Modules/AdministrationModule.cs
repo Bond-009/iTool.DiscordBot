@@ -11,20 +11,22 @@ namespace iTool.DiscordBot.Modules
         [Command("delmsgs")]
         [Alias("purge", "clean")]
         [Summary("Deletes the messages")]
+        [RequireContext(ContextType.Guild)]
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteMessages(int number = 100)
-            => await Context.Channel.DeleteMessagesAsync(
+            => await (Context.Channel as ITextChannel).DeleteMessagesAsync(
                 (await Context.Channel.GetMessagesAsync(number).Flatten())
                     .Where(x => DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));
 
         [Command("delmsgs")]
         [Alias("purge", "clean")]
         [Summary("Deletes the messages")]
+        [RequireContext(ContextType.Guild)]
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteMessages(params IUser[] users)
-            => await Context.Channel.DeleteMessagesAsync(
+            => await (Context.Channel as ITextChannel).DeleteMessagesAsync(
                 (await Context.Channel.GetMessagesAsync().Flatten())
                     .Where(x => users.Select(y => y.Id).Contains(x.Author.Id)
                         && DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));

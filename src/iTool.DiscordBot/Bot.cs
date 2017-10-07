@@ -10,7 +10,7 @@ using Discord.WebSocket;
 using OpenWeather;
 using Microsoft.Extensions.DependencyInjection;
 using SteamWebAPI2.Interfaces;
-using YamlDotNet.Serialization;
+using Nett;
 
 namespace iTool.DiscordBot
 {
@@ -116,7 +116,7 @@ namespace iTool.DiscordBot
 
             if (File.Exists(Common.ModuleFile))
             {
-                enabledmodules = new Deserializer().Deserialize<Dictionary<string, bool>>(File.ReadAllText(Common.ModuleFile));
+                enabledmodules = Toml.ReadFile<Dictionary<string, bool>>(Common.ModuleFile);
             }
 
             foreach (Type type in Assembly.GetEntryAssembly().GetExportedTypes()
@@ -133,9 +133,7 @@ namespace iTool.DiscordBot
                     await Logger.Log(new LogMessage(LogSeverity.Info, nameof(Program), $"Loaded {type.Name}"));
                 }
             }
-            File.WriteAllText(Common.ModuleFile,
-                    new SerializerBuilder().EmitDefaults().Build()
-                        .Serialize(enabledmodules));
+            Toml.WriteFile(enabledmodules, Common.ModuleFile);
         }
 
         private async Task handleCommand(SocketMessage rawMsg)

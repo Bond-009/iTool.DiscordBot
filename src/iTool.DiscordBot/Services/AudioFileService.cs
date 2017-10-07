@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Discord;
-using YamlDotNet.Serialization;
+using Nett;
 
 namespace iTool.DiscordBot
 {
@@ -21,7 +21,7 @@ namespace iTool.DiscordBot
 
             try
             {
-                _audioFiles = new Deserializer().Deserialize<IEnumerable<AudioFile>>(File.ReadAllText(Common.AudioIndexFile));
+                _audioFiles = Toml.ReadFile<IEnumerable<AudioFile>>(Common.AudioIndexFile);
             }
             catch (Exception ex)
             {
@@ -42,16 +42,15 @@ namespace iTool.DiscordBot
         {
             Directory.CreateDirectory(Common.AudioDir);
 
-            File.WriteAllText(Common.AudioIndexFile,
-                new SerializerBuilder().EmitDefaults().Build()
-                    .Serialize(new AudioFile[]
-                    {
-                        new AudioFile()
+            Toml.WriteFile(new AudioFile[]
                         {
-                            FileName = string.Empty,
-                            Names = new string[] { string.Empty }
+                            new AudioFile()
+                            {
+                                FileName = string.Empty,
+                                Names = new string[] { string.Empty }
+                            }
                         }
-                    }));
+                , Common.AudioIndexFile);
         }
     }
 }

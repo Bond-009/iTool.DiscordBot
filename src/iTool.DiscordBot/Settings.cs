@@ -4,7 +4,7 @@ using System.Linq;
 using Discord;
 using Discord.Commands;
 using OpenWeather;
-using YamlDotNet.Serialization;
+using Nett;
 
 namespace iTool.DiscordBot
 {
@@ -28,9 +28,9 @@ namespace iTool.DiscordBot
         public bool GuildSpecificSettings { get; set; } = true;
         public Unit Units { get; set; } = Unit.Metric;
 
-        [YamlIgnore]
+        [TomlIgnore]
         public List<ulong> BlacklistedUsers { get; set; }
-        [YamlIgnore]
+        [TomlIgnore]
         public List<ulong> TrustedUsers { get; set; }
 
         public Color GetColor() => new Color((uint)Color);
@@ -44,14 +44,14 @@ namespace iTool.DiscordBot
             if (!TrustedUsers.IsNullOrEmpty())
             { File.WriteAllLines(Common.TrustedListFile, TrustedUsers.Select(x => x.ToString())); }
 
-            File.WriteAllText(Common.SettingsFile, new SerializerBuilder().EmitDefaults().Build().Serialize(this));
+            Toml.WriteFile(this, Common.SettingsFile);
         }
 
         public static Settings Load()
         {
             Directory.CreateDirectory(Common.SettingsDir);
 
-            Settings settings = File.Exists(Common.SettingsFile) ? new Deserializer().Deserialize<Settings>(File.ReadAllText(Common.SettingsFile)) : new Settings();
+            Settings settings = File.Exists(Common.SettingsFile) ? Toml.ReadFile<Settings>(Common.SettingsFile) : new Settings();
             settings.BlacklistedUsers = Utils.LoadListFromFile(Common.BlackListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
             settings.TrustedUsers = Utils.LoadListFromFile(Common.TrustedListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
             return settings;
