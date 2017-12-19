@@ -54,7 +54,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "K/D";
-                f.Value = Math.Round((double)dict["total_kills"] / dict["total_deaths"], 2).ToString();
+                f.Value = Math.Round(dict["total_kills"] / dict["total_deaths"], 2).ToString();
             })
             .AddField(f =>
             {
@@ -72,7 +72,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Playtime";
-                f.Value = (dict["total_time_played"] / 60 / 60) + " hours";
+                f.Value = Math.Round(dict["total_time_played"] / 60 / 60, 2) + " hours";
             }).Build());
         }
 
@@ -108,7 +108,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "K/D";
-                f.Value = Math.Round((double)dict["last_match_kills"] / dict["last_match_deaths"], 2).ToString();
+                f.Value = Math.Round(dict["last_match_kills"] / dict["last_match_deaths"], 2).ToString();
             })
             .AddField(f =>
             {
