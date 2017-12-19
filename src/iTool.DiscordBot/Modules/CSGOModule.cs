@@ -28,7 +28,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, uint> dict = (await _steamUserStats.GetUserStatsForGameAsync(
+            Dictionary<string, double> dict = (await _steamUserStats.GetUserStatsForGameAsync(
                                                 (await _steamUser.ResolveVanityUrlAsync(name)).Data,
                                                 730)
                                             ).Data.Stats.ToDictionary(x => x.Name, x => x.Value);
@@ -82,7 +82,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            Dictionary<string, uint> dict = (await _steamUserStats.GetUserStatsForGameAsync(
+            Dictionary<string, double> dict = (await _steamUserStats.GetUserStatsForGameAsync(
                                                 (await _steamUser.ResolveVanityUrlAsync(name)).Data,
                                                 730)
                                             ).Data.Stats.ToDictionary(x => x.Name, x => x.Value);

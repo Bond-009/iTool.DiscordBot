@@ -7,7 +7,7 @@ namespace iTool.DiscordBot
 {
     public class RequireGuildSpecificSettingsAttribute : PreconditionAttribute
     {
-        public async override Task<PreconditionResult> CheckPermissions(ICommandContext context, CommandInfo command, IServiceProvider serviceProvider)
+        public async override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider serviceProvider)
         {
             if (serviceProvider.GetService<Settings>().GuildSpecificSettings)
             {
