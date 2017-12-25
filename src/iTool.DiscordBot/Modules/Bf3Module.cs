@@ -72,7 +72,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Win / loss";
-                f.Value = $"- **W/L ratio**: {stats.OverviewStats.WLRatio}%\n" + 
+                f.Value = $"- **W/L ratio**: {stats.OverviewStats.WLRatio}\n" + 
                         $"- **Wins**: {stats.OverviewStats.Wins}\n" + 
                         $"- **Losses**: {stats.OverviewStats.Losses}";
             })
