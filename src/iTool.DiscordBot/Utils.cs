@@ -21,7 +21,7 @@ namespace iTool.DiscordBot
             if (!File.Exists(path)) return null;
 
             return File.ReadAllText(path)
-                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None)
+                    .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
                     .Distinct();
         }
