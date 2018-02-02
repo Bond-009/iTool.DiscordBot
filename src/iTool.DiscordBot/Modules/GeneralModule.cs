@@ -233,7 +233,7 @@ namespace iTool.DiscordBot.Modules
             {
                 Title = $"Info about {user}",
                 Color = _settings.GetColor(),
-                ThumbnailUrl = user.GetAvatarUrl(ImageFormat.Auto)
+                ThumbnailUrl = user.GetAvatarUrl()
             }
             .AddField(f =>
             {
