@@ -1,2 +1,2 @@
 #!/bin/sh
-dotnet restore && dotnet build iTool.DiscordBot.sln -c Release
+dotnet build iTool.DiscordBot.sln -c Release

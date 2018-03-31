@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Discord;
 
 namespace iTool.DiscordBot
 {
@@ -40,5 +41,8 @@ namespace iTool.DiscordBot
             }
             return false;
         }
+
+        public static int LogLevelFromSeverity(LogSeverity severity)
+            => (Math.Abs((int)severity - 5));
     }
 }

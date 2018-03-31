@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Discord;
 using Nett;
+using Serilog;
 
 namespace iTool.DiscordBot
 {
@@ -11,8 +11,16 @@ namespace iTool.DiscordBot
     public class AudioFileService
     {
 		private IEnumerable<AudioFile> _audioFiles;
+        private readonly ILogger _logger;
 
-        public AudioFileService()
+        public AudioFileService(ILogger logger)
+        {
+            _logger = logger;
+            loadSongs();
+        }
+    
+
+        public void loadSongs()
         {
             if (!File.Exists(Common.AudioIndexFile))
             {
@@ -21,11 +29,11 @@ namespace iTool.DiscordBot
 
             try
             {
-                _audioFiles = Toml.ReadFile<IEnumerable<AudioFile>>(Common.AudioIndexFile);
+                _audioFiles = Toml.ReadFile<List<AudioFile>>(Common.AudioIndexFile); // Temporary workaround
             }
             catch (Exception ex)
             {
-                Logger.Log(new LogMessage(LogSeverity.Error, nameof(AudioFileService), ex.Message, ex));
+                _logger.Error(ex, $"{nameof(AudioFileService)}: {ex.Message}");
             }
         }
 

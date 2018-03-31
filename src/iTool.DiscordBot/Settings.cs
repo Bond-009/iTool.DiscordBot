@@ -16,7 +16,6 @@ namespace iTool.DiscordBot
         public bool AlwaysDownloadUsers { get; set; }
         public int ConnectionTimeout { get; set; } = 30000;
         public RetryMode DefaultRetryMode { get; set; } = RetryMode.AlwaysRetry;
-        public LogSeverity LogLevel { get; set; } = LogSeverity.Info;
         public int MessageCacheSize { get; set; }
         public string Game { get; set; } = string.Empty;
         public string Prefix { get; set; } = "!";

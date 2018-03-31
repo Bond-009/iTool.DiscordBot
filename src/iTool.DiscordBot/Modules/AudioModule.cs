@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Serilog;
 
 namespace iTool.DiscordBot.Modules
 {
@@ -9,7 +10,7 @@ namespace iTool.DiscordBot.Modules
         private readonly AudioService _audioService;
         private readonly AudioFileService _fileService;
 
-        public AudioModule(AudioService audioService, AudioFileService fileService)
+        public AudioModule(AudioService audioService, AudioFileService fileService, ILogger logger)
         {
             _audioService = audioService;
             _fileService = fileService;
