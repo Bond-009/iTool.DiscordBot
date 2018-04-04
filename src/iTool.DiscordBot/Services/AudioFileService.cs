@@ -18,7 +18,6 @@ namespace iTool.DiscordBot
             _logger = logger;
             loadSongs();
         }
-    
 
         public void loadSongs()
         {
