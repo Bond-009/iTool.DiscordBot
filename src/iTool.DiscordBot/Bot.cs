@@ -94,11 +94,6 @@ namespace iTool.DiscordBot
 
             await loadModules();
 
-            if (_settings.AntiSwear)
-            {
-                new AntiSwear(_discordClient).AddHandler();
-            }
-
             await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken);
             await _discordClient.StartAsync();
 
