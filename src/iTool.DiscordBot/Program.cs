@@ -22,7 +22,10 @@ namespace iTool.DiscordBot
             Bot iToolBot = new Bot(_logger);
             if (!await iToolBot.Start())
             {
-                if (!Console.IsInputRedirected) Console.ReadKey();
+                if (!Console.IsInputRedirected)
+                {
+                    Console.ReadKey();
+                }
                 return 1;
             }
 
@@ -31,7 +34,14 @@ namespace iTool.DiscordBot
                 Task t = Task.Run(() => handleInput(), _tokenSource.Token);
             }
 
-            await Task.Delay(-1, _tokenSource.Token).ContinueWith(x => {});
+            try
+            {
+                await Task.Delay(-1, _tokenSource.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                // Don't throw on cancellation
+            }
 
             await iToolBot.Stop();
 

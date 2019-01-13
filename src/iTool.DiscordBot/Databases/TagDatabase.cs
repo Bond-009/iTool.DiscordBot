@@ -23,8 +23,8 @@ namespace iTool.DiscordBot
         public Task<Tag> GetTagAsync(ulong guildID, string name)
             => Tags.FirstOrDefaultAsync(x => x.GuildID == guildID && x.Name == name.ToLower());
 
-        public IEnumerable<Tag> GetTags(ulong guildID)
-            => Tags.Where(x => x.GuildID == guildID).AsEnumerable();
+        public IQueryable<Tag> GetTags(ulong guildID)
+            => Tags.Where(x => x.GuildID == guildID);
 
         public async Task CreateTagAsync(SocketCommandContext context, string name, string content, string attachment = null)
         {
