@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -24,9 +23,9 @@ namespace iTool.DiscordBot.Modules
         {
             WeatherData weather = await _client.GetWeatherAsync(city, countryCode);
 
-            OpenWeather.Weather baseweather = weather.Weather.FirstOrDefault();
+            OpenWeather.Weather baseweather = weather.Weather.First();
 
-            string temperatureUnit = getTemperatureUnit(_settings.Units);
+            string temperatureUnit = GetTemperatureUnit(_settings.Units);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
@@ -34,9 +33,9 @@ namespace iTool.DiscordBot.Modules
                 Color = _settings.GetColor(),
                 ThumbnailUrl = _client.GetIconURL(baseweather.Icon),
                 Footer = new EmbedFooterBuilder()
-                    {
-                        Text = "Powered by openweathermap.org",
-                    }
+                {
+                    Text = "Powered by openweathermap.org",
+                }
             }
             .AddField(f =>
             {
@@ -61,7 +60,7 @@ namespace iTool.DiscordBot.Modules
             .Build());
         }
 
-        private static string getTemperatureUnit(Unit units)
+        private static string GetTemperatureUnit(Unit units)
         {
             switch(units)
             {

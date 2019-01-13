@@ -27,7 +27,10 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the Battlefield 4 stats of the player")]
         public async Task Bf4Stats(string name = null, Platform platform = Platform.PC, string platformSpecificName = null)
         {
-            if (name == null) { name = Context.User.Username; }
+            if (name == null)
+            {
+                name = Context.User.Username;
+            }
 
             long? personaID = await _db.GetPersonaIDAsync(name);
 

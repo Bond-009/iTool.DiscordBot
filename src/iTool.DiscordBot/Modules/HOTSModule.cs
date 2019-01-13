@@ -40,9 +40,9 @@ namespace iTool.DiscordBot.Modules
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png",
                 Footer = new EmbedFooterBuilder()
-                    {
-                        Text = "Powered by hotslogs.com",
-                    }
+                {
+                    Text = "Powered by hotslogs.com",
+                }
             }
             .AddField(f =>
             {
