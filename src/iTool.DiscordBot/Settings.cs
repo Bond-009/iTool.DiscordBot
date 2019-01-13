@@ -37,10 +37,14 @@ namespace iTool.DiscordBot
         public void Save()
         {
             if (!BlacklistedUsers.IsNullOrEmpty())
-            { File.WriteAllLines(Common.BlackListFile, BlacklistedUsers.Select(x => x.ToString())); }
+            {
+                File.WriteAllLines(Common.BlackListFile, BlacklistedUsers.Select(x => x.ToString()));
+            }
 
             if (!TrustedUsers.IsNullOrEmpty())
-            { File.WriteAllLines(Common.TrustedListFile, TrustedUsers.Select(x => x.ToString())); }
+            {
+                File.WriteAllLines(Common.TrustedListFile, TrustedUsers.Select(x => x.ToString()));
+            }
 
             Toml.WriteFile(this, Common.SettingsFile);
         }

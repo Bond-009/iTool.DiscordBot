@@ -11,7 +11,7 @@ namespace iTool.DiscordBot
     public static class Program
     {
         private static readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
-        private static readonly ILogger _logger = createLogger();
+        private static readonly ILogger _logger = CreateLogger();
 
         public static async Task<int> Main(string[] args)
         {
@@ -48,7 +48,7 @@ namespace iTool.DiscordBot
             return 0;
         }
 
-        private static ILogger createLogger()
+        private static ILogger CreateLogger()
         {
             try
             {
@@ -78,10 +78,10 @@ namespace iTool.DiscordBot
                 Console.Write(ex.Message);
                 return new LoggerConfiguration()
                     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                    .WriteTo.File(
+                    .WriteTo.Async(x => x.File(
                         Path.Combine(AppContext.BaseDirectory, "logs", "log_.log"),
                         rollingInterval: RollingInterval.Day,
-                        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] {Message}{NewLine}{Exception}")
+                        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] {Message}{NewLine}{Exception}"))
                     .Enrich.FromLogContext()
                     .CreateLogger();
             }
