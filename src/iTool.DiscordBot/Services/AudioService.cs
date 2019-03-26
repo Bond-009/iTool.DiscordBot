@@ -53,10 +53,10 @@ namespace iTool.DiscordBot
             if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client))
             {
                 _logger.Information($"Starting playback of {path} in {guild.Name}");
-                using (Stream output = CreateStream(path).StandardOutput.BaseStream)
+                using (Process process = CreateStream(path))
                 using (AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music))
                 {
-                    await output.CopyToAsync(stream).ConfigureAwait(false);
+                    await process.StandardOutput.BaseStream.CopyToAsync(stream).ConfigureAwait(false);
                     await stream.FlushAsync().ConfigureAwait(false);
                 }
             }
@@ -64,12 +64,8 @@ namespace iTool.DiscordBot
 
         private Process CreateStream(string path)
         {
-            string filename;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                filename = "ffmpeg.exe";
-            }
-            else { filename = "ffmpeg"; }
+            string filename = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                                ? "ffmpeg.exe" : "ffmpeg";
             
             return Process.Start(new ProcessStartInfo()
             {
