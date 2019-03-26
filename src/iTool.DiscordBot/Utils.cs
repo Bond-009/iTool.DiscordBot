@@ -39,6 +39,7 @@ namespace iTool.DiscordBot
 
                 derivedType = derivedType.GetTypeInfo().BaseType;
             }
+
             return false;
         }
 

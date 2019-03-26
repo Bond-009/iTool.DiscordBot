@@ -16,13 +16,14 @@ using Nett;
 
 namespace iTool.DiscordBot
 {
-    public class Bot
+    public class Bot : IDisposable
     {
         private CommandService _commandService;
         private DiscordSocketClient _discordClient;
         private ILogger _logger;
-        private IServiceProvider _serviceProvider;
+        private ServiceProvider _serviceProvider;
         private Settings _settings = Settings.Load();
+        private bool _disposed = false;
 
         public Bot(ILogger logger)
         {
@@ -54,7 +55,7 @@ namespace iTool.DiscordBot
             });
 
             _discordClient.Log += LogDiscord;
-            _discordClient.Ready += discordClientReady;
+            _discordClient.Ready += OnDiscordClientReady;
 
             IServiceCollection serviceCollection = new ServiceCollection()
                 .AddSingleton(_logger)
@@ -92,7 +93,7 @@ namespace iTool.DiscordBot
 
             _discordClient.MessageReceived += handleCommand;
 
-            await loadModules();
+            await LoadModules();
 
             await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken);
             await _discordClient.StartAsync();
@@ -103,43 +104,51 @@ namespace iTool.DiscordBot
         public async Task Stop()
         {
             await _discordClient.LogoutAsync();
-            _discordClient.Dispose();
 
             _settings.Save();
         }
 
-        private async Task loadModules()
+        private async Task LoadModules()
         {
-            Dictionary<string, bool> enabledmodules = new Dictionary<string, bool>();
+            Dictionary<string, bool> enabledModules = new Dictionary<string, bool>();
 
             if (File.Exists(Common.ModuleFile))
             {
-                enabledmodules = Toml.ReadFile<Dictionary<string, bool>>(Common.ModuleFile);
+                enabledModules = Toml.ReadFile<Dictionary<string, bool>>(Common.ModuleFile);
             }
 
             foreach (Type type in Assembly.GetEntryAssembly().GetExportedTypes()
                                             .Where(x => typeof(ModuleBase).IsAssignableFrom(x)
                                                 || x.IsSubclassOfRawGeneric(typeof(ModuleBase<>))))
             {
-                if (!enabledmodules.Keys.Contains(type.Name))
+                if (!enabledModules.Keys.Contains(type.Name))
                 {
-                    enabledmodules.Add(type.Name, true);
+                    enabledModules.Add(type.Name, true);
                 }
-                if (enabledmodules[type.Name])
+
+                if (enabledModules[type.Name])
                 {
                     await _commandService.AddModuleAsync(type, _serviceProvider);
-                    _logger.Information($"Loaded {type.Name}");
+                    _logger.Information("Loaded {Module}", type.Name);
                 }
             }
-            Toml.WriteFile(enabledmodules, Common.ModuleFile);
+
+            Toml.WriteFile(enabledModules, Common.ModuleFile);
         }
 
         private async Task handleCommand(SocketMessage rawMsg)
         {
             // Ignore system messages
-            if (!(rawMsg is SocketUserMessage msg)) return;
+            if (!(rawMsg is SocketUserMessage msg))
+            {
+                return;
+            }
+
             // Ignore bot messages
-            if (msg.Author.IsBot || msg.Author.IsWebhook) return;
+            if (msg.Author.IsBot || msg.Author.IsWebhook)
+            {
+                return;
+            }
 
             // Ignore messages from blacklisted users
             if (!_settings.BlacklistedUsers.IsNullOrEmpty()
@@ -159,9 +168,6 @@ namespace iTool.DiscordBot
                 { return; }
             }
 
-            // Mark where the prefix ends and the command begins
-            int argPos = 0;
-
             string prefix = _settings.Prefix;
             if (_settings.GuildSpecificSettings
                 && guildChannel != null)
@@ -171,6 +177,10 @@ namespace iTool.DiscordBot
                     prefix = (await db.GetSettingsAsync(guildChannel.Guild.Id))?.Prefix ?? _settings.Prefix;
                 }
             }
+
+            
+            // Mark where the prefix ends and the command begins
+            int argPos = 0;
 
             // Determine if the message has a valid prefix, adjust argPos
             if (!(msg.HasMentionPrefix(_discordClient.CurrentUser, ref argPos)
@@ -194,7 +204,7 @@ namespace iTool.DiscordBot
             }
         }
 
-        private async Task discordClientReady()
+        private async Task OnDiscordClientReady()
         {
             Console.Title = _discordClient.CurrentUser.ToString();
 
@@ -209,17 +219,49 @@ namespace iTool.DiscordBot
             if (msg.Exception == null)
             {
                 _logger.Write((LogEventLevel)Utils.LogLevelFromSeverity(msg.Severity),
-                    $"{msg.Source}: {msg.Message}"
-                );
+                "{Source}: {Message}", msg.Source, msg.Message);
             }
             else
             {
                 _logger.Write((LogEventLevel)Utils.LogLevelFromSeverity(msg.Severity),
                     msg.Exception,
-                    $"{msg.Source}: {msg.Message}"
-                );
+                    "{Source}: {Message}", msg.Source, msg.Message);
             }
+
             return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _discordClient.Dispose();
+                _serviceProvider.Dispose();
+            }
+
+            _commandService = null;
+            _discordClient = null;
+            _serviceProvider = null;
+            _settings = null;
+
+            _discordClient.Log -= LogDiscord;
+            _discordClient.Ready -= OnDiscordClientReady;
+
+            _commandService.Log -= LogDiscord;
+            _discordClient.MessageReceived -= handleCommand;
+
+            _disposed = true;
         }
     }
 }

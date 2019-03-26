@@ -13,37 +13,39 @@ namespace iTool.DiscordBot
         private static readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private static readonly ILogger _logger = CreateLogger();
 
-        public static async Task<int> Main(string[] args)
+        public static async Task<int> Main()
         {
             _logger.Information("--- Started Log ---");
 
-            Console.CancelKeyPress += cancelKeyPress;
+            Console.CancelKeyPress += OnCancelKeyPress;
 
-            Bot iToolBot = new Bot(_logger);
-            if (!await iToolBot.Start())
+            using (Bot iToolBot = new Bot(_logger))
             {
+                if (!await iToolBot.Start().ConfigureAwait(false))
+                {
+                    if (!Console.IsInputRedirected)
+                    {
+                        Console.ReadKey();
+                    }
+                    return 1;
+                }
+
                 if (!Console.IsInputRedirected)
                 {
-                    Console.ReadKey();
+                    _ = Task.Run(HandleInput, _tokenSource.Token);
                 }
-                return 1;
-            }
 
-            if (!Console.IsInputRedirected)
-            {
-                Task t = Task.Run(() => handleInput(), _tokenSource.Token);
-            }
+                try
+                {
+                    await Task.Delay(-1, _tokenSource.Token);
+                }
+                catch (TaskCanceledException)
+                {
+                    // Don't throw on cancellation
+                }
 
-            try
-            {
-                await Task.Delay(-1, _tokenSource.Token);
+                await iToolBot.Stop().ConfigureAwait(false);
             }
-            catch (TaskCanceledException)
-            {
-                // Don't throw on cancellation
-            }
-
-            await iToolBot.Stop();
 
             return 0;
         }
@@ -87,11 +89,11 @@ namespace iTool.DiscordBot
             }
         }
 
-        private static void handleInput()
+        private static void HandleInput()
         {
             while (!_tokenSource.IsCancellationRequested)
             {
-                string input = Console.ReadLine().ToLower();
+                string input = Console.ReadLine().ToLowerInvariant();
                 switch (input)
                 {
                     case "quit":
@@ -112,7 +114,7 @@ namespace iTool.DiscordBot
             }
         }
 
-        private static void cancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        private static void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
             e.Cancel = true;
             _tokenSource.Cancel();
