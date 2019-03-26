@@ -95,8 +95,8 @@ namespace iTool.DiscordBot
 
             await LoadModules();
 
-            await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken);
-            await _discordClient.StartAsync();
+            await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken).ConfigureAwait(false);
+            await _discordClient.StartAsync().ConfigureAwait(false);
 
             return true;
         }

@@ -53,10 +53,12 @@ namespace iTool.DiscordBot
             if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client))
             {
                 _logger.Information($"Starting playback of {path} in {guild.Name}");
-                Stream output = CreateStream(path).StandardOutput.BaseStream;
-                AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music);
-                await output.CopyToAsync(stream);
-                await stream.FlushAsync().ConfigureAwait(false);
+                using (Stream output = CreateStream(path).StandardOutput.BaseStream)
+                using (AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music))
+                {
+                    await output.CopyToAsync(stream).ConfigureAwait(false);
+                    await stream.FlushAsync().ConfigureAwait(false);
+                }
             }
         }
 

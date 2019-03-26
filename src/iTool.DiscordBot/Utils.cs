@@ -13,7 +13,13 @@ namespace iTool.DiscordBot
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
             => enumerable == null || !enumerable.Any();
 
-        public static TimeSpan GetUptime() => DateTime.Now - Process.GetCurrentProcess().StartTime;
+        public static TimeSpan GetUptime()
+        {
+            using (var pro = Process.GetCurrentProcess())
+            {
+                return DateTime.Now - pro.StartTime;
+            }
+        }
 
         public static double GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2);
 
