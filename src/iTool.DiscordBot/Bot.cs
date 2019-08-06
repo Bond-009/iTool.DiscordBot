@@ -262,16 +262,16 @@ namespace iTool.DiscordBot
                 _serviceProvider.Dispose();
             }
 
-            _commandService = null;
-            _discordClient = null;
-            _serviceProvider = null;
-            _settings = null;
-
             _discordClient.Log -= LogDiscord;
             _discordClient.Ready -= OnDiscordClientReady;
 
             _commandService.Log -= LogDiscord;
             _discordClient.MessageReceived -= HandleCommandAsync;
+
+            _commandService = null;
+            _discordClient = null;
+            _serviceProvider = null;
+            _settings = null;
 
             _disposed = true;
         }

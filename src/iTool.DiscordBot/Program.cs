@@ -24,7 +24,14 @@ namespace iTool.DiscordBot
             _logger = _loggerFactory.CreateLogger("Main");
             _logger.LogInformation("Starting iTool.DiscordBot");
 
+            // Log uncaught exceptions
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
+            // Intercept Ctrl+C and Ctrl+Break
             Console.CancelKeyPress += OnCancelKeyPress;
+
+            // Register a SIGTERM handler
+            AppDomain.CurrentDomain.ProcessExit += OnProccessExit;
 
             using (Bot iToolBot = new Bot(_loggerFactory))
             {
@@ -38,18 +45,20 @@ namespace iTool.DiscordBot
                     return 1;
                 }
 
-                if (!Console.IsInputRedirected)
+                if (Console.IsInputRedirected)
                 {
-                    _ = Task.Run(HandleInput, _tokenSource.Token);
+                    try
+                    {
+                        await Task.Delay(-1, _tokenSource.Token).ConfigureAwait(false);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Don't throw on cancellation
+                    }
                 }
-
-                try
+                else
                 {
-                    await Task.Delay(-1, _tokenSource.Token);
-                }
-                catch (TaskCanceledException)
-                {
-                    // Don't throw on cancellation
+                    await Task.Run(HandleInput, _tokenSource.Token).ConfigureAwait(false);
                 }
 
                 await iToolBot.StopAsync().ConfigureAwait(false);
@@ -123,9 +132,31 @@ namespace iTool.DiscordBot
             }
         }
 
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+            => _logger.LogCritical((Exception)e.ExceptionObject, "Unhandled Exception");
+
         private static void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
+            if (_tokenSource.IsCancellationRequested)
+            {
+                return; // Already shutting down
+            }
+
             e.Cancel = true;
+            _logger.LogInformation("Ctrl+C, shutting down");
+            Environment.ExitCode = 128 + 2;
+            _tokenSource.Cancel();
+        }
+
+        private static void OnProccessExit(object sender, EventArgs e)
+        {
+            if (_tokenSource.IsCancellationRequested)
+            {
+                return; // Already shutting down
+            }
+
+            _logger.LogInformation("Received a SIGTERM signal, shutting down");
+            Environment.ExitCode = 128 + 15;
             _tokenSource.Cancel();
         }
     }
