@@ -41,7 +41,7 @@ namespace iTool.DiscordBot.Modules
             IReadOnlyList<CommandInfo> cmds = _cmdService.Modules
                                                 .FirstOrDefault(x => x.Name.ToLower() == moduleName.ToLower())
                                                 ?.Commands;
-            if (cmds.IsNullOrEmpty())
+            if (!cmds.Any())
             { 
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
@@ -100,7 +100,7 @@ namespace iTool.DiscordBot.Modules
                 f.Value = cmd.Name;
             });
 
-            if (!cmd.Summary.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(cmd.Summary))
             {
                 b.AddField(f =>
                 {
@@ -111,7 +111,7 @@ namespace iTool.DiscordBot.Modules
 
             IEnumerable<string> aliases = cmd.Aliases.Where(x => x != cmd.Name);
 
-            if (!aliases.IsNullOrEmpty())
+            if (aliases.Any())
             {
                 b.AddField(f =>
                 {
@@ -120,7 +120,7 @@ namespace iTool.DiscordBot.Modules
                 });
             }
 
-            if (!cmd.Parameters.IsNullOrEmpty())
+            if (cmd.Parameters.Any())
             {
                 b.AddField(f =>
                 {

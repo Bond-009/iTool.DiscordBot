@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -21,30 +22,31 @@ namespace iTool.DiscordBot.Modules
             foreach (IUser user in users)
             {
                 if (!_settings.TrustedUsers.Contains(user.Id)
-                    && !_settings.BlacklistedUsers.Contains(user.Id) 
-                    && user.Id != (await Context.Client.GetApplicationInfoAsync()).Owner.Id)
+                    && !_settings.BlacklistedUsers.Contains(user.Id)
+                    && user.Id != (await Context.Client.GetApplicationInfoAsync().ConfigureAwait(false)).Owner.Id)
                 {
                     _settings.BlacklistedUsers.Add(user.Id);
                     blacklistedUsers.Add(user);
                 }
             }
-            if (blacklistedUsers.IsNullOrEmpty())
-            {
-                await ReplyAsync("", embed: new EmbedBuilder()
-                {
-                    Title = "Blacklist",
-                    Color = _settings.GetErrorColor(),
-                    Description = $"Failed to blacklist {string.Join(", ", (object[])users)}."
-                }.Build());
-            }
-            else
+
+            if (blacklistedUsers.Any())
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Blacklist",
                     Color = _settings.GetColor(),
                     Description = $"Successfully blacklisted {string.Join(", ", blacklistedUsers)}."
-                }.Build());
+                }.Build()).ConfigureAwait(false);
+            }
+            else
+            {
+                await ReplyAsync("", embed: new EmbedBuilder()
+                {
+                    Title = "Blacklist",
+                    Color = _settings.GetErrorColor(),
+                    Description = $"Failed to blacklist {string.Join(", ", (object[])users)}."
+                }.Build()).ConfigureAwait(false);
             }
         }
 
@@ -63,23 +65,27 @@ namespace iTool.DiscordBot.Modules
                     rmBlacklistedUsers.Add(user);
                 }
             }
-            if (rmBlacklistedUsers.IsNullOrEmpty())
+            if (rmBlacklistedUsers.Any())
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
-                {
-                    Title = "Remove blacklist",
-                    Color = _settings.GetErrorColor(),
-                    Description = $"Failed to remove blacklist for {string.Join(", ", (object[])users)}."
-                }.Build());
+                await ReplyAsync(
+                    "",
+                    embed: new EmbedBuilder()
+                    {
+                        Title = "Remove blacklist",
+                        Color = _settings.GetColor(),
+                        Description = $"Successfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
+                    }.Build()).ConfigureAwait(false);
             }
             else
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
-                {
-                    Title = "Remove blacklist",
-                    Color = _settings.GetColor(),
-                    Description = $"Successfully removed blacklist for {string.Join(", ", rmBlacklistedUsers)}."
-                }.Build());
+                await ReplyAsync(
+                    "",
+                    embed: new EmbedBuilder()
+                    {
+                        Title = "Remove blacklist",
+                        Color = _settings.GetErrorColor(),
+                        Description = $"Failed to remove blacklist for {string.Join(", ", (object[])users)}."
+                    }.Build()).ConfigureAwait(false);
             }
         }
 
@@ -96,12 +102,13 @@ namespace iTool.DiscordBot.Modules
                     _settings.TrustedUsers.Add(user.Id);
                 }
             }
+
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "Trust",
                 Color = _settings.GetColor(),
                 Description = $"Successfully added {string.Join(", ", (object[])users)} to the list of trusted users."
-            }.Build());
+            }.Build()).ConfigureAwait(false);
         }
 
         [Command("untrust", RunMode = RunMode.Sync)]
@@ -116,12 +123,13 @@ namespace iTool.DiscordBot.Modules
                     _settings.TrustedUsers.Remove(user.Id);
                 }
             }
+
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = "UnTrust",
                 Color = _settings.GetColor(),
                 Description = $"Successfully removed {string.Join(", ", (object[])users)} from the list of trusted users."
-            }.Build());
+            }.Build()).ConfigureAwait(false);
         }
     }
 }

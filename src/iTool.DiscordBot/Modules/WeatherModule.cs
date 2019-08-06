@@ -21,48 +21,49 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns info about the weather")]
         public async Task GetWeather(string city, string countryCode = null)
         {
-            WeatherData weather = await _client.GetWeatherAsync(city, countryCode);
+            WeatherData weather = await _client.GetWeatherAsync(city, countryCode).ConfigureAwait(false);
 
-            OpenWeather.Weather baseweather = weather.Weather.First();
+            OpenWeather.Weather baseweather = weather.Weather[0];
 
             string temperatureUnit = GetTemperatureUnit(_settings.Units);
 
-            await ReplyAsync("", embed: new EmbedBuilder()
-            {
-                Title = weather.Name + " " + weather.Sys.Country,
-                Color = _settings.GetColor(),
-                ThumbnailUrl = _client.GetIconURL(baseweather.Icon),
-                Footer = new EmbedFooterBuilder()
+            await ReplyAsync(
+                "",
+                embed: new EmbedBuilder()
                 {
-                    Text = "Powered by openweathermap.org",
+                    Title = weather.Name + " " + weather.Sys.Country,
+                    Color = _settings.GetColor(),
+                    ThumbnailUrl = _client.GetIconURL(baseweather.Icon),
+                    Footer = new EmbedFooterBuilder()
+                    {
+                        Text = "Powered by openweathermap.org",
+                    }
                 }
-            }
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Temperature";
-                f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {temperatureUnit}\n" +
-                            $"- **Gem**: {weather.Main.Temperature} {temperatureUnit}\n" +
-                            $"- **Min**: {weather.Main.MinimumTemperature} {temperatureUnit}";
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Humidity";
-                f.Value = weather.Main.Humidity + "%";
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Wind";
-                f.Value = weather.Wind.Speed + " " + getSpeedUnit(_settings.Units);
-            })
-            .Build());
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Temperature";
+                    f.Value = $"- **Max**: {weather.Main.MaximumTemperature} {temperatureUnit}\n" +
+                                $"- **Gem**: {weather.Main.Temperature} {temperatureUnit}\n" +
+                                $"- **Min**: {weather.Main.MinimumTemperature} {temperatureUnit}";
+                })
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Humidity";
+                    f.Value = weather.Main.Humidity + "%";
+                })
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Wind";
+                    f.Value = weather.Wind.Speed + " " + GetSpeedUnit(_settings.Units);
+                }).Build()).ConfigureAwait(false);
         }
 
         private static string GetTemperatureUnit(Unit units)
         {
-            switch(units)
+            switch (units)
             {
                 case Unit.Imperial:
                     return "°F";
@@ -74,9 +75,9 @@ namespace iTool.DiscordBot.Modules
             }
         }
 
-        private static string getSpeedUnit(Unit units)
+        private static string GetSpeedUnit(Unit units)
         {
-            switch(units)
+            switch (units)
             {
                 case Unit.Imperial:
                     return "mi/h";

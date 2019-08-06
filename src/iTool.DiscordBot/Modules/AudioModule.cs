@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Serilog;
 
 namespace iTool.DiscordBot.Modules
 {
@@ -10,7 +9,7 @@ namespace iTool.DiscordBot.Modules
         private readonly AudioService _audioService;
         private readonly AudioFileService _fileService;
 
-        public AudioModule(AudioService audioService, AudioFileService fileService, ILogger logger)
+        public AudioModule(AudioService audioService, AudioFileService fileService)
         {
             _audioService = audioService;
             _fileService = fileService;
@@ -19,14 +18,14 @@ namespace iTool.DiscordBot.Modules
         [Command("join", RunMode = RunMode.Async)]
         [Summary("Joins the voice channel")]
         [RequireContext(ContextType.Guild)]
-        public async Task Join()
-            => await _audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
+        public Task Join()
+            => _audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
 
         [Command("stop", RunMode = RunMode.Async)]
         [Summary("Stops the audio playback and leaves the voice channel")]
         [RequireContext(ContextType.Guild)]
-        public async Task Stop()
-            => await _audioService.LeaveAudio(Context.Guild);
+        public Task Stop()
+            => _audioService.LeaveAudio(Context.Guild);
 
         [Command("play", RunMode = RunMode.Async)]
         [Summary("Plays an audio file")]
@@ -34,10 +33,14 @@ namespace iTool.DiscordBot.Modules
         public async Task Play([Remainder] string song)
         {
             string path = _fileService.GetSong(song);
-            if (path == null) { return; }
-            await _audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel);
-            await _audioService.SendAudioAsync(Context.Guild, path);
-            await _audioService.LeaveAudio(Context.Guild);
+            if (path == null)
+            {
+                return;
+            }
+
+            await _audioService.JoinAudio(Context.Guild, (Context.User as IGuildUser).VoiceChannel).ConfigureAwait(false);
+            await _audioService.SendAudioAsync(Context.Guild, path).ConfigureAwait(false);
+            await _audioService.LeaveAudio(Context.Guild).ConfigureAwait(false);
         }
     }
 }

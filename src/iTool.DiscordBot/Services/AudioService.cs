@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Audio;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace iTool.DiscordBot
 {
@@ -14,14 +14,14 @@ namespace iTool.DiscordBot
         private readonly ConcurrentDictionary<ulong, IAudioClient> _connectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
         private readonly ILogger _logger;
 
-        public AudioService(ILogger logger)
+        public AudioService(ILogger<AudioService> logger)
         {
             _logger = logger;
         }
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
         {
-            if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client)
+            if (_connectedChannels.ContainsKey(guild.Id)
                 || target.Guild.Id != guild.Id)
             {
                 return;
@@ -29,7 +29,7 @@ namespace iTool.DiscordBot
 
             if (_connectedChannels.TryAdd(guild.Id, await target.ConnectAsync()))
             {
-                _logger.Information($"Connected to voice on {guild.Name}.");
+                _logger.LogInformation("Connected to voice on {Guild}.", guild.Name);
             }
         }
 
@@ -38,7 +38,7 @@ namespace iTool.DiscordBot
             if (_connectedChannels.TryRemove(guild.Id, out IAudioClient client))
             {
                 await client.StopAsync();
-                _logger.Information($"Disconnected from voice on {guild.Name}.");
+                _logger.LogInformation("Disconnected from voice on {Guild}.", guild.Name);
             }
         }
 
@@ -46,13 +46,13 @@ namespace iTool.DiscordBot
         {
             if (!File.Exists(path))
             {
-                _logger.Error($"{nameof(AudioService)}: File not found {path}");
+                _logger.LogInformation("File not found {Path}", path);
                 return;
             }
 
             if (_connectedChannels.TryGetValue(guild.Id, out IAudioClient client))
             {
-                _logger.Information($"Starting playback of {path} in {guild.Name}");
+                _logger.LogInformation($"Starting playback of {path} in {guild.Name}");
                 using (Process process = CreateStream(path))
                 using (AudioOutStream stream = client.CreatePCMStream(AudioApplication.Music))
                 {

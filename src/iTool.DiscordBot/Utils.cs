@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using Discord;
 
@@ -10,9 +7,6 @@ namespace iTool.DiscordBot
 {
     public static class Utils
     {
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
-            => enumerable == null || !enumerable.Any();
-
         public static TimeSpan GetUptime()
         {
             using (var pro = Process.GetCurrentProcess())
@@ -21,17 +15,8 @@ namespace iTool.DiscordBot
             }
         }
 
-        public static double GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2);
-
-        public static IEnumerable<string> LoadListFromFile(string path)
-        {
-            if (!File.Exists(path)) return null;
-
-            return File.ReadAllText(path)
-                    .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)
-                    .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .Distinct();
-        }
+        public static double GetHeapSize()
+            => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2);
 
         public static bool IsSubclassOfRawGeneric(this Type derivedType, Type baseType)
         {
@@ -50,6 +35,6 @@ namespace iTool.DiscordBot
         }
 
         public static int LogLevelFromSeverity(LogSeverity severity)
-            => (Math.Abs((int)severity - 5));
+            => Math.Abs((int)severity - 5);
     }
 }

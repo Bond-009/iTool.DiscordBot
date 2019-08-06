@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using OpenWeather;
@@ -34,29 +35,61 @@ namespace iTool.DiscordBot
         public Color GetColor() => new Color((uint)Color);
         public Color GetErrorColor() => new Color((uint)ErrorColor);
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            if (!BlacklistedUsers.IsNullOrEmpty())
+            if (BlacklistedUsers != null && BlacklistedUsers.Any())
             {
-                File.WriteAllLines(Common.BlackListFile, BlacklistedUsers.Select(x => x.ToString()));
+                await SaveListToFile(Common.BlackListFile, BlacklistedUsers).ConfigureAwait(false);
             }
 
-            if (!TrustedUsers.IsNullOrEmpty())
+            if (TrustedUsers != null && TrustedUsers.Any())
             {
-                File.WriteAllLines(Common.TrustedListFile, TrustedUsers.Select(x => x.ToString()));
+                await SaveListToFile(Common.TrustedListFile, TrustedUsers).ConfigureAwait(false);
             }
 
             Toml.WriteFile(this, Common.SettingsFile);
         }
 
-        public static Settings Load()
+        private async Task SaveListToFile(string path, IEnumerable<ulong> values)
+        {
+            using (StreamWriter t = new StreamWriter(path, false))
+            {
+                foreach (var value in path)
+                {
+                    t.Write(value);
+                    await t.WriteAsync('\n').ConfigureAwait(false);
+                }
+            }
+        }
+
+        public static async Task<Settings> LoadAsync()
         {
             Directory.CreateDirectory(Common.SettingsDir);
 
             Settings settings = File.Exists(Common.SettingsFile) ? Toml.ReadFile<Settings>(Common.SettingsFile) : new Settings();
-            settings.BlacklistedUsers = Utils.LoadListFromFile(Common.BlackListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
-            settings.TrustedUsers = Utils.LoadListFromFile(Common.TrustedListFile)?.Select(ulong.Parse).ToList() ?? new List<ulong>();
+            settings.BlacklistedUsers = await LoadListFromFile(Common.BlackListFile).ConfigureAwait(false);
+            settings.TrustedUsers = await LoadListFromFile(Common.TrustedListFile).ConfigureAwait(false);
             return settings;
+        }
+
+        public static async Task<List<ulong>> LoadListFromFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return new List<ulong>();
+            }
+
+            var lines = await File.ReadAllLinesAsync(path).ConfigureAwait(false);
+            var values = new List<ulong>(lines.Length);
+            foreach (var line in lines)
+            {
+                if (ulong.TryParse(line, out var value))
+                {
+                    values.Add(value);
+                }
+            }
+
+            return values;
         }
     }
 }

@@ -9,8 +9,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using OpenWeather;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using Serilog.Events;
+using Microsoft.Extensions.Logging;
 using SteamWebAPI2.Interfaces;
 using Nett;
 
@@ -21,20 +20,23 @@ namespace iTool.DiscordBot
         private CommandService _commandService;
         private DiscordSocketClient _discordClient;
         private ILogger _logger;
+        private ILoggerFactory _loggerFactory;
         private ServiceProvider _serviceProvider;
-        private Settings _settings = Settings.Load();
+        private Settings _settings;
         private bool _disposed = false;
 
-        public Bot(ILogger logger)
+        public Bot(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<Bot>();
         }
 
-        public async Task<bool> Start()
+        public async Task<bool> StartAsync()
         {
-            if (_settings.DiscordToken.IsNullOrEmpty())
+            _settings = await Settings.LoadAsync().ConfigureAwait(false);
+            if (string.IsNullOrEmpty(_settings.DiscordToken))
             {
-                _logger.Warning("No token");
+                _logger.LogError("No token");
                 return false;
             }
 
@@ -58,24 +60,25 @@ namespace iTool.DiscordBot
             _discordClient.Ready += OnDiscordClientReady;
 
             IServiceCollection serviceCollection = new ServiceCollection()
-                .AddSingleton(_logger)
+                .AddSingleton(_loggerFactory)
+                .AddLogging()
                 .AddSingleton(_settings)
-                .AddSingleton(new AudioService(_logger))
-                .AddSingleton(new AudioFileService(_logger));
+                .AddSingleton(typeof(AudioService))
+                .AddSingleton(typeof(AudioFileService));
             
-            if (_settings.SteamKey.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(_settings.SteamKey))
             {
-                _logger.Warning("No steamkey");
+                _logger.LogWarning("No steam api key found");
             }
             else
             {
-                serviceCollection.AddSingleton<ISteamUser>(new SteamUser(_settings.SteamKey));
-                serviceCollection.AddSingleton<ISteamUserStats>(new SteamUserStats(_settings.SteamKey));
+                serviceCollection.AddSingleton<ISteamUser>(new SteamUser(_settings.SteamKey))
+                    .AddSingleton<ISteamUserStats>(new SteamUserStats(_settings.SteamKey));
             }
 
-            if (_settings.OpenWeatherMapKey.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(_settings.OpenWeatherMapKey))
             {
-                _logger.Warning("No openweathermap key");
+                _logger.LogWarning("No OpenWeatherMap api key found");
             }
             else
             {
@@ -89,11 +92,12 @@ namespace iTool.DiscordBot
                 CaseSensitiveCommands = _settings.CaseSensitiveCommands,
                 DefaultRunMode = _settings.DefaultRunMode
             });
+
             _commandService.Log += LogDiscord;
 
-            _discordClient.MessageReceived += handleCommand;
+            _discordClient.MessageReceived += HandleCommandAsync;
 
-            await LoadModules();
+            await LoadModulesAsync();
 
             await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken).ConfigureAwait(false);
             await _discordClient.StartAsync().ConfigureAwait(false);
@@ -101,14 +105,14 @@ namespace iTool.DiscordBot
             return true;
         }
 
-        public async Task Stop()
+        public async Task StopAsync()
         {
-            await _discordClient.LogoutAsync();
+            await _discordClient.LogoutAsync().ConfigureAwait(false);
 
-            _settings.Save();
+            await _settings.SaveAsync().ConfigureAwait(false);
         }
 
-        private async Task LoadModules()
+        private async Task LoadModulesAsync()
         {
             Dictionary<string, bool> enabledModules = new Dictionary<string, bool>();
 
@@ -121,22 +125,19 @@ namespace iTool.DiscordBot
                                             .Where(x => typeof(ModuleBase).IsAssignableFrom(x)
                                                 || x.IsSubclassOfRawGeneric(typeof(ModuleBase<>))))
             {
-                if (!enabledModules.Keys.Contains(type.Name))
-                {
-                    enabledModules.Add(type.Name, true);
-                }
+                enabledModules.TryAdd(type.Name, true);
 
                 if (enabledModules[type.Name])
                 {
-                    await _commandService.AddModuleAsync(type, _serviceProvider);
-                    _logger.Information("Loaded {Module}", type.Name);
+                    await _commandService.AddModuleAsync(type, _serviceProvider).ConfigureAwait(false);
+                    _logger.LogInformation("Loaded {Module}", type.Name);
                 }
             }
 
             Toml.WriteFile(enabledModules, Common.ModuleFile);
         }
 
-        private async Task handleCommand(SocketMessage rawMsg)
+        private async Task HandleCommandAsync(SocketMessage rawMsg)
         {
             // Ignore system messages
             if (!(rawMsg is SocketUserMessage msg))
@@ -151,7 +152,7 @@ namespace iTool.DiscordBot
             }
 
             // Ignore messages from blacklisted users
-            if (!_settings.BlacklistedUsers.IsNullOrEmpty()
+            if (_settings.BlacklistedUsers != null
                 && _settings.BlacklistedUsers.Contains(msg.Author.Id))
             {
                 return;
@@ -165,7 +166,9 @@ namespace iTool.DiscordBot
                 IGuildUser guildUser = await guildChannel.Guild.GetCurrentUserAsync();
                 ChannelPermissions channelPermissions = guildUser.GetPermissions(guildChannel);
                 if (!channelPermissions.Has(ChannelPermission.SendMessages))
-                { return; }
+                {
+                    return;
+                }
             }
 
             string prefix = _settings.Prefix;
@@ -185,7 +188,9 @@ namespace iTool.DiscordBot
             // Determine if the message has a valid prefix, adjust argPos
             if (!(msg.HasMentionPrefix(_discordClient.CurrentUser, ref argPos)
                 || msg.HasStringPrefix(prefix, ref argPos)))
-            { return; }
+            {
+                return;
+            }
 
             // Execute the Command, store the result
             IResult result = await _commandService.ExecuteAsync(new SocketCommandContext(_discordClient, msg), argPos, _serviceProvider);
@@ -193,14 +198,15 @@ namespace iTool.DiscordBot
             // If the command failed, notify the user
             if (result.Error.HasValue && result.Error != CommandError.UnknownCommand)
             {
-                _logger.Error(result.ErrorReason);
+                _logger.LogError(result.ErrorReason);
 
-                await msg.Channel.SendMessageAsync("", embed: new EmbedBuilder()
-                {
-                    Title = "Error",
-                    Color = _settings.GetErrorColor(),
-                    Description = result.ErrorReason
-                }.Build());
+                await msg.Channel.SendMessageAsync(string.Empty,
+                    embed: new EmbedBuilder()
+                    {
+                        Title = "Error",
+                        Color = _settings.GetErrorColor(),
+                        Description = result.ErrorReason
+                    }.Build()).ConfigureAwait(false);
             }
         }
 
@@ -208,7 +214,7 @@ namespace iTool.DiscordBot
         {
             Console.Title = _discordClient.CurrentUser.ToString();
 
-            if (!_settings.Game.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(_settings.Game))
             {
                 await _discordClient.SetGameAsync(_settings.Game);
             }
@@ -218,14 +224,20 @@ namespace iTool.DiscordBot
         {
             if (msg.Exception == null)
             {
-                _logger.Write((LogEventLevel)Utils.LogLevelFromSeverity(msg.Severity),
-                "{Source}: {Message}", msg.Source, msg.Message);
+                _logger.Log(
+                    (LogLevel)Utils.LogLevelFromSeverity(msg.Severity),
+                    "{Source}: {Message}",
+                    msg.Source,
+                    msg.Message);
             }
             else
             {
-                _logger.Write((LogEventLevel)Utils.LogLevelFromSeverity(msg.Severity),
+                _logger.Log(
+                    (LogLevel)Utils.LogLevelFromSeverity(msg.Severity),
                     msg.Exception,
-                    "{Source}: {Message}", msg.Source, msg.Message);
+                    "{Source}: {Message}",
+                    msg.Source,
+                    msg.Message);
             }
 
             return Task.CompletedTask;
@@ -259,7 +271,7 @@ namespace iTool.DiscordBot
             _discordClient.Ready -= OnDiscordClientReady;
 
             _commandService.Log -= LogDiscord;
-            _discordClient.MessageReceived -= handleCommand;
+            _discordClient.MessageReceived -= HandleCommandAsync;
 
             _disposed = true;
         }

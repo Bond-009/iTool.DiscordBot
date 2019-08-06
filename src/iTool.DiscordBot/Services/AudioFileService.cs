@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Nett;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace iTool.DiscordBot
 {
@@ -13,13 +13,13 @@ namespace iTool.DiscordBot
 		private IEnumerable<AudioFile> _audioFiles;
         private readonly ILogger _logger;
 
-        public AudioFileService(ILogger logger)
+        public AudioFileService(ILogger<AudioFileService> logger)
         {
             _logger = logger;
-            loadSongs();
+            LoadSongs();
         }
 
-        public void loadSongs()
+        public void LoadSongs()
         {
             if (!File.Exists(Common.AudioIndexFile))
             {
@@ -32,16 +32,24 @@ namespace iTool.DiscordBot
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"{nameof(AudioFileService)}: {ex.Message}");
+                _logger.LogError(ex, "Error reading audio index file");
             }
         }
 
         public string GetSong(string name)
         {
             string filename = _audioFiles.FirstOrDefault(x => x.Names.Contains(name))?.FileName;
-            if (filename.IsNullOrEmpty()) return null;
+            if (string.IsNullOrEmpty(filename))
+            {
+                return null;
+            }
+
             string path = Path.Combine(Common.AudioDir, filename);
-            if (!File.Exists(path)) return null;
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
             return path;
         }
 
