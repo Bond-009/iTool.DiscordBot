@@ -45,20 +45,13 @@ namespace iTool.DiscordBot
                     return 1;
                 }
 
-                if (Console.IsInputRedirected)
+                try
                 {
-                    try
-                    {
-                        await Task.Delay(-1, _tokenSource.Token).ConfigureAwait(false);
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        // Don't throw on cancellation
-                    }
+                    await Task.Delay(-1, _tokenSource.Token).ConfigureAwait(false);
                 }
-                else
+                catch (TaskCanceledException)
                 {
-                    await Task.Run(HandleInput, _tokenSource.Token).ConfigureAwait(false);
+                    // Don't throw on cancellation
                 }
 
                 await iToolBot.StopAsync().ConfigureAwait(false);
@@ -104,31 +97,6 @@ namespace iTool.DiscordBot
                     .CreateLogger();
 
                 Log.Logger.Fatal(ex, "Failed to read logger configuration");
-            }
-        }
-
-        private static void HandleInput()
-        {
-            while (!_tokenSource.IsCancellationRequested)
-            {
-                string input = Console.ReadLine().ToLowerInvariant();
-                switch (input)
-                {
-                    case "quit":
-                    case "exit":
-                    case "stop":
-                        _tokenSource.Cancel();
-                        break;
-                    case "clear":
-                    case "cls":
-                        Console.Clear();
-                        break;
-                    case "":
-                        break;
-                    default:
-                        Console.WriteLine(input + ": command not found");
-                        break;
-                }
             }
         }
 
