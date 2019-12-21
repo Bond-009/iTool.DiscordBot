@@ -19,7 +19,7 @@ namespace iTool.DiscordBot
 
             optionsBuilder.UseSqlite($"Filename={Path.Combine(Common.DataDir, "tags.sqlite.db")}");
         }
-        
+
         public Task<Tag> GetTagAsync(ulong guildID, string name)
             => Tags.FirstOrDefaultAsync(x => x.GuildID == guildID && x.Name == name.ToLower());
 
