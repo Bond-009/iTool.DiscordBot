@@ -66,7 +66,7 @@ namespace iTool.DiscordBot
         {
             string filename = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                                 ? "ffmpeg.exe" : "ffmpeg";
-            
+
             return Process.Start(new ProcessStartInfo()
             {
                 FileName = filename,

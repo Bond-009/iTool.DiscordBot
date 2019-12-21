@@ -42,7 +42,7 @@ namespace iTool.DiscordBot.Modules
                                                 .FirstOrDefault(x => x.Name.ToLower() == moduleName.ToLower())
                                                 ?.Commands;
             if (!cmds.Any())
-            { 
+            {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Help",
@@ -178,12 +178,12 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the OAuth2 Invite URL of the bot")]
         public async Task Invite()
             => await ReplyAsync("", embed: new EmbedBuilder()
-                {
-                    Title = "Invite",
-                    Color = _settings.GetColor(),
-                    Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
-                                $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
-                }.Build());
+            {
+                Title = "Invite",
+                Color = _settings.GetColor(),
+                Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
+                            $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
+            }.Build());
 
         // TODO: Improve embed
         [Command("leave")]

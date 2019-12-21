@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using OpenWeather;
@@ -23,7 +22,7 @@ namespace iTool.DiscordBot.Modules
         {
             WeatherData weather = await _client.GetWeatherAsync(city, countryCode).ConfigureAwait(false);
 
-            OpenWeather.Weather baseweather = weather.Weather[0];
+            Weather baseweather = weather.Weather[0];
 
             string temperatureUnit = GetTemperatureUnit(_settings.Units);
 
@@ -63,29 +62,21 @@ namespace iTool.DiscordBot.Modules
 
         private static string GetTemperatureUnit(Unit units)
         {
-            switch (units)
+            return units switch
             {
-                case Unit.Imperial:
-                    return "°F";
-                case Unit.Metric:
-                    return "°C";
-                case Unit.Standard:
-                default:
-                    return "kelvin";
-            }
+                Unit.Imperial => "°F",
+                Unit.Metric => "°C",
+                _ => "kelvin",
+            };
         }
 
         private static string GetSpeedUnit(Unit units)
         {
-            switch (units)
+            return units switch
             {
-                case Unit.Imperial:
-                    return "mi/h";
-                case Unit.Metric:
-                case Unit.Standard:
-                default:
-                    return "m/s";
-            }
+                Unit.Imperial => "mi/h",
+                _ => "m/s",
+            };
         }
     }
 }

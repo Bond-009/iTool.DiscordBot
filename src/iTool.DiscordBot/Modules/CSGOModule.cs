@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using SteamWebAPI2.Interfaces;
-using SteamWebAPI2.Models;
 
 namespace iTool.DiscordBot.Modules
 {

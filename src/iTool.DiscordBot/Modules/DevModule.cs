@@ -59,7 +59,6 @@ namespace iTool.DiscordBot.Modules
                     .AddReferences(new[]
                     {
                         typeof(object).GetTypeInfo().Assembly.Location,
-                        typeof(Object).GetTypeInfo().Assembly.Location,
                         typeof(Enumerable).GetTypeInfo().Assembly.Location,
                         typeof(DiscordSocketClient).GetTypeInfo().Assembly.Location,
                         typeof(IMessage).GetTypeInfo().Assembly.Location,

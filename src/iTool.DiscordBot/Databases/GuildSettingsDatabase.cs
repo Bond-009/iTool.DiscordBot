@@ -10,7 +10,10 @@ namespace iTool.DiscordBot
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!Directory.Exists(Common.DataDir)) Directory.CreateDirectory(Common.DataDir);
+            if (!Directory.Exists(Common.DataDir))
+            {
+                Directory.CreateDirectory(Common.DataDir);
+            }
 
             optionsBuilder.UseSqlite($"Filename={Path.Combine(Common.DataDir, "guildsettings.sqlite.db")}");
         }
@@ -20,20 +23,22 @@ namespace iTool.DiscordBot
             GuildSettings settings = await GuildConfigs.FirstOrDefaultAsync(x => x.GuildID == guildID);
 
             if (settings != null)
+            {
                 return settings;
+            }
 
             await GuildConfigs.AddAsync(settings = new GuildSettings()
             {
                 GuildID = guildID
-            });
-            await SaveChangesAsync();
+            }).ConfigureAwait(false);
+            await SaveChangesAsync().ConfigureAwait(false);
             return settings;
         }
 
         public async Task UpdateSettings(GuildSettings guildSettings)
         {
             GuildConfigs.Update(guildSettings);
-            await SaveChangesAsync();
+            await SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

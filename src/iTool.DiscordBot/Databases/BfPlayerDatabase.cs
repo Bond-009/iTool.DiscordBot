@@ -29,7 +29,9 @@ namespace iTool.DiscordBot
         public async Task SavePersonaIDAsync(BfPlayer player)
         {
             if (await BfPlayers.AnyAsync(x => x.Name == player.Name))
+            {
                 throw new ArgumentException($"A player with name {player.Name} already exists.");
+            }
 
             await BfPlayers.AddAsync(player);
 

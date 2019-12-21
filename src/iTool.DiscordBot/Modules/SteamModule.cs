@@ -60,7 +60,7 @@ namespace iTool.DiscordBot.Modules
             {
                 f.IsInline = true;
                 f.Name = "Persona state";
-                f.Value = (PersonaState)Enum.ToObject(typeof(PersonaState) , player.ProfileState);
+                f.Value = (PersonaState)Enum.ToObject(typeof(PersonaState), player.ProfileState);
             })
             .Build());
         }
@@ -127,7 +127,7 @@ namespace iTool.DiscordBot.Modules
         [Command("steamprofile")]
         [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
-            => await ReplyAsync("https://steamcommunity.com/profiles/" + 
+            => await ReplyAsync("https://steamcommunity.com/profiles/" +
                     (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username)).Data
                 );
     }

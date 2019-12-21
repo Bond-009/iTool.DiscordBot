@@ -65,7 +65,7 @@ namespace iTool.DiscordBot
                 .AddSingleton(_settings)
                 .AddSingleton(typeof(AudioService))
                 .AddSingleton(typeof(AudioFileService));
-            
+
             if (string.IsNullOrEmpty(_settings.SteamKey))
             {
                 _logger.LogWarning("No steam api key found");
@@ -181,7 +181,7 @@ namespace iTool.DiscordBot
                 }
             }
 
-            
+
             // Mark where the prefix ends and the command begins
             int argPos = 0;
 

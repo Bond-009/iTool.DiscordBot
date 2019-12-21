@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace iTool.DiscordBot
 {
-    public class DbEntity
+    public abstract class DbEntity
     {
         [Key]
         public ulong ID { get; set; }
