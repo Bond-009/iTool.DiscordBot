@@ -17,7 +17,7 @@ namespace iTool.DiscordBot
         }
 
         public async Task<long?> GetPersonaIDAsync(string name)
-            => (await BfPlayers.FirstOrDefaultAsync(x => x.Name == name))?.PersonaID;
+            => (await BfPlayers.FirstOrDefaultAsync(x => x.Name == name).ConfigureAwait(false))?.PersonaID;
 
         public Task SavePersonaIDAsync(string name, long id)
             => SavePersonaIDAsync(new BfPlayer()
@@ -28,14 +28,14 @@ namespace iTool.DiscordBot
 
         public async Task SavePersonaIDAsync(BfPlayer player)
         {
-            if (await BfPlayers.AnyAsync(x => x.Name == player.Name))
+            if (await BfPlayers.AnyAsync(x => x.Name == player.Name).ConfigureAwait(false))
             {
                 throw new ArgumentException($"A player with name {player.Name} already exists.");
             }
 
-            await BfPlayers.AddAsync(player);
+            BfPlayers.Add(player);
 
-            await SaveChangesAsync();
+            await SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

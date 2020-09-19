@@ -20,17 +20,17 @@ namespace iTool.DiscordBot
 
         public async Task<GuildSettings> GetSettingsAsync(ulong guildID)
         {
-            GuildSettings settings = await GuildConfigs.FirstOrDefaultAsync(x => x.GuildID == guildID);
+            GuildSettings settings = await GuildConfigs.FirstOrDefaultAsync(x => x.GuildID == guildID).ConfigureAwait(false);
 
             if (settings != null)
             {
                 return settings;
             }
 
-            await GuildConfigs.AddAsync(settings = new GuildSettings()
+            GuildConfigs.Add(settings = new GuildSettings()
             {
                 GuildID = guildID
-            }).ConfigureAwait(false);
+            });
             await SaveChangesAsync().ConfigureAwait(false);
             return settings;
         }

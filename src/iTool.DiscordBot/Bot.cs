@@ -11,16 +11,18 @@ using OpenWeather;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SteamWebAPI2.Interfaces;
+using SteamWebAPI2.Utilities;
 using Nett;
 
 namespace iTool.DiscordBot
 {
     public class Bot : IDisposable
     {
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
+
         private CommandService _commandService;
         private DiscordSocketClient _discordClient;
-        private ILogger _logger;
-        private ILoggerFactory _loggerFactory;
         private ServiceProvider _serviceProvider;
         private Settings _settings;
         private bool _disposed = false;
@@ -72,8 +74,9 @@ namespace iTool.DiscordBot
             }
             else
             {
-                serviceCollection.AddSingleton<ISteamUser>(new SteamUser(_settings.SteamKey))
-                    .AddSingleton<ISteamUserStats>(new SteamUserStats(_settings.SteamKey));
+                var webInterfaceFactory = new SteamWebInterfaceFactory(_settings.SteamKey);
+                serviceCollection.AddSingleton<ISteamUser>(webInterfaceFactory.CreateSteamWebInterface<SteamUser>())
+                    .AddSingleton<ISteamUserStats>(webInterfaceFactory.CreateSteamWebInterface<SteamUserStats>());
             }
 
             if (string.IsNullOrEmpty(_settings.OpenWeatherMapKey))
@@ -97,7 +100,7 @@ namespace iTool.DiscordBot
 
             _discordClient.MessageReceived += HandleCommandAsync;
 
-            await LoadModulesAsync();
+            await LoadModulesAsync().ConfigureAwait(false);
 
             await _discordClient.LoginAsync(TokenType.Bot, _settings.DiscordToken).ConfigureAwait(false);
             await _discordClient.StartAsync().ConfigureAwait(false);
@@ -152,8 +155,7 @@ namespace iTool.DiscordBot
             }
 
             // Ignore messages from blacklisted users
-            if (_settings.BlacklistedUsers != null
-                && _settings.BlacklistedUsers.Contains(msg.Author.Id))
+            if (_settings.BlacklistedUsers?.Contains(msg.Author.Id) == true)
             {
                 return;
             }
@@ -163,7 +165,7 @@ namespace iTool.DiscordBot
 
             if (guildChannel != null)
             {
-                IGuildUser guildUser = await guildChannel.Guild.GetCurrentUserAsync();
+                IGuildUser guildUser = await guildChannel.Guild.GetCurrentUserAsync().ConfigureAwait(false);
                 ChannelPermissions channelPermissions = guildUser.GetPermissions(guildChannel);
                 if (!channelPermissions.Has(ChannelPermission.SendMessages))
                 {
@@ -177,7 +179,7 @@ namespace iTool.DiscordBot
             {
                 using (GuildSettingsDatabase db = new GuildSettingsDatabase())
                 {
-                    prefix = (await db.GetSettingsAsync(guildChannel.Guild.Id))?.Prefix ?? _settings.Prefix;
+                    prefix = (await db.GetSettingsAsync(guildChannel.Guild.Id).ConfigureAwait(false))?.Prefix ?? _settings.Prefix;
                 }
             }
 
@@ -193,7 +195,8 @@ namespace iTool.DiscordBot
             }
 
             // Execute the Command, store the result
-            IResult result = await _commandService.ExecuteAsync(new SocketCommandContext(_discordClient, msg), argPos, _serviceProvider);
+            IResult result = await _commandService.ExecuteAsync(
+                new SocketCommandContext(_discordClient, msg), argPos, _serviceProvider).ConfigureAwait(false);
 
             // If the command failed, notify the user
             if (result.Error.HasValue && result.Error != CommandError.UnknownCommand)
@@ -216,7 +219,7 @@ namespace iTool.DiscordBot
 
             if (!string.IsNullOrEmpty(_settings.Game))
             {
-                await _discordClient.SetGameAsync(_settings.Game);
+                await _discordClient.SetGameAsync(_settings.Game).ConfigureAwait(false);
             }
         }
 

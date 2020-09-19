@@ -14,23 +14,30 @@ namespace iTool.DiscordBot
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!Directory.Exists(Common.DataDir)) Directory.CreateDirectory(Common.DataDir);
+            if (!Directory.Exists(Common.DataDir))
+            {
+                Directory.CreateDirectory(Common.DataDir);
+            }
 
             optionsBuilder.UseSqlite($"Filename={Path.Combine(Common.DataDir, "tags.sqlite.db")}");
         }
 
         public Task<Tag> GetTagAsync(ulong guildID, string name)
-            => Tags.FirstOrDefaultAsync(x => x.GuildID == guildID && x.Name == name.ToLower());
+            => Tags.AsQueryable()
+                .FirstOrDefaultAsync(x => x.GuildID == guildID && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
 
         public IQueryable<Tag> GetTags(ulong guildID)
-            => Tags.Where(x => x.GuildID == guildID);
+            => Tags.AsQueryable().Where(x => x.GuildID == guildID);
 
         public async Task CreateTagAsync(SocketCommandContext context, string name, string content, string attachment = null)
         {
-            if (await Tags.AnyAsync(x => x.GuildID == context.Guild.Id && x.Name == name.ToLower()))
+            if (await Tags.AsQueryable().AnyAsync(
+                x => x.GuildID == context.Guild.Id && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false))
+            {
                 throw new ArgumentException($"The tag `{name}` already exists.");
+            }
 
-            await Tags.AddAsync(new Tag()
+            Tags.Add(new Tag()
             {
                 Name = name.ToLower(),
                 GuildID = context.Guild.Id,
@@ -38,22 +45,27 @@ namespace iTool.DiscordBot
                 Text = content,
                 Attachment = attachment
             });
-            await SaveChangesAsync();
+            await SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task DeleteTagAsync(SocketCommandContext context, string name)
         {
-            Tag tag = await Tags.FirstOrDefaultAsync(x => x.GuildID == context.Guild.Id && x.Name == name);
+            Tag tag = await Tags.AsQueryable()
+                .FirstOrDefaultAsync(x => x.GuildID == context.Guild.Id && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false);
 
             if (tag == null)
+            {
                 throw new ArgumentException($"The tag `{name}` does not exist.");
+            }
 
             var user = (SocketGuildUser)context.User;
             if (tag.AuthorID != user.Id && !user.GuildPermissions.ManageMessages)
+            {
                 throw new UnauthorizedAccessException($"You are not the owner of the tag `{name}`.");
+            }
 
             Tags.Remove(tag);
-            await SaveChangesAsync();
+            await SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }
