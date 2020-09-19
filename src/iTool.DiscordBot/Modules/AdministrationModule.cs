@@ -16,8 +16,8 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteMessages(int number = 100)
             => await (Context.Channel as ITextChannel).DeleteMessagesAsync(
-                (await Context.Channel.GetMessagesAsync(number).FlattenAsync())
-                    .Where(x => DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));
+                (await Context.Channel.GetMessagesAsync(number).FlattenAsync().ConfigureAwait(false))
+                    .Where(x => DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14))).ConfigureAwait(false);
 
         [Command("delmsgs")]
         [Alias("purge", "clean")]
@@ -27,9 +27,9 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteMessages(params IUser[] users)
             => await (Context.Channel as ITextChannel).DeleteMessagesAsync(
-                (await Context.Channel.GetMessagesAsync().FlattenAsync())
+                (await Context.Channel.GetMessagesAsync().FlattenAsync().ConfigureAwait(false))
                     .Where(x => users.Select(y => y.Id).Contains(x.Author.Id)
-                        && DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14)));
+                        && DateTimeOffset.UtcNow - x.CreatedAt < TimeSpan.FromDays(14))).ConfigureAwait(false);
 
         [Command("kick")]
         [Summary("Kicks the user")]
@@ -39,7 +39,7 @@ namespace iTool.DiscordBot.Modules
         {
             foreach (IGuildUser user in users)
             {
-                await user.KickAsync();
+                await user.KickAsync().ConfigureAwait(false);
             }
         }
 
@@ -51,7 +51,7 @@ namespace iTool.DiscordBot.Modules
         {
             foreach (IUser user in users)
             {
-                await Context.Guild.AddBanAsync(user);
+                await Context.Guild.AddBanAsync(user).ConfigureAwait(false);
             }
         }
     }

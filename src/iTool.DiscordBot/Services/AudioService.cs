@@ -27,7 +27,7 @@ namespace iTool.DiscordBot
                 return;
             }
 
-            if (_connectedChannels.TryAdd(guild.Id, await target.ConnectAsync()))
+            if (_connectedChannels.TryAdd(guild.Id, await target.ConnectAsync().ConfigureAwait(false)))
             {
                 _logger.LogInformation("Connected to voice on {Guild}.", guild.Name);
             }
@@ -37,7 +37,7 @@ namespace iTool.DiscordBot
         {
             if (_connectedChannels.TryRemove(guild.Id, out IAudioClient client))
             {
-                await client.StopAsync();
+                await client.StopAsync().ConfigureAwait(false);
                 _logger.LogInformation("Disconnected from voice on {Guild}.", guild.Name);
             }
         }

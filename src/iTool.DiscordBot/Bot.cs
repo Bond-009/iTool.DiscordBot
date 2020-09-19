@@ -128,9 +128,7 @@ namespace iTool.DiscordBot
                                             .Where(x => typeof(ModuleBase).IsAssignableFrom(x)
                                                 || x.IsSubclassOfRawGeneric(typeof(ModuleBase<>))))
             {
-                enabledModules.TryAdd(type.Name, true);
-
-                if (enabledModules[type.Name])
+                if (enabledModules.TryAdd(type.Name, true) || enabledModules[type.Name])
                 {
                     await _commandService.AddModuleAsync(type, _serviceProvider).ConfigureAwait(false);
                     _logger.LogInformation("Loaded {Module}", type.Name);
@@ -182,7 +180,6 @@ namespace iTool.DiscordBot
                     prefix = (await db.GetSettingsAsync(guildChannel.Guild.Id).ConfigureAwait(false))?.Prefix ?? _settings.Prefix;
                 }
             }
-
 
             // Mark where the prefix ends and the command begins
             int argPos = 0;

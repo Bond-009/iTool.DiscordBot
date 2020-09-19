@@ -11,7 +11,10 @@ namespace iTool.DiscordBot
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!Directory.Exists(Common.DataDir)) Directory.CreateDirectory(Common.DataDir);
+            if (!Directory.Exists(Common.DataDir))
+            {
+                Directory.CreateDirectory(Common.DataDir);
+            }
 
             optionsBuilder.UseSqlite($"Filename={Path.Combine(Common.DataDir, "bfpersonaids.sqlite.db")}");
         }

@@ -25,9 +25,9 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.ManageMessages)]
         public async Task CreateTag(string name, [Remainder]string text)
         {
-            await _db.CreateTagAsync(Context, name, text, Context.Message.Attachments.FirstOrDefault()?.Url);
+            await _db.CreateTagAsync(Context, name, text, Context.Message.Attachments.FirstOrDefault()?.Url).ConfigureAwait(false);
 
-            await Tag(name);
+            await Tag(name).ConfigureAwait(false);
         }
 
         [Command("tag")]
@@ -45,7 +45,7 @@ namespace iTool.DiscordBot.Modules
                 Color = _settings.GetColor(),
                 Description = tag.Text,
                 ImageUrl = tag.Attachment
-            }.Build());
+            }.Build()).ConfigureAwait(false);
         }
 
         [Command("tag delete")]
@@ -54,14 +54,14 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task TagDelete(string name)
         {
-            await _db.DeleteTagAsync(Context, name);
+            await _db.DeleteTagAsync(Context, name).ConfigureAwait(false);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Delete tag {name}",
                 Color = _settings.GetColor(),
                 Description = $"Successfully deleted tag {name}",
-            }.Build());
+            }.Build()).ConfigureAwait(false);
         }
 
         [Command("tags")]
@@ -76,7 +76,7 @@ namespace iTool.DiscordBot.Modules
                 Color = _settings.GetColor(),
                 Description = string.Join(" ,", _db.GetTags(Context.Guild.Id)
                                                 .Select(x => x.Name)),
-            }.Build());
+            }.Build()).ConfigureAwait(false);
         }
 
         public void Dispose()

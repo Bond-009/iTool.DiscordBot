@@ -28,11 +28,11 @@ namespace iTool.DiscordBot.Modules
             if (name == null) { name = Context.User.Username; }
 
             Dictionary<string, double> dict = (await _steamUserStats.GetUserStatsForGameAsync(
-                                                (await _steamUser.ResolveVanityUrlAsync(name)).Data,
-                                                730)
+                                                (await _steamUser.ResolveVanityUrlAsync(name).ConfigureAwait(false)).Data,
+                                                730).ConfigureAwait(false)
                                             ).Data.Stats.ToDictionary(x => x.Name, x => x.Value);
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"CS:GO stats for {name}",
                 Color = _settings.GetColor()
@@ -72,21 +72,24 @@ namespace iTool.DiscordBot.Modules
                 f.IsInline = true;
                 f.Name = "Playtime";
                 f.Value = Math.Round(dict["total_time_played"] / 60 / 60, 2) + " hours";
-            }).Build());
+            }).Build()).ConfigureAwait(false);
         }
 
         [Command("csgolastmatch")]
         [Summary("Returns stats of the player's last CS:GO match")]
         public async Task CSGOLastMatch(string name = null)
         {
-            if (name == null) { name = Context.User.Username; }
+            if (name == null)
+            {
+                name = Context.User.Username;
+            }
 
             Dictionary<string, double> dict = (await _steamUserStats.GetUserStatsForGameAsync(
-                                                (await _steamUser.ResolveVanityUrlAsync(name)).Data,
-                                                730)
+                                                (await _steamUser.ResolveVanityUrlAsync(name).ConfigureAwait(false)).Data,
+                                                730).ConfigureAwait(false)
                                             ).Data.Stats.ToDictionary(x => x.Name, x => x.Value);
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Last match CS:GO stats for {name}",
                 Color = _settings.GetColor(),
@@ -115,7 +118,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "MVP";
                 f.Value = dict["last_match_mvps"].ToString();
             })
-            .Build());
+            .Build()).ConfigureAwait(false);
         }
     }
 }

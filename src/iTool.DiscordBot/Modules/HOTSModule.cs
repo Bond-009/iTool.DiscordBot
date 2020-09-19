@@ -20,7 +20,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(Region region, string battleTag)
         {
-            Player player = await _client.GetPlayerSummary(region, battleTag);
+            Player player = await _client.GetPlayerSummary(region, battleTag).ConfigureAwait(false);
             if (player == null)
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
@@ -28,7 +28,7 @@ namespace iTool.DiscordBot.Modules
                     Title = $"No player found",
                     Color = _settings.GetErrorColor(),
                     Description = "No player was found matching those criteria."
-                }.Build());
+                }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -67,14 +67,14 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
-            await ReplyAsync("", embed: b.Build());
+            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
         }
 
         [Command("hotsstats")]
         [Summary("Returns the HOTS stats of the player")]
         public async Task HOTSStats(int playerID)
         {
-            Player player = await _client.GetPlayerSummary(playerID);
+            Player player = await _client.GetPlayerSummary(playerID).ConfigureAwait(false);
             if (player == null)
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
@@ -82,7 +82,7 @@ namespace iTool.DiscordBot.Modules
                     Title = $"No player found",
                     Color = _settings.GetErrorColor(),
                     Description = "No player was found matching those criteria."
-                }.Build());
+                }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -117,7 +117,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
-            await ReplyAsync("", embed: b.Build());
+            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
         }
     }
 }

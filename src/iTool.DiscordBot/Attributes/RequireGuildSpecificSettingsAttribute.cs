@@ -13,7 +13,7 @@ namespace iTool.DiscordBot
             {
                 return PreconditionResult.FromSuccess();
             }
-            await serviceProvider.GetService<CommandService>().RemoveModuleAsync(command.Module);
+            await serviceProvider.GetService<CommandService>().RemoveModuleAsync(command.Module).ConfigureAwait(false);
             return PreconditionResult.FromError("GuildSpecificSettings is disabled.");
         }
     }

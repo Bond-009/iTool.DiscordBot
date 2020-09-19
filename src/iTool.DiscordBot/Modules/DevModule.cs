@@ -20,11 +20,11 @@ namespace iTool.DiscordBot.Modules
         [Alias("collectgarbage")]
         [Summary("Forces the GC to clean up resources")]
         [RequireTrustedUser]
-        public async Task CollectGarbage ()
+        public Task CollectGarbage()
         {
             GC.Collect();
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            return ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = "GC",
                 Color = _settings.GetColor(),
@@ -36,13 +36,15 @@ namespace iTool.DiscordBot.Modules
         [Alias("cseval", "csharp", "evaluate")]
         [Summary("Evaluates C# code")]
         [RequireTrustedUser]
-        public async Task Eval([Remainder]string input)
+        public async Task Eval([Remainder] string input)
         {
             int index1 = input.IndexOf('\n', input.IndexOf("```") + 3) + 1;
             int index2 = input.LastIndexOf("```");
 
             if (index1 == -1 || index2 == -1)
+            {
                 throw new ArgumentException("You need to wrap the code into a code block.");
+            }
 
             string code = input.Substring(index1, index2 - index1);
 
@@ -53,6 +55,7 @@ namespace iTool.DiscordBot.Modules
                 Description = "Evaluating..."
             }.Build());
 
+            object result = null;
             try
             {
                 ScriptOptions options = ScriptOptions.Default
@@ -70,34 +73,37 @@ namespace iTool.DiscordBot.Modules
                         "Discord.WebSocket",
                         "System",
                         "System.Linq",
+                        "System.Text",
                         "System.Collections",
                         "System.Collections.Generic",
                     });
 
-                object result = await CSharpScript.EvaluateAsync(code, options, globals:
+                result = await CSharpScript.EvaluateAsync(code, options, globals:
                     new RoslynGlobals()
                     {
-                        Client =  Context.Client,
+                        Client = Context.Client,
                         Channel = Context.Channel as SocketTextChannel
                     }
-                );
-
-                await (await msg).ModifyAsync(x => x.Embed = new EmbedBuilder
-                {
-                    Title = "Evaluation",
-                    Description = result?.ToString() ?? "Success, nothing got returned",
-                    Color = _settings.GetColor()
-                }.Build());
+                ).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                await (await msg).ModifyAsync(x => x.Embed = new EmbedBuilder
+                await (await msg.ConfigureAwait(false)).ModifyAsync(x => x.Embed = new EmbedBuilder
                 {
                     Title = "Evaluation Failure",
                     Description = $"**{ex.GetType()}**: {ex.Message}",
                     Color = _settings.GetErrorColor()
-                }.Build());
+                }.Build()).ConfigureAwait(false);
+
+                return;
             }
+
+            await (await msg.ConfigureAwait(false)).ModifyAsync(x => x.Embed = new EmbedBuilder
+            {
+                Title = "Evaluation",
+                Description = result?.ToString() ?? "Success, nothing got returned",
+                Color = _settings.GetColor()
+            }.Build()).ConfigureAwait(false);
         }
 
         public class RoslynGlobals

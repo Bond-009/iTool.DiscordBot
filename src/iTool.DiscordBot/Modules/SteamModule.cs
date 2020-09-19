@@ -26,7 +26,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (name == null) { name = Context.User.Username; }
 
-            await ReplyAsync(((await _steamUser.ResolveVanityUrlAsync(name)).Data).ToString());
+            await ReplyAsync(((await _steamUser.ResolveVanityUrlAsync(name).ConfigureAwait(false)).Data).ToString()).ConfigureAwait(false);
         }
 
         [Command("steam")]
@@ -34,7 +34,7 @@ namespace iTool.DiscordBot.Modules
         public async Task PlayerSummaries(string name = null)
         {
             PlayerSummaryModel player = (await _steamUser.GetPlayerSummaryAsync(
-                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username)).Data)
+                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data).ConfigureAwait(false)
                                         ).Data;
 
             await ReplyAsync("", embed: new EmbedBuilder()
@@ -62,7 +62,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Persona state";
                 f.Value = (PersonaState)Enum.ToObject(typeof(PersonaState), player.ProfileState);
             })
-            .Build());
+            .Build()).ConfigureAwait(false);
         }
 
         [Command("playerbans")]
@@ -71,7 +71,7 @@ namespace iTool.DiscordBot.Modules
         public async Task PlayerBans(string name = null)
         {
             PlayerBansModel player = (await _steamUser.GetPlayerBansAsync(
-                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username)).Data)
+                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data).ConfigureAwait(false)
                                         ).Data.FirstOrDefault();
 
             await ReplyAsync("", embed: new EmbedBuilder()
@@ -121,14 +121,14 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Economy ban";
                 f.Value = player.EconomyBan;
             })
-            .Build());
+            .Build()).ConfigureAwait(false);
         }
 
         [Command("steamprofile")]
         [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
             => await ReplyAsync("https://steamcommunity.com/profiles/" +
-                    (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username)).Data
-                );
+                    (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data
+                ).ConfigureAwait(false);
     }
 }

@@ -17,14 +17,14 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the current prefix")]
         public async Task Prefix()
         {
-            GuildSettings guildSettings = await _db.GetSettingsAsync(Context.Guild.Id);
+            GuildSettings guildSettings = await _db.GetSettingsAsync(Context.Guild.Id).ConfigureAwait(false);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Current prefix",
                 Color = _settings.GetColor(),
                 Description = string.IsNullOrEmpty(guildSettings.Prefix) ? _settings.Prefix : guildSettings.Prefix,
-            }.Build());
+            }.Build()).ConfigureAwait(false);
         }
 
         [Command("prefix")]
@@ -33,16 +33,16 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Prefix(string prefix)
         {
-            GuildSettings guildSettings = await _db.GetSettingsAsync(Context.Guild.Id);
+            GuildSettings guildSettings = await _db.GetSettingsAsync(Context.Guild.Id).ConfigureAwait(false);
             guildSettings.Prefix = prefix;
-            await _db.UpdateSettings(guildSettings);
+            await _db.UpdateSettings(guildSettings).ConfigureAwait(false);
 
             await ReplyAsync("", embed: new EmbedBuilder()
             {
                 Title = $"Prefix",
                 Color = _settings.GetColor(),
                 Description = $"Changed to prefix for this server to {prefix}.",
-            }.Build());
+            }.Build()).ConfigureAwait(false);
         }
 
         public void Dispose()

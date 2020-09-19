@@ -65,7 +65,7 @@ namespace iTool.DiscordBot.Modules
                     rmBlacklistedUsers.Add(user);
                 }
             }
-            if (rmBlacklistedUsers.Any())
+            if (rmBlacklistedUsers.Count > 0)
             {
                 await ReplyAsync(
                     "",

@@ -32,32 +32,32 @@ namespace iTool.DiscordBot.Modules
                 name = Context.User.Username;
             }
 
-            long? personaID = await _db.GetPersonaIDAsync(name);
+            long? personaID = await _db.GetPersonaIDAsync(name).ConfigureAwait(false);
 
             if (personaID == null)
             {
-                personaID = await _client.GetPersonaID(name, platform, platformSpecificName);
+                personaID = await _client.GetPersonaID(name, platform, platformSpecificName).ConfigureAwait(false);
 
                 if (personaID != null)
                 {
-                    await _db.SavePersonaIDAsync(name, personaID.Value);
+                    await _db.SavePersonaIDAsync(name, personaID.Value).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ReplyAsync("", embed: new EmbedBuilder()
+                    await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                     {
                         Title = $"No player found",
                         Color = _settings.GetErrorColor(),
                         Description = "No player was found with that name.",
                         ThumbnailUrl = "https://eaassets-a.akamaihd.net/bl-cdn/cdnprefix/production-283-20170323/public/base/bf4/header-logo-bf4.png"
-                    }.Build());
+                    }.Build()).ConfigureAwait(false);
                     return;
                 }
             }
 
             DetailedStats stats = await _client.GetDetailedStatsAsync(personaID.Value, platform);
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Battlefield 4 stats for {name}",
                 Color = _settings.GetColor(),
@@ -95,7 +95,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **Dogtags Taken**: {stats.GeneralStats.DogtagsTaken}\n" +
                         $"- **Time played**: {Math.Round(stats.GeneralStats.TimePlayed.TotalHours, 2)} hours";
             })
-            .Build());
+            .Build()).ConfigureAwait(false);
         }
 
         public void Dispose()

@@ -34,21 +34,21 @@ namespace iTool.DiscordBot.Modules
                                                         .Select(x => x.Name)
                                                         .OrderBy(x => x)
                                             ),
-                }.Build());
+                }.Build()).ConfigureAwait(false);
                 return;
             }
 
             IReadOnlyList<CommandInfo> cmds = _cmdService.Modules
-                                                .FirstOrDefault(x => x.Name.ToLower() == moduleName.ToLower())
+                                                .FirstOrDefault(x => string.Equals(x.Name, moduleName, StringComparison.OrdinalIgnoreCase))
                                                 ?.Commands;
-            if (!cmds.Any())
+            if (cmds.Count == 0)
             {
                 await ReplyAsync("", embed: new EmbedBuilder()
                 {
                     Title = "Help",
                     Color = _settings.GetColor(),
                     Description = $"No module named {moduleName} found",
-                }.Build());
+                }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -67,7 +67,7 @@ namespace iTool.DiscordBot.Modules
                     f.Value = cmd.Summary ?? "No summary";
                 });
             }
-            await ReplyAsync("", embed: b.Build());
+            await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
 
         [Command("cmdinfo")]
@@ -85,7 +85,7 @@ namespace iTool.DiscordBot.Modules
                     Title = "Command info",
                     Color = _settings.GetColor(),
                     Description = "No command found",
-                }.Build());
+                }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -129,7 +129,7 @@ namespace iTool.DiscordBot.Modules
                 });
             }
 
-            await ReplyAsync("", embed: b.Build());
+            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
         }
 
         [Command("info")]
@@ -171,7 +171,7 @@ namespace iTool.DiscordBot.Modules
                 f.Value = "[GitHub](https://github.com/Bond-009/iTool.DiscordBot)\n" +
                             "[Bonds Discord Guild](https://discord.gg/thKXwJb)";
             })
-            .Build());
+            .Build()).ConfigureAwait(false);
         }
 
         [Command("invite")]
@@ -182,8 +182,8 @@ namespace iTool.DiscordBot.Modules
                 Title = "Invite",
                 Color = _settings.GetColor(),
                 Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
-                            $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot>"
-            }.Build());
+                            $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync().ConfigureAwait(false)).Id}&scope=bot>"
+            }.Build()).ConfigureAwait(false);
 
         // TODO: Improve embed
         [Command("leave")]
@@ -197,8 +197,8 @@ namespace iTool.DiscordBot.Modules
                 Color = _settings.GetColor(),
                 Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
                 Description = "Leaving, click the title to invite me back in."
-            }.Build());
-            await Context.Guild.LeaveAsync();
+            }.Build()).ConfigureAwait(false);
+            await Context.Guild.LeaveAsync().ConfigureAwait(false);
         }
 
         [Command("setgame")]
@@ -207,7 +207,7 @@ namespace iTool.DiscordBot.Modules
         public async Task SetGame([Remainder] string input)
         {
             _settings.Game = input;
-            await Context.Client.SetGameAsync(input);
+            await Context.Client.SetGameAsync(input).ConfigureAwait(false);
         }
 
         [Command("ping")]
@@ -218,14 +218,17 @@ namespace iTool.DiscordBot.Modules
                     Title = "Ping",
                     Color = _settings.GetColor(),
                     Description = $"Latency: {Context.Client.Latency}ms"
-                }.Build());
+                }.Build()).ConfigureAwait(false);
 
         [Command("userinfo")]
         [Alias("user")]
         [Summary("Returns info about the user")]
         public async Task UserInfo(SocketUser user = null)
         {
-            if (user == null) user = Context.User;
+            if (user == null)
+            {
+                user = Context.User;
+            }
 
             SocketGuildUser gUser = user as SocketGuildUser;
 
@@ -303,7 +306,7 @@ namespace iTool.DiscordBot.Modules
                     f.Value = gUser.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
                 });
             }
-            await ReplyAsync("", embed: b.Build());
+            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
         }
 
         [Command("serverinfo")]
@@ -354,7 +357,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Created at";
                 f.Value = Context.Guild.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             })
-            .Build());
+            .Build()).ConfigureAwait(false);
         }
     }
 }
