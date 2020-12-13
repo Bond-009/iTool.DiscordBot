@@ -39,7 +39,7 @@ namespace iTool.DiscordBot.Modules
 
             if (tag == null) return;
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = tag.Name,
                 Color = _settings.GetColor(),
@@ -56,7 +56,7 @@ namespace iTool.DiscordBot.Modules
         {
             await _db.DeleteTagAsync(Context, name).ConfigureAwait(false);
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Delete tag {name}",
                 Color = _settings.GetColor(),
@@ -70,7 +70,7 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task TagList()
         {
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Tags",
                 Color = _settings.GetColor(),

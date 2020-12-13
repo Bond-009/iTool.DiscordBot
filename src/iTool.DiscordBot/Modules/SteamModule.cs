@@ -37,7 +37,7 @@ namespace iTool.DiscordBot.Modules
                                             (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data).ConfigureAwait(false)
                                         ).Data;
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Player summary for {player.Nickname}",
                 Color = _settings.GetColor(),
@@ -74,7 +74,7 @@ namespace iTool.DiscordBot.Modules
                                             (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data).ConfigureAwait(false)
                                         ).Data.FirstOrDefault();
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Community, VAC, and Economy ban statuses",
                 Color = _settings.GetColor(),

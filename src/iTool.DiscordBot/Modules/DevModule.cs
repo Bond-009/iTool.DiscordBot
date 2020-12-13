@@ -48,7 +48,7 @@ namespace iTool.DiscordBot.Modules
 
             string code = input.Substring(index1, index2 - index1);
 
-            Task<IUserMessage> msg = ReplyAsync("", embed: new EmbedBuilder()
+            Task<IUserMessage> msg = ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = "Evaluation",
                 Color = _settings.GetColor(),

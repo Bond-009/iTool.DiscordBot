@@ -44,7 +44,7 @@ namespace iTool.DiscordBot.Modules
                 }
                 else
                 {
-                    await ReplyAsync("", embed: new EmbedBuilder()
+                    await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                     {
                         Title = $"No player found",
                         Color = _settings.GetErrorColor(),

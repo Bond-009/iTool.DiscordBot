@@ -19,7 +19,7 @@ namespace iTool.DiscordBot.Modules
         {
             GuildSettings guildSettings = await _db.GetSettingsAsync(Context.Guild.Id).ConfigureAwait(false);
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Current prefix",
                 Color = _settings.GetColor(),
@@ -37,7 +37,7 @@ namespace iTool.DiscordBot.Modules
             guildSettings.Prefix = prefix;
             await _db.UpdateSettings(guildSettings).ConfigureAwait(false);
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Prefix",
                 Color = _settings.GetColor(),

@@ -27,7 +27,7 @@ namespace iTool.DiscordBot.Modules
             string temperatureUnit = GetTemperatureUnit(_settings.Units);
 
             await ReplyAsync(
-                "",
+                string.Empty,
                 embed: new EmbedBuilder()
                 {
                     Title = weather.Name + " " + weather.Sys.Country,

@@ -117,12 +117,9 @@ namespace iTool.DiscordBot
 
         private async Task LoadModulesAsync()
         {
-            Dictionary<string, bool> enabledModules = new Dictionary<string, bool>();
-
-            if (File.Exists(Common.ModuleFile))
-            {
-                enabledModules = Toml.ReadFile<Dictionary<string, bool>>(Common.ModuleFile);
-            }
+            Dictionary<string, bool> enabledModules = File.Exists(Common.ModuleFile)
+                ? Toml.ReadFile<Dictionary<string, bool>>(Common.ModuleFile)
+                : new Dictionary<string, bool>();
 
             foreach (Type type in Assembly.GetEntryAssembly().GetExportedTypes()
                                             .Where(x => typeof(ModuleBase).IsAssignableFrom(x)
@@ -141,7 +138,7 @@ namespace iTool.DiscordBot
         private async Task HandleCommandAsync(SocketMessage rawMsg)
         {
             // Ignore system messages
-            if (!(rawMsg is SocketUserMessage msg))
+            if (rawMsg is not SocketUserMessage msg)
             {
                 return;
             }

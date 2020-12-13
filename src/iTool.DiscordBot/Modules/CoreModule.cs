@@ -32,7 +32,7 @@ namespace iTool.DiscordBot.Modules
 
             if (blacklistedUsers.Any())
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = "Blacklist",
                     Color = _settings.GetColor(),
@@ -41,7 +41,7 @@ namespace iTool.DiscordBot.Modules
             }
             else
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = "Blacklist",
                     Color = _settings.GetErrorColor(),
@@ -68,7 +68,7 @@ namespace iTool.DiscordBot.Modules
             if (rmBlacklistedUsers.Count > 0)
             {
                 await ReplyAsync(
-                    "",
+                    string.Empty,
                     embed: new EmbedBuilder()
                     {
                         Title = "Remove blacklist",
@@ -79,7 +79,7 @@ namespace iTool.DiscordBot.Modules
             else
             {
                 await ReplyAsync(
-                    "",
+                    string.Empty,
                     embed: new EmbedBuilder()
                     {
                         Title = "Remove blacklist",
@@ -103,7 +103,7 @@ namespace iTool.DiscordBot.Modules
                 }
             }
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = "Trust",
                 Color = _settings.GetColor(),
@@ -124,7 +124,7 @@ namespace iTool.DiscordBot.Modules
                 }
             }
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = "UnTrust",
                 Color = _settings.GetColor(),

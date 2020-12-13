@@ -26,7 +26,7 @@ namespace iTool.DiscordBot.Modules
         {
             if (moduleName == null)
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = "Modules",
                     Color = _settings.GetColor(),
@@ -43,7 +43,7 @@ namespace iTool.DiscordBot.Modules
                                                 ?.Commands;
             if (cmds.Count == 0)
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = "Help",
                     Color = _settings.GetColor(),
@@ -80,7 +80,7 @@ namespace iTool.DiscordBot.Modules
 
             if (cmd == null)
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = "Command info",
                     Color = _settings.GetColor(),
@@ -129,7 +129,7 @@ namespace iTool.DiscordBot.Modules
                 });
             }
 
-            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
+            await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
 
         [Command("info")]
@@ -139,7 +139,7 @@ namespace iTool.DiscordBot.Modules
         {
             IApplication app = await Context.Client.GetApplicationInfoAsync();
 
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Color = _settings.GetColor(),
                 Description = $"{app.Name} bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more! Coded by Bond_009#0253.",
@@ -177,7 +177,7 @@ namespace iTool.DiscordBot.Modules
         [Command("invite")]
         [Summary("Returns the OAuth2 Invite URL of the bot")]
         public async Task Invite()
-            => await ReplyAsync("", embed: new EmbedBuilder()
+            => await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = "Invite",
                 Color = _settings.GetColor(),
@@ -191,7 +191,7 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Leave()
         {
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = "Leaving",
                 Color = _settings.GetColor(),
@@ -213,7 +213,7 @@ namespace iTool.DiscordBot.Modules
         [Command("ping")]
         [Summary("Returns the estimated round-trip latency, in milliseconds, to the gateway server")]
         public async Task Ping()
-            => await ReplyAsync("", embed: new EmbedBuilder()
+            => await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = "Ping",
                     Color = _settings.GetColor(),
@@ -306,7 +306,7 @@ namespace iTool.DiscordBot.Modules
                     f.Value = gUser.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
                 });
             }
-            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
+            await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
 
         [Command("serverinfo")]
@@ -315,7 +315,7 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task GuildInfo()
         {
-            await ReplyAsync("", embed: new EmbedBuilder()
+            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
                 Title = $"Info about {Context.Guild}",
                 Color = _settings.GetColor(),

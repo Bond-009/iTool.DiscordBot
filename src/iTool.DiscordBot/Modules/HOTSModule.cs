@@ -23,7 +23,7 @@ namespace iTool.DiscordBot.Modules
             Player player = await _client.GetPlayerSummary(region, battleTag).ConfigureAwait(false);
             if (player == null)
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = $"No player found",
                     Color = _settings.GetErrorColor(),
@@ -67,7 +67,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
-            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
+            await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
 
         [Command("hotsstats")]
@@ -77,7 +77,7 @@ namespace iTool.DiscordBot.Modules
             Player player = await _client.GetPlayerSummary(playerID).ConfigureAwait(false);
             if (player == null)
             {
-                await ReplyAsync("", embed: new EmbedBuilder()
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
                 {
                     Title = $"No player found",
                     Color = _settings.GetErrorColor(),
@@ -117,7 +117,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
-            await ReplyAsync("", embed: b.Build()).ConfigureAwait(false);
+            await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
     }
 }
