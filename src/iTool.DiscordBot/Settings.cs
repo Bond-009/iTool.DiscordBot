@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -39,25 +42,26 @@ namespace iTool.DiscordBot
         {
             if (BlacklistedUsers != null && BlacklistedUsers.Any())
             {
-                await SaveListToFile(Common.BlackListFile, BlacklistedUsers).ConfigureAwait(false);
+                await SaveListToFileAsync(Common.BlackListFile, BlacklistedUsers).ConfigureAwait(false);
             }
 
             if (TrustedUsers != null && TrustedUsers.Any())
             {
-                await SaveListToFile(Common.TrustedListFile, TrustedUsers).ConfigureAwait(false);
+                await SaveListToFileAsync(Common.TrustedListFile, TrustedUsers).ConfigureAwait(false);
             }
 
             Toml.WriteFile(this, Common.SettingsFile);
         }
 
-        private async Task SaveListToFile(string path, IEnumerable<ulong> values)
+        private async Task SaveListToFileAsync(string path, IEnumerable<ulong> values, CancellationToken cancellationToken = default)
         {
             using (StreamWriter t = new StreamWriter(path, false))
             {
-                foreach (var value in path)
+                foreach (var value in values)
                 {
-                    t.Write(value);
-                    await t.WriteAsync('\n').ConfigureAwait(false);
+                    await t.WriteLineAsync(
+                        value.ToString(CultureInfo.InvariantCulture).AsMemory(),
+                        cancellationToken).ConfigureAwait(false);
                 }
             }
         }
