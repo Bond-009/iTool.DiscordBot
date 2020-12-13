@@ -1,6 +1,6 @@
 # iTool.DiscordBot
 
-[![travis-ci Build Status][travis-ci-badge]][travis-ci-page] [![Discord][discord-badge]][discord-invite]
+![.NET Core][github-actions-badge] [![Discord][discord-badge]][discord-invite]
 
 i-Tool bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more!
 
@@ -112,7 +112,6 @@ i-Tool bot is a general purpose bot that has moderation commands, can check your
 | ------- | ------- | ---------- | ----------- |
 | weather | | | Returns info about the weather |
 
-[travis-ci-badge]: https://api.travis-ci.org/Bond-009/iTool.DiscordBot.svg?branch=master
-[travis-ci-page]: https://travis-ci.org/Bond-009/iTool.DiscordBot
+[github-actions-badge]: https://github.com/Bond-009/iTool.DiscordBot/workflows/.NET%20Core/badge.svg
 [discord-badge]: https://discordapp.com/api/guilds/261241776105455618/widget.png
 [discord-invite]: https://discordapp.com/invite/thKXwJb
