@@ -38,15 +38,16 @@ namespace iTool.DiscordBot.Modules
         [RequireTrustedUser]
         public async Task Eval([Remainder] string input)
         {
-            int index1 = input.IndexOf('\n', input.IndexOf("```") + 3) + 1;
-            int index2 = input.LastIndexOf("```");
-
-            if (index1 == -1 || index2 == -1)
+            if (!TryGetCode(input, out string code))
             {
-                throw new ArgumentException("You need to wrap the code into a code block.");
+                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
+                {
+                    Title = "Error",
+                    Color = _settings.GetErrorColor(),
+                    Description = "Syntax Error"
+                }.Build());
+                return;
             }
-
-            string code = input.Substring(index1, index2 - index1);
 
             Task<IUserMessage> msg = ReplyAsync(string.Empty, embed: new EmbedBuilder()
             {
@@ -81,13 +82,14 @@ namespace iTool.DiscordBot.Modules
                         "System.Threading.Tasks"
                     });
 
-                result = await CSharpScript.EvaluateAsync(code, options, globals:
-                    new RoslynGlobals()
+                result = await CSharpScript.EvaluateAsync(
+                    code,
+                    options,
+                    globals: new RoslynGlobals()
                     {
                         Client = Context.Client,
                         Channel = Context.Channel as SocketTextChannel
-                    }
-                ).ConfigureAwait(false);
+                    }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -107,6 +109,49 @@ namespace iTool.DiscordBot.Modules
                 Description = result?.ToString() ?? "Success, nothing got returned",
                 Color = _settings.GetColor()
             }.Build()).ConfigureAwait(false);
+        }
+
+        internal static bool TryGetCode(string input, out string code)
+        {
+            code = string.Empty;
+
+            int index1 = input.IndexOf("```");
+            int index2 = -1;
+            if (index1 == -1)
+            {
+                // Check for inline code block
+                index1 = input.IndexOf('`');
+                if (index1 == -1)
+                {
+                    // No code block found, return plain text
+                    code = input;
+                    return true;
+                }
+
+                index2 = input.LastIndexOf('`');
+                if (index2 == index1)
+                {
+                    // No closing backtick
+                    return false;
+                }
+
+                index1++; // Ignore the backtick itself
+            }
+            else
+            {
+                // Check for code block
+                index2 = input.LastIndexOf("```");
+                if (index1 == index2)
+                {
+                    // No closing backticks
+                    return false;
+                }
+
+                index1 = input.IndexOf('\n', index1 + 3) + 1;
+            }
+
+            code = input[index1..index2].TrimEnd();
+            return code.Length != 0;
         }
 
         public class RoslynGlobals
