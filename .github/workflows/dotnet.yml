@@ -1,4 +1,4 @@
-name: .NET Core
+name: .NET
 
 on:
   push:
@@ -22,4 +22,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal  --collect:"XPlat Code Coverage" --results-directory coverage
+    - name: Upload coverage to Codecov
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      run: bash <(curl -s https://codecov.io/bash)
