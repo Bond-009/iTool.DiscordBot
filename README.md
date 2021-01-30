@@ -1,6 +1,6 @@
 # iTool.DiscordBot
 
-![.NET Core][github-actions-badge] [![Discord][discord-badge]][discord-invite]
+![.NET][github-actions-badge] [![codecov][codecov-badge]][codecov-link] [![Discord][discord-badge]][discord-invite] 
 
 i-Tool bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more!
 
@@ -112,6 +112,8 @@ i-Tool bot is a general purpose bot that has moderation commands, can check your
 | ------- | ------- | ---------- | ----------- |
 | weather | | | Returns info about the weather |
 
-[github-actions-badge]: https://github.com/Bond-009/iTool.DiscordBot/workflows/.NET%20Core/badge.svg
+[github-actions-badge]: https://github.com/Bond-009/iTool.DiscordBot/workflows/.NET/badge.svg
+[codecov-badge]: https://codecov.io/gh/Bond-009/iTool.DiscordBot/branch/master/graph/badge.svg?token=QD4OQ4Wgh6
+[codecov-link]: https://codecov.io/gh/Bond-009/iTool.DiscordBot
 [discord-badge]: https://discordapp.com/api/guilds/261241776105455618/widget.png
 [discord-invite]: https://discordapp.com/invite/thKXwJb
