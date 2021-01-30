@@ -76,6 +76,9 @@ namespace iTool.DiscordBot.Modules
                         "System.Text",
                         "System.Collections",
                         "System.Collections.Generic",
+                        "System.Globalization",
+                        "System.Threading",
+                        "System.Threading.Tasks"
                     });
 
                 result = await CSharpScript.EvaluateAsync(code, options, globals:
