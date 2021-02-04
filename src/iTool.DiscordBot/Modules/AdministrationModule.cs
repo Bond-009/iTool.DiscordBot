@@ -6,12 +6,12 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
+    [RequireContext(ContextType.Guild)]
     public class AdministrationModule : ModuleBase
     {
         [Command("delmsgs")]
         [Alias("purge", "clean")]
         [Summary("Deletes the messages")]
-        [RequireContext(ContextType.Guild)]
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteMessages(int number = 100)
@@ -22,7 +22,6 @@ namespace iTool.DiscordBot.Modules
         [Command("delmsgs")]
         [Alias("purge", "clean")]
         [Summary("Deletes the messages")]
-        [RequireContext(ContextType.Guild)]
         [RequireBotPermission(ChannelPermission.ManageMessages)]
         [RequireUserPermission(ChannelPermission.ManageMessages)]
         public async Task DeleteMessages(params IUser[] users)

@@ -37,15 +37,20 @@ namespace iTool.DiscordBot.Modules
         {
             Tag tag = await _db.GetTagAsync(Context.Guild.Id, name);
 
-            if (tag == null) return;
-
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
+            if (tag == null)
             {
-                Title = tag.Name,
-                Color = _settings.GetColor(),
-                Description = tag.Text,
-                ImageUrl = tag.Attachment
-            }.Build()).ConfigureAwait(false);
+                return;
+            }
+
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = tag.Name,
+                    Color = _settings.GetColor(),
+                    Description = tag.Text,
+                    ImageUrl = tag.Attachment
+                }.Build()).ConfigureAwait(false);
         }
 
         [Command("tag delete")]
@@ -56,12 +61,14 @@ namespace iTool.DiscordBot.Modules
         {
             await _db.DeleteTagAsync(Context, name).ConfigureAwait(false);
 
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = $"Delete tag {name}",
-                Color = _settings.GetColor(),
-                Description = $"Successfully deleted tag {name}",
-            }.Build()).ConfigureAwait(false);
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = $"Delete tag {name}",
+                    Color = _settings.GetColor(),
+                    Description = $"Successfully deleted tag {name}",
+                }.Build()).ConfigureAwait(false);
         }
 
         [Command("tags")]
@@ -70,13 +77,15 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task TagList()
         {
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = $"Tags",
-                Color = _settings.GetColor(),
-                Description = string.Join(" ,", _db.GetTags(Context.Guild.Id)
-                                                .Select(x => x.Name)),
-            }.Build()).ConfigureAwait(false);
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = $"Tags",
+                    Color = _settings.GetColor(),
+                    Description = string.Join(" ,", _db.GetTags(Context.Guild.Id)
+                                                    .Select(x => x.Name)),
+                }.Build()).ConfigureAwait(false);
         }
 
         public void Dispose()

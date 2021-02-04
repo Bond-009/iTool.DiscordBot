@@ -197,7 +197,8 @@ namespace iTool.DiscordBot
             {
                 _logger.LogError(result.ErrorReason);
 
-                await msg.Channel.SendMessageAsync(string.Empty,
+                await msg.Channel.SendMessageAsync(
+                    string.Empty,
                     embed: new EmbedBuilder()
                     {
                         Title = "Error",

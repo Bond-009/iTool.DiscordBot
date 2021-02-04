@@ -12,7 +12,7 @@ namespace iTool.DiscordBot.Modules
 
         public HOTSModule(Settings settings)
         {
-            if (_client == null) _client = new HOTSLogsClient();
+            _client ??= new HOTSLogsClient();
             _settings = settings;
         }
 
@@ -23,12 +23,14 @@ namespace iTool.DiscordBot.Modules
             Player player = await _client.GetPlayerSummary(region, battleTag).ConfigureAwait(false);
             if (player == null)
             {
-                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-                {
-                    Title = $"No player found",
-                    Color = _settings.GetErrorColor(),
-                    Description = "No player was found matching those criteria."
-                }.Build()).ConfigureAwait(false);
+                await ReplyAsync(
+                    string.Empty,
+                    embed: new EmbedBuilder()
+                    {
+                        Title = $"No player found",
+                        Color = _settings.GetErrorColor(),
+                        Description = "No player was found matching those criteria."
+                    }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -43,18 +45,8 @@ namespace iTool.DiscordBot.Modules
                     Text = "Powered by hotslogs.com",
                 }
             }
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "PlayerID";
-                f.Value = player.PlayerID.ToString();
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Name";
-                f.Value = player.Name;
-            });
+            .AddField("PlayerID", player.PlayerID.ToString(), true)
+            .AddField("Name", player.Name, true);
 
             foreach (Ranking ranking in player.LeaderboardRankings)
             {
@@ -67,6 +59,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
+
             await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
 
@@ -77,12 +70,14 @@ namespace iTool.DiscordBot.Modules
             Player player = await _client.GetPlayerSummary(playerID).ConfigureAwait(false);
             if (player == null)
             {
-                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-                {
-                    Title = $"No player found",
-                    Color = _settings.GetErrorColor(),
-                    Description = "No player was found matching those criteria."
-                }.Build()).ConfigureAwait(false);
+                await ReplyAsync(
+                    string.Empty,
+                    embed: new EmbedBuilder()
+                    {
+                        Title = $"No player found",
+                        Color = _settings.GetErrorColor(),
+                        Description = "No player was found matching those criteria."
+                    }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -93,18 +88,8 @@ namespace iTool.DiscordBot.Modules
                 Url = $"https://www.hotslogs.com/Player/Profile?PlayerID={player.PlayerID}",
                 ThumbnailUrl = "https://eu.battle.net/heroes/static/images/logos/logo.png"
             }
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "PlayerID";
-                f.Value = player.PlayerID.ToString();
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Name";
-                f.Value = player.Name;
-            });
+            .AddField("PlayerID", player.PlayerID.ToString(), true)
+            .AddField("Name", player.Name, true);
 
             foreach (Ranking ranking in player.LeaderboardRankings)
             {
@@ -117,6 +102,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **CurrentMMR**: {ranking.CurrentMMR}";
                 });
             }
+
             await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
     }

@@ -26,15 +26,16 @@ namespace iTool.DiscordBot.Modules
         {
             if (moduleName == null)
             {
-                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-                {
-                    Title = "Modules",
-                    Color = _settings.GetColor(),
-                    Description = string.Join(", ", _cmdService.Modules
-                                                        .Select(x => x.Name)
-                                                        .OrderBy(x => x)
-                                            ),
-                }.Build()).ConfigureAwait(false);
+                await ReplyAsync(
+                    string.Empty,
+                    embed: new EmbedBuilder()
+                    {
+                        Title = "Modules",
+                        Color = _settings.GetColor(),
+                        Description = string.Join(", ", _cmdService.Modules
+                                                            .Select(x => x.Name)
+                                                            .OrderBy(x => x)),
+                    }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -43,12 +44,14 @@ namespace iTool.DiscordBot.Modules
                                                 ?.Commands;
             if (cmds.Count == 0)
             {
-                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-                {
-                    Title = "Help",
-                    Color = _settings.GetColor(),
-                    Description = $"No module named {moduleName} found",
-                }.Build()).ConfigureAwait(false);
+                await ReplyAsync(
+                    string.Empty,
+                    embed: new EmbedBuilder()
+                    {
+                        Title = "Help",
+                        Color = _settings.GetColor(),
+                        Description = $"No module named {moduleName} found",
+                    }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -61,12 +64,9 @@ namespace iTool.DiscordBot.Modules
 
             foreach (CommandInfo cmd in cmds)
             {
-                b.AddField(f =>
-                {
-                    f.Name = cmd.Name;
-                    f.Value = cmd.Summary ?? "No summary";
-                });
+                b.AddField(cmd.Name, cmd.Summary ?? "No summary");
             }
+
             await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
 
@@ -80,12 +80,14 @@ namespace iTool.DiscordBot.Modules
 
             if (cmd == null)
             {
-                await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-                {
-                    Title = "Command info",
-                    Color = _settings.GetColor(),
-                    Description = "No command found",
-                }.Build()).ConfigureAwait(false);
+                await ReplyAsync(
+                    string.Empty,
+                    embed: new EmbedBuilder()
+                    {
+                        Title = "Command info",
+                        Color = _settings.GetColor(),
+                        Description = "No command found",
+                    }.Build()).ConfigureAwait(false);
                 return;
             }
 
@@ -94,39 +96,23 @@ namespace iTool.DiscordBot.Modules
                 Title = "Command info",
                 Color = _settings.GetColor(),
             }
-            .AddField(f =>
-            {
-                f.Name = "Name";
-                f.Value = cmd.Name;
-            });
+            .AddField("Name", cmd.Name);
 
             if (string.IsNullOrEmpty(cmd.Summary))
             {
-                b.AddField(f =>
-                {
-                    f.Name = "Summary";
-                    f.Value = cmd.Summary;
-                });
+                b.AddField("Summary", cmd.Summary);
             }
 
             IEnumerable<string> aliases = cmd.Aliases.Where(x => x != cmd.Name);
 
             if (aliases.Any())
             {
-                b.AddField(f =>
-                {
-                    f.Name = "Aliases";
-                    f.Value = string.Join(", ", aliases);
-                });
+                b.AddField("Aliases", string.Join(", ", aliases));
             }
 
             if (cmd.Parameters.Any())
             {
-                b.AddField(f =>
-                {
-                    f.Name = "Parameters";
-                    f.Value = string.Join(", ", cmd.Parameters);
-                });
+                b.AddField("Parameters", string.Join(", ", cmd.Parameters));
             }
 
             await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
@@ -139,51 +125,55 @@ namespace iTool.DiscordBot.Modules
         {
             IApplication app = await Context.Client.GetApplicationInfoAsync();
 
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Color = _settings.GetColor(),
-                Description = $"{app.Name} bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more! Coded by Bond_009#0253.",
-                Author = new EmbedAuthorBuilder()
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
                 {
-                    Name = app.Name,
-                    IconUrl = app.IconUrl
+                    Color = _settings.GetColor(),
+                    Description = $"{app.Name} bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more! Coded by Bond_009#0253.",
+                    Author = new EmbedAuthorBuilder()
+                    {
+                        Name = app.Name,
+                        IconUrl = app.IconUrl
+                    }
                 }
-            }
-            .AddField(f =>
-            {
-                f.Name = "Info";
-                f.Value = $"- **Owner**: {app.Owner} (ID {app.Owner.Id})\n" +
-                            $"- **Library**: Discord.Net ({DiscordConfig.Version})\n" +
-                            $"- **Runtime**: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}\n" +
-                            $"- **Uptime**: {Utils.GetUptime().ToString(@"d\d\ hh\:mm\:ss")}";
-            })
-            .AddField(f =>
-            {
-                f.Name = "Stats";
-                f.Value = $"- **Heap Size**: {Utils.GetHeapSize()} MB\n" +
-                            $"- **Guilds**: {Context.Client.Guilds.Count}\n" +
-                            $"- **Channels**: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
-                            $"- **Users**: {Context.Client.Guilds.Sum(g => g.MemberCount)}";
-            })
-            .AddField(f =>
-            {
-                f.Name = "Links";
-                f.Value = "[GitHub](https://github.com/Bond-009/iTool.DiscordBot)\n" +
-                            "[Bonds Discord Guild](https://discord.gg/thKXwJb)";
-            })
-            .Build()).ConfigureAwait(false);
+                .AddField(f =>
+                {
+                    f.Name = "Info";
+                    f.Value = $"- **Owner**: {app.Owner} (ID {app.Owner.Id})\n" +
+                                $"- **Library**: Discord.Net ({DiscordConfig.Version})\n" +
+                                $"- **Runtime**: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}\n" +
+                                $"- **Uptime**: {Utils.GetUptime().ToString(@"d\d\ hh\:mm\:ss")}";
+                })
+                .AddField(f =>
+                {
+                    f.Name = "Stats";
+                    f.Value = $"- **Heap Size**: {Utils.GetHeapSize()} MB\n" +
+                                $"- **Guilds**: {Context.Client.Guilds.Count}\n" +
+                                $"- **Channels**: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
+                                $"- **Users**: {Context.Client.Guilds.Sum(g => g.MemberCount)}";
+                })
+                .AddField(f =>
+                {
+                    f.Name = "Links";
+                    f.Value = "[GitHub](https://github.com/Bond-009/iTool.DiscordBot)\n" +
+                                "[Bonds Discord Guild](https://discord.gg/thKXwJb)";
+                })
+                .Build()).ConfigureAwait(false);
         }
 
         [Command("invite")]
         [Summary("Returns the OAuth2 Invite URL of the bot")]
         public async Task Invite()
-            => await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = "Invite",
-                Color = _settings.GetColor(),
-                Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
-                            $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync().ConfigureAwait(false)).Id}&scope=bot>"
-            }.Build()).ConfigureAwait(false);
+            => await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = "Invite",
+                    Color = _settings.GetColor(),
+                    Description = "A user with the `MANAGE_SERVER` permission can invite with this link:\n" +
+                                $"<https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync().ConfigureAwait(false)).Id}&scope=bot>"
+                }.Build()).ConfigureAwait(false);
 
         // TODO: Improve embed
         [Command("leave")]
@@ -191,13 +181,15 @@ namespace iTool.DiscordBot.Modules
         [RequireUserPermission(GuildPermission.ManageGuild)]
         public async Task Leave()
         {
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = "Leaving",
-                Color = _settings.GetColor(),
-                Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
-                Description = "Leaving, click the title to invite me back in."
-            }.Build()).ConfigureAwait(false);
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = "Leaving",
+                    Color = _settings.GetColor(),
+                    Url = $"https://discordapp.com/oauth2/authorize?client_id={(await Context.Client.GetApplicationInfoAsync()).Id}&scope=bot",
+                    Description = "Leaving, click the title to invite me back in."
+                }.Build()).ConfigureAwait(false);
             await Context.Guild.LeaveAsync().ConfigureAwait(false);
         }
 
@@ -213,7 +205,9 @@ namespace iTool.DiscordBot.Modules
         [Command("ping")]
         [Summary("Returns the estimated round-trip latency, in milliseconds, to the gateway server")]
         public async Task Ping()
-            => await ReplyAsync(string.Empty, embed: new EmbedBuilder()
+            => await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
                 {
                     Title = "Ping",
                     Color = _settings.GetColor(),
@@ -244,6 +238,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Username";
                 f.Value = user.Username;
             });
+
             if (gUser?.Nickname != null)
             {
                 b.AddField(f =>
@@ -253,6 +248,7 @@ namespace iTool.DiscordBot.Modules
                     f.Value = gUser.Nickname;
                 });
             }
+
             b.AddField(f =>
             {
                 f.IsInline = true;
@@ -271,6 +267,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Status";
                 f.Value = user.Status.ToString();
             });
+
             if (gUser != null)
             {
                 b.AddField(f =>
@@ -284,6 +281,7 @@ namespace iTool.DiscordBot.Modules
                         $"- **Suppressed**: {gUser.IsSuppressed}";
                 });
             }
+
             b.AddField(f =>
             {
                 f.IsInline = true;
@@ -297,6 +295,7 @@ namespace iTool.DiscordBot.Modules
                 f.Name = "Created at";
                 f.Value = user.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
             });
+
             if (gUser?.JoinedAt != null)
             {
                 b.AddField(f =>
@@ -306,6 +305,7 @@ namespace iTool.DiscordBot.Modules
                     f.Value = gUser.JoinedAt.Value.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
                 });
             }
+
             await ReplyAsync(string.Empty, embed: b.Build()).ConfigureAwait(false);
         }
 
@@ -315,49 +315,51 @@ namespace iTool.DiscordBot.Modules
         [RequireContext(ContextType.Guild)]
         public async Task GuildInfo()
         {
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = $"Info about {Context.Guild}",
-                Color = _settings.GetColor(),
-                ThumbnailUrl = Context.Guild.IconUrl
-            }
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Name";
-                f.Value = Context.Guild.Name;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Id";
-                f.Value = Context.Guild.Id;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Owner";
-                f.Value = Context.Guild.Owner.ToString();
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Members";
-                f.Value = Context.Guild.MemberCount;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Voice region";
-                f.Value = Context.Guild.VoiceRegionId;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Created at";
-                f.Value = Context.Guild.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
-            })
-            .Build()).ConfigureAwait(false);
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = $"Info about {Context.Guild}",
+                    Color = _settings.GetColor(),
+                    ThumbnailUrl = Context.Guild.IconUrl
+                }
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Name";
+                    f.Value = Context.Guild.Name;
+                })
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Id";
+                    f.Value = Context.Guild.Id;
+                })
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Owner";
+                    f.Value = Context.Guild.Owner.ToString();
+                })
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Members";
+                    f.Value = Context.Guild.MemberCount;
+                })
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Voice region";
+                    f.Value = Context.Guild.VoiceRegionId;
+                })
+                .AddField(f =>
+                {
+                    f.IsInline = true;
+                    f.Name = "Created at";
+                    f.Value = Context.Guild.CreatedAt.UtcDateTime.ToString("dd/MM/yyyy HH:mm:ss");
+                })
+                .Build()).ConfigureAwait(false);
         }
     }
 }
