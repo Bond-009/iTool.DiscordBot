@@ -1,5 +1,5 @@
-using System;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -19,50 +19,41 @@ namespace iTool.DiscordBot.Modules
             _steamUser = steamUser;
         }
 
+        internal async Task<ulong> ResolveVanityURLInternal(string name = null)
+        {
+            var res = await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false);
+            return res.Data;
+        }
+
         [Command("vanityurl")]
         [Alias("resolvevanityurl")]
         [Summary("Returns the steamID64 of the user")]
         public async Task ResolveVanityURL(string name = null)
         {
-            if (name == null) { name = Context.User.Username; }
-
-            await ReplyAsync(((await _steamUser.ResolveVanityUrlAsync(name).ConfigureAwait(false)).Data).ToString()).ConfigureAwait(false);
+            ulong steamId = await ResolveVanityURLInternal(name).ConfigureAwait(false);
+            await ReplyAsync(steamId.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
         }
 
         [Command("steam")]
         [Summary("Returns basic steam profile information")]
         public async Task PlayerSummaries(string name = null)
         {
-            PlayerSummaryModel player = (await _steamUser.GetPlayerSummaryAsync(
-                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data).ConfigureAwait(false)
-                                        ).Data;
+            ulong steamId = await ResolveVanityURLInternal(name).ConfigureAwait(false);
+            PlayerSummaryModel player = (await _steamUser.GetPlayerSummaryAsync(steamId).ConfigureAwait(false)).Data;
 
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = $"Player summary for {player.Nickname}",
-                Color = _settings.GetColor(),
-                ThumbnailUrl = player.AvatarMediumUrl,
-                Url = player.ProfileUrl
-            }
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "SteamID";
-                f.Value = player.SteamId;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Nickname";
-                f.Value = player.Nickname;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Persona state";
-                f.Value = (PersonaState)Enum.ToObject(typeof(PersonaState), player.ProfileState);
-            })
-            .Build()).ConfigureAwait(false);
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = $"Player summary for {player.Nickname}",
+                    Color = _settings.GetColor(),
+                    ThumbnailUrl = player.AvatarMediumUrl,
+                    Url = player.ProfileUrl
+                }
+                .AddField("SteamID", player.SteamId, true)
+                .AddField("Nickname", player.Nickname, true)
+                .AddField("Persona state", (PersonaState)player.ProfileState, true)
+                .Build()).ConfigureAwait(false);
         }
 
         [Command("playerbans")]
@@ -70,65 +61,33 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns Community, VAC, and Economy ban statuses for given players")]
         public async Task PlayerBans(string name = null)
         {
-            PlayerBansModel player = (await _steamUser.GetPlayerBansAsync(
-                                            (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data).ConfigureAwait(false)
-                                        ).Data.FirstOrDefault();
+            ulong steamId = await ResolveVanityURLInternal(name).ConfigureAwait(false);
+            var res = await _steamUser.GetPlayerBansAsync(steamId).ConfigureAwait(false);
+            PlayerBansModel player = res.Data.FirstOrDefault();
 
-            await ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = $"Community, VAC, and Economy ban statuses",
-                Color = _settings.GetColor(),
-            }
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "SteamID";
-                f.Value = player.SteamId;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "CommunityBanned";
-                f.Value = player.CommunityBanned;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "VACBanned";
-                f.Value = player.VACBanned;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Number of VAC bans";
-                f.Value = player.NumberOfVACBans;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Days since last ban";
-                f.Value = player.DaysSinceLastBan;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Number of game bans";
-                f.Value = player.NumberOfGameBans;
-            })
-            .AddField(f =>
-            {
-                f.IsInline = true;
-                f.Name = "Economy ban";
-                f.Value = player.EconomyBan;
-            })
-            .Build()).ConfigureAwait(false);
+            await ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = "Community, VAC, and Economy ban statuses",
+                    Color = _settings.GetColor(),
+                }
+                .AddField("SteamID", player.SteamId, true)
+                .AddField("CommunityBanned", player.CommunityBanned, true)
+                .AddField("VACBanned", player.VACBanned, true)
+                .AddField("Number of VAC bans", player.NumberOfVACBans, true)
+                .AddField("Days since last ban", player.DaysSinceLastBan, true)
+                .AddField("Number of game bans", player.NumberOfGameBans, true)
+                .AddField("Economy ban", player.EconomyBan, true)
+                .Build()).ConfigureAwait(false);
         }
 
         [Command("steamprofile")]
         [Summary("Returns the URL to the steam profile of the user")]
         public async Task SteamProfile(string name = null)
-            => await ReplyAsync("https://steamcommunity.com/profiles/" +
-                    (await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false)).Data
-                ).ConfigureAwait(false);
+        {
+            ulong steamId = await ResolveVanityURLInternal(name).ConfigureAwait(false);
+            await ReplyAsync("https://steamcommunity.com/profiles/" + steamId).ConfigureAwait(false);
+        }
     }
 }
