@@ -39,9 +39,12 @@ namespace iTool.DiscordBot
                 {
                     if (!Console.IsInputRedirected)
                     {
+                        _logger.LogInformation("Press a key to continue...");
                         Console.ReadKey();
                     }
 
+                    // Otherwise we'll log a SIGTERM
+                    _tokenSource.Cancel();
                     return 1;
                 }
 
@@ -70,7 +73,7 @@ namespace iTool.DiscordBot
                 {
                     var assembly = typeof(Program).GetTypeInfo().Assembly;
                     using (Stream rscstr = assembly.GetManifestResourceStream("iTool.DiscordBot.Resources.Configuration.serilog.json"))
-                    using (Stream fstr = File.Open(path, FileMode.CreateNew))
+                    using (Stream fstr = File.Create(path))
                     {
                         await rscstr.CopyToAsync(fstr).ConfigureAwait(false);
                     }

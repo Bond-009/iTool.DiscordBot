@@ -256,15 +256,21 @@ namespace iTool.DiscordBot
 
             if (disposing)
             {
-                _discordClient.Dispose();
-                _serviceProvider.Dispose();
+                _discordClient?.Dispose();
+                _serviceProvider?.Dispose();
             }
 
-            _discordClient.Log -= LogDiscord;
-            _discordClient.Ready -= OnDiscordClientReady;
+            if (_discordClient != null)
+            {
+                _discordClient.Log -= LogDiscord;
+                _discordClient.Ready -= OnDiscordClientReady;
+                _discordClient.MessageReceived -= HandleCommandAsync;
+            }
 
-            _commandService.Log -= LogDiscord;
-            _discordClient.MessageReceived -= HandleCommandAsync;
+            if (_commandService != null)
+            {
+                _commandService.Log -= LogDiscord;
+            }
 
             _commandService = null;
             _discordClient = null;
