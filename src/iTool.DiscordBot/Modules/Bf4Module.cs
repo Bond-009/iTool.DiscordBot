@@ -9,7 +9,7 @@ namespace iTool.DiscordBot.Modules
 {
     public class Bf4Module : ModuleBase, IDisposable
     {
-        private static Bf4Client _client;
+        private static Bf4Client _client = new Bf4Client();
         private readonly BfPlayerDatabase _db = new BfPlayerDatabase();
         private readonly Settings _settings;
 
@@ -18,9 +18,6 @@ namespace iTool.DiscordBot.Modules
             _settings = settings;
 
             _db.Database.EnsureCreated();
-
-            if (_client == null)
-            { _client = new Bf4Client(); }
         }
 
         [Command("bf4stats")]

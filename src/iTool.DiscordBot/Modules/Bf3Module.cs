@@ -9,7 +9,7 @@ namespace iTool.DiscordBot.Modules
 {
     public class Bf3Module : ModuleBase, IDisposable
     {
-        private static Bf3Client _client;
+        private static Bf3Client _client = new Bf3Client();
         private readonly BfPlayerDatabase _db = new BfPlayerDatabase();
         private readonly Settings _settings;
 
@@ -18,9 +18,6 @@ namespace iTool.DiscordBot.Modules
             _settings = settings;
 
             _db.Database.EnsureCreated();
-
-            if (_client == null)
-            { _client = new Bf3Client(); }
         }
 
         [Command("bf3stats")]
