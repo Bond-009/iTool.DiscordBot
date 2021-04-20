@@ -49,12 +49,14 @@ namespace iTool.DiscordBot.Modules
                 return;
             }
 
-            Task<IUserMessage> msg = ReplyAsync(string.Empty, embed: new EmbedBuilder()
-            {
-                Title = "Evaluation",
-                Color = _settings.GetColor(),
-                Description = "Evaluating..."
-            }.Build());
+            Task<IUserMessage> msg = ReplyAsync(
+                string.Empty,
+                embed: new EmbedBuilder()
+                {
+                    Title = "Evaluation",
+                    Color = _settings.GetColor(),
+                    Description = "Evaluating..."
+                }.Build());
 
             object result = null;
             try
@@ -93,22 +95,24 @@ namespace iTool.DiscordBot.Modules
             }
             catch (Exception ex)
             {
-                await (await msg.ConfigureAwait(false)).ModifyAsync(x => x.Embed = new EmbedBuilder
-                {
-                    Title = "Evaluation Failure",
-                    Description = $"**{ex.GetType()}**: {ex.Message}",
-                    Color = _settings.GetErrorColor()
-                }.Build()).ConfigureAwait(false);
+                await (await msg.ConfigureAwait(false)).ModifyAsync(
+                    x => x.Embed = new EmbedBuilder
+                    {
+                        Title = "Evaluation Failure",
+                        Description = $"**{ex.GetType()}**: {ex.Message}",
+                        Color = _settings.GetErrorColor()
+                    }.Build()).ConfigureAwait(false);
 
                 return;
             }
 
-            await (await msg.ConfigureAwait(false)).ModifyAsync(x => x.Embed = new EmbedBuilder
-            {
-                Title = "Evaluation",
-                Description = result?.ToString() ?? "Success, nothing got returned",
-                Color = _settings.GetColor()
-            }.Build()).ConfigureAwait(false);
+            await (await msg.ConfigureAwait(false)).ModifyAsync(
+                x => x.Embed = new EmbedBuilder
+                {
+                    Title = "Evaluation",
+                    Description = result?.ToString() ?? "Success, nothing got returned",
+                    Color = _settings.GetColor()
+                }.Build()).ConfigureAwait(false);
         }
 
         internal static bool TryGetCode(string input, out string code)

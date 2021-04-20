@@ -19,7 +19,7 @@ namespace iTool.DiscordBot.Modules
             _steamUser = steamUser;
         }
 
-        internal async Task<ulong> ResolveVanityURLInternal(string name = null)
+        internal async Task<ulong> ResolveVanityURLInternal(string name)
         {
             var res = await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false);
             return res.Data;
