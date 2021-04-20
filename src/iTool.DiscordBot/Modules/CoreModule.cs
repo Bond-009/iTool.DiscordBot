@@ -6,7 +6,7 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class CoreModule : ModuleBase<SocketCommandContext>
+    public sealed class CoreModule : ModuleBase<SocketCommandContext>
     {
         private readonly Settings _settings;
 

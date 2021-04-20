@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace iTool.DiscordBot
 {
-    public class RequireGuildSpecificSettingsAttribute : PreconditionAttribute
+    public sealed class RequireGuildSpecificSettingsAttribute : PreconditionAttribute
     {
         public async override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider serviceProvider)
         {

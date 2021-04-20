@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace iTool.DiscordBot
 {
-    public class RequireTrustedUserAttribute : PreconditionAttribute
+    public sealed class RequireTrustedUserAttribute : PreconditionAttribute
     {
         public async override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider serviceProvider)
         {

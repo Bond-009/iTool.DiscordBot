@@ -6,7 +6,7 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class TagsModule : ModuleBase<SocketCommandContext>, IDisposable
+    public sealed class TagsModule : ModuleBase<SocketCommandContext>, IDisposable
     {
         private readonly Settings _settings;
         private readonly TagDatabase _db;

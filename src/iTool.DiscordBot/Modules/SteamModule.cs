@@ -8,7 +8,7 @@ using SteamWebAPI2.Interfaces;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class SteamModule : ModuleBase
+    public sealed class SteamModule : ModuleBase
     {
         private readonly Settings _settings;
         private readonly ISteamUser _steamUser;

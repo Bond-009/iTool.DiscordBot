@@ -5,7 +5,7 @@ using OpenWeather;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class WeatherModule : ModuleBase
+    public sealed class WeatherModule : ModuleBase
     {
         private readonly OpenWeatherClient _client;
         private readonly Settings _settings;

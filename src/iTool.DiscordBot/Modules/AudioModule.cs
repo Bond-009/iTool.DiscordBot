@@ -5,7 +5,7 @@ using Discord.Commands;
 namespace iTool.DiscordBot.Modules
 {
     [RequireContext(ContextType.Guild)]
-    public class AudioModule : ModuleBase
+    public sealed class AudioModule : ModuleBase
     {
         private readonly AudioService _audioService;
         private readonly AudioFileService _fileService;

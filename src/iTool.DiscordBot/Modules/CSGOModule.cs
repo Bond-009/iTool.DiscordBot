@@ -8,7 +8,7 @@ using SteamWebAPI2.Interfaces;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class CSGOModule : ModuleBase
+    public sealed class CSGOModule : ModuleBase
     {
         private const int AppId = 730;
 

@@ -7,7 +7,7 @@ using Discord.Commands;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class Bf4Module : ModuleBase, IDisposable
+    public sealed class Bf4Module : ModuleBase, IDisposable
     {
         private static Bf4Client _client = new Bf4Client();
         private readonly BfPlayerDatabase _db = new BfPlayerDatabase();

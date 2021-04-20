@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace iTool.DiscordBot
 {
-    public class TagDatabase : DbContext
+    public sealed class TagDatabase : DbContext
     {
         public DbSet<Tag> Tags { get; set; }
 

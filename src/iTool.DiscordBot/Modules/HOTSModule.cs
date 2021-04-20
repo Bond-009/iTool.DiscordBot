@@ -5,7 +5,7 @@ using HOTSLogs;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class HOTSModule : ModuleBase
+    public sealed class HOTSModule : ModuleBase
     {
         private static HOTSLogsClient _client;
         private readonly Settings _settings;

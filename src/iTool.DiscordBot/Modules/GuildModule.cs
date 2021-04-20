@@ -6,7 +6,7 @@ using Discord.Commands;
 namespace iTool.DiscordBot.Modules
 {
     [RequireGuildSpecificSettings]
-    public class GuildModule : ModuleBase, IDisposable
+    public sealed class GuildModule : ModuleBase, IDisposable
     {
         private readonly GuildSettingsDatabase _db = new GuildSettingsDatabase();
         private readonly Settings _settings;

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace iTool.DiscordBot
 {
-    public class BfPlayerDatabase : DbContext
+    public sealed class BfPlayerDatabase : DbContext
     {
         public DbSet<BfPlayer> BfPlayers { get; set; }
 

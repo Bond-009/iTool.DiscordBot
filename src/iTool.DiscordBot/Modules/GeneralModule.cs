@@ -9,7 +9,7 @@ using Discord.WebSocket;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class GeneralModule : ModuleBase<SocketCommandContext>
+    public sealed class GeneralModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService _cmdService;
         private readonly Settings _settings;

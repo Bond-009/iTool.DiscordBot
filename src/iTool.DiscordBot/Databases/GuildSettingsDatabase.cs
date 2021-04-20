@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace iTool.DiscordBot
 {
-    public class GuildSettingsDatabase : DbContext
+    public sealed class GuildSettingsDatabase : DbContext
     {
         public DbSet<GuildSettings> GuildConfigs { get; set; }
 

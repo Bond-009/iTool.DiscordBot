@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.Scripting;
 
 namespace iTool.DiscordBot.Modules
 {
-    public class DevModule : ModuleBase<SocketCommandContext>
+    public sealed class DevModule : ModuleBase<SocketCommandContext>
     {
         private readonly Settings _settings;
 
