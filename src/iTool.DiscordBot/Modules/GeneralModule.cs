@@ -326,12 +326,6 @@ namespace iTool.DiscordBot.Modules
                 .AddField(f =>
                 {
                     f.IsInline = true;
-                    f.Name = "Name";
-                    f.Value = Context.Guild.Name;
-                })
-                .AddField(f =>
-                {
-                    f.IsInline = true;
                     f.Name = "Id";
                     f.Value = Context.Guild.Id;
                 })
@@ -346,12 +340,6 @@ namespace iTool.DiscordBot.Modules
                     f.IsInline = true;
                     f.Name = "Members";
                     f.Value = Context.Guild.MemberCount;
-                })
-                .AddField(f =>
-                {
-                    f.IsInline = true;
-                    f.Name = "Voice region";
-                    f.Value = Context.Guild.VoiceRegionId;
                 })
                 .AddField(f =>
                 {
