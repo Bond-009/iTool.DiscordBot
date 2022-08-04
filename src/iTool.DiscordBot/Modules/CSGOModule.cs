@@ -83,7 +83,7 @@ namespace iTool.DiscordBot.Modules
                 {
                     f.IsInline = true;
                     f.Name = "Playtime";
-                    f.Value = Math.Round(TimeSpan.FromMinutes(dict["total_time_played"]).TotalHours, 2) + " hours";
+                    f.Value = Math.Round(TimeSpan.FromSeconds(dict["total_time_played"]).TotalHours, 2) + " hours";
                 }).Build()).ConfigureAwait(false);
         }
 
