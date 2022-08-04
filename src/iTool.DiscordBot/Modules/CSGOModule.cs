@@ -25,7 +25,7 @@ namespace iTool.DiscordBot.Modules
 
         internal async Task<ulong> ResolveVanityURLInternal(string name)
         {
-            var res = await _steamUser.ResolveVanityUrlAsync(name ?? Context.User.Username).ConfigureAwait(false);
+            var res = await _steamUser.ResolveVanityUrlAsync(name).ConfigureAwait(false);
             return res.Data;
         }
 
@@ -40,6 +40,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the CS:GO stats of the player")]
         public async Task CSGOStats(string name = null)
         {
+            name ??= Context.User.Username;
             Dictionary<string, double> dict = await GetUserStats(name).ConfigureAwait(false);
 
             await ReplyAsync(
@@ -91,6 +92,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns stats of the player's last CS:GO match")]
         public async Task CSGOLastMatch(string name = null)
         {
+            name ??= Context.User.Username;
             Dictionary<string, double> dict = await GetUserStats(name).ConfigureAwait(false);
 
             await ReplyAsync(

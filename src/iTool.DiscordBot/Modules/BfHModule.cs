@@ -24,10 +24,7 @@ namespace iTool.DiscordBot.Modules
         [Summary("Returns the Battlefield Hardline stats of the player")]
         public async Task BfHStats(string name = null, Platform platform = Platform.PC, string platformSpecificName = null)
         {
-            if (name == null)
-            {
-                name = Context.User.Username;
-            }
+            name ??= Context.User.Username;
 
             long? personaID = await _db.GetPersonaIDAsync(name).ConfigureAwait(false);
 
