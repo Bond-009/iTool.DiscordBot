@@ -52,6 +52,7 @@ namespace iTool.DiscordBot
 
             _discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
+                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent,
                 AlwaysDownloadUsers = _settings.AlwaysDownloadUsers,
                 ConnectionTimeout = _settings.ConnectionTimeout,
                 DefaultRetryMode = _settings.DefaultRetryMode,
