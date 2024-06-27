@@ -23,15 +23,14 @@ namespace iTool.DiscordBot
         }
 
         public Task<Tag> GetTagAsync(ulong guildID, string name)
-            => Tags.AsQueryable()
-                .FirstOrDefaultAsync(x => x.GuildID == guildID && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            => Tags.FirstOrDefaultAsync(x => x.GuildID == guildID && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
 
         public IQueryable<Tag> GetTags(ulong guildID)
-            => Tags.AsQueryable().Where(x => x.GuildID == guildID);
+            => Tags.Where(x => x.GuildID == guildID);
 
         public async Task CreateTagAsync(SocketCommandContext context, string name, string content, string attachment = null)
         {
-            if (await Tags.AsQueryable().AnyAsync(
+            if (await Tags.AsNoTracking().AnyAsync(
                 x => x.GuildID == context.Guild.Id && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false))
             {
                 throw new ArgumentException($"The tag `{name}` already exists.");
@@ -50,16 +49,12 @@ namespace iTool.DiscordBot
 
         public async Task DeleteTagAsync(SocketCommandContext context, string name)
         {
-            Tag tag = await Tags.AsQueryable()
-                .FirstOrDefaultAsync(x => x.GuildID == context.Guild.Id && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false);
-
-            if (tag == null)
-            {
-                throw new ArgumentException($"The tag `{name}` does not exist.");
-            }
+            Tag tag = await Tags
+                .FirstOrDefaultAsync(x => x.GuildID == context.Guild.Id && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false)
+                ?? throw new ArgumentException($"The tag `{name}` does not exist.");
 
             var user = (SocketGuildUser)context.User;
-            if (tag.AuthorID != user.Id && !user.GuildPermissions.ManageMessages)
+            if (tag.AuthorID != user.Id && !user.GuildPermissions.ManageMessages)
             {
                 throw new UnauthorizedAccessException($"You are not the owner of the tag `{name}`.");
             }

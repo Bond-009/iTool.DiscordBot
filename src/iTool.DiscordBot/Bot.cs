@@ -65,9 +65,7 @@ namespace iTool.DiscordBot
             IServiceCollection serviceCollection = new ServiceCollection()
                 .AddSingleton(_loggerFactory)
                 .AddLogging()
-                .AddSingleton(_settings)
-                .AddSingleton(typeof(AudioService))
-                .AddSingleton(typeof(AudioFileService));
+                .AddSingleton(_settings);
 
             if (string.IsNullOrEmpty(_settings.SteamKey))
             {
