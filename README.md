@@ -1,8 +1,8 @@
 # iTool.DiscordBot
 
-![.NET][github-actions-badge] [![codecov][codecov-badge]][codecov-link] [![Discord][discord-badge]][discord-invite] 
+![.NET][github-actions-badge] [![codecov][codecov-badge]][codecov-link] [![Discord][discord-badge]][discord-invite]
 
-i-Tool bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more!
+i-Tool bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H stats and a lot more!
 
 ## Commands
 
@@ -81,12 +81,6 @@ i-Tool bot is a general purpose bot that has moderation commands, can check your
 | ------- | ------- | ---------- | ----------- |
 | prefix | | | Returns the current prefix |
 | prefix | setprefix, prefix set | | Sets the current prefix |
-
-## HOTS commands
-
-| Command | Aliases | Permission | Description |
-| ------- | ------- | ---------- | ----------- |
-| hotsstats | | | Returns the HOTS stats of the player |
 
 ## Steam commands
 
