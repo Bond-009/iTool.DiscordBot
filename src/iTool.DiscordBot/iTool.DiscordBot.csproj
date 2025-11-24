@@ -13,7 +13,7 @@
     <PackageReference Include="Battlelog.Net.BfH" Version="0.3.0" />
     <PackageReference Include="Discord.Net.Commands" Version="3.18.0" />
     <PackageReference Include="Discord.Net.WebSocket" Version="3.18.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
     <PackageReference Include="Nett" Version="0.15.0" />
