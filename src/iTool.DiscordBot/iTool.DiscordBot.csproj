@@ -15,7 +15,7 @@
     <PackageReference Include="Discord.Net.WebSocket" Version="3.18.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
     <PackageReference Include="Nett" Version="0.15.0" />
     <PackageReference Include="OpenWeather.Net" Version="1.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
