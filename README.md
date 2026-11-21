@@ -75,13 +75,6 @@ i-Tool bot is a general purpose bot that has moderation commands, can check your
 | gc | collectgarbage | **Trusted user** | Forces the GC to clean up resources |
 | eval | cseval, csharp, evaluate | **Trusted user** | Evaluates C# code |
 
-## Guild commands
-
-| Command | Aliases | Permission | Description |
-| ------- | ------- | ---------- | ----------- |
-| prefix | | | Returns the current prefix |
-| prefix | setprefix, prefix set | | Sets the current prefix |
-
 ## Steam commands
 
 | Command | Aliases | Permission | Description |

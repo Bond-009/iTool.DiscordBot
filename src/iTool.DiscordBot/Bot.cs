@@ -42,17 +42,9 @@ namespace iTool.DiscordBot
                 return false;
             }
 
-            if (_settings.GuildSpecificSettings)
-            {
-                using (GuildSettingsDatabase db = new GuildSettingsDatabase())
-                {
-                    db.Database.EnsureCreated();
-                }
-            }
-
             _discordClient = new DiscordSocketClient(new DiscordSocketConfig()
             {
-                GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent,
+                GatewayIntents = GatewayIntents.AllUnprivileged,
                 AlwaysDownloadUsers = _settings.AlwaysDownloadUsers,
                 ConnectionTimeout = _settings.ConnectionTimeout,
                 DefaultRetryMode = _settings.DefaultRetryMode,
@@ -155,9 +147,7 @@ namespace iTool.DiscordBot
             }
 
             // Ignore if the bot doesn't have the permission to send messages in the channel
-            IGuildChannel guildChannel = msg.Channel as IGuildChannel;
-
-            if (guildChannel != null)
+            if (msg.Channel is IGuildChannel guildChannel)
             {
                 IGuildUser guildUser = await guildChannel.Guild.GetCurrentUserAsync().ConfigureAwait(false);
                 ChannelPermissions channelPermissions = guildUser.GetPermissions(guildChannel);
@@ -167,22 +157,11 @@ namespace iTool.DiscordBot
                 }
             }
 
-            string prefix = _settings.Prefix;
-            if (_settings.GuildSpecificSettings
-                && guildChannel != null)
-            {
-                using (GuildSettingsDatabase db = new GuildSettingsDatabase())
-                {
-                    prefix = (await db.GetSettingsAsync(guildChannel.Guild.Id).ConfigureAwait(false))?.Prefix ?? _settings.Prefix;
-                }
-            }
-
             // Mark where the prefix ends and the command begins
             int argPos = 0;
 
             // Determine if the message has a valid prefix, adjust argPos
-            if (!(msg.HasMentionPrefix(_discordClient.CurrentUser, ref argPos)
-                || msg.HasStringPrefix(prefix, ref argPos)))
+            if (!msg.HasMentionPrefix(_discordClient.CurrentUser, ref argPos))
             {
                 return;
             }
@@ -194,7 +173,7 @@ namespace iTool.DiscordBot
             // If the command failed, notify the user
             if (result.Error.HasValue && result.Error != CommandError.UnknownCommand)
             {
-                _logger.LogError(result.ErrorReason);
+                _logger.LogError("{ErrorReason}", result.ErrorReason);
 
                 await msg.Channel.SendMessageAsync(
                     string.Empty,
