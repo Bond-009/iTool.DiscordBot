@@ -130,7 +130,7 @@ namespace iTool.DiscordBot.Modules
                 embed: new EmbedBuilder()
                 {
                     Color = _settings.GetColor(),
-                    Description = $"{app.Name} bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H and HOTS stats and a lot more! Coded by Bond_009#0253.",
+                    Description = $"{app.Name} bot is a general purpose bot that has moderation commands, can check your CS:GO, Battlefield 3, 4, H stats and a lot more! Coded by Bond_009#0253.",
                     Author = new EmbedAuthorBuilder()
                     {
                         Name = app.Name,
